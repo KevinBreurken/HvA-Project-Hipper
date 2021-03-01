@@ -2,10 +2,26 @@
     padding: 0 0 0 9px;
 }
 
-.navbar-brand{
+.navbar-brand {
     padding-top: 0;
 }
 
-#topnavigation {
+#header-title {
+    margin-bottom: -10px;
+}
+
+#navigation-bottom .navbar-nav > li {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 35px;
+    line-height: 0.9;
+}
+
+#navigation-bottom .navbar-nav > li :hover {
+    background-color: #e4e4e4;
+    color: #ffffff !important;
+}
+
+#navigation-top {
     border-bottom: 8.43px solid #C4C4C4;
 }
