@@ -1,0 +1,11 @@
+.navbar {
+    padding: 0 0 0 9px;
+}
+
+.navbar-brand{
+    padding-top: 0;
+}
+
+#topnavigation {
+    border-bottom: 8.43px solid #C4C4C4;
+}
