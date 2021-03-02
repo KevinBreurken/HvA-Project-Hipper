@@ -1,3 +1,4 @@
+
 .navbar {
     padding: 0 0 0 9px;
 }
@@ -23,5 +24,34 @@
 }
 
 #navigation-top {
-    border-bottom: 8.43px solid #C4C4C4;
+    border-bottom: 8px solid var(--color-category-current);
+}
+
+/* Category - colors */
+#nav-cat-home[current] {
+    background-color: var(--color-category-home) !important;
+}
+
+#nav-cat-goals[current] {
+    background-color: var(--color-category-goals) !important;
+}
+
+#nav-cat-statistics[current] {
+    background-color: var(--color-category-statistics) !important;
+}
+
+#nav-cat-profile[current] {
+    background-color: var(--color-category-profile) !important;
+}
+
+#nav-cat-social[current] {
+    background-color: var(--color-category-social) !important;
+}
+
+.bottom-nav-element[current] {
+    color: #ffffff !important;
+}
+
+.bottom-nav-element:active {
+    background-color: gray !important;
 }

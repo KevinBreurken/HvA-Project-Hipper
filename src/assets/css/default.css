@@ -1,3 +1,18 @@
+:root {
+    /*
+    TODO: use this to change the color to the proper styling
+    document.documentElement.style.setProperty('--color-curent-category', "#709963");
+    */
+    --color-category-current: #c4c4c4;
+    --color-category-default: #c4c4c4;
+    --color-category-home: #86c7c3;
+    --color-category-goals: #709963;
+    --color-category-statistics: #9697c5;
+    --color-category-profile: #dd9d75;
+    --color-category-social: #c05b73;
+    --color-subcategory-notifications: #ffa447;
+}
+
 body {
     font-family: "Ropa Sans", sans-serif !important;
 }

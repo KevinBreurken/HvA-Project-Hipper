@@ -17,7 +17,6 @@ class NavbarController {
 
         //Find all anchors and register the click-event
         sidebarView.find("a").on("click", this.handleClickMenuItem);
-
         //TODO: Add logic here to determine which menu items should be visible or not
 
         //Empty the sidebar-div and add the resulting view to the page
@@ -30,6 +29,9 @@ class NavbarController {
 
         //Pass the action to a new function for further processing
         app.loadController(controller);
+
+        //Change the current color to the color of the given category
+        document.documentElement.style.setProperty('--color-curent-category', "#709963");
 
         //Return false to prevent reloading the page
         return false;

@@ -13,6 +13,13 @@ const CONTROLLER_LOGOUT = "logout";
 const CONTROLLER_WELCOME = "welcome";
 const CONTROLLER_UPLOAD = "upload";
 
+const CONTROLLER_HOME = "home";
+const CONTROLLER_GOALS = "goals";
+const CONTROLLER_STATISTICS = "statistics";
+const CONTROLLER_PROFILE = "profile";
+const CONTROLLER_SOCIAL = "social";
+
+
 const sessionManager = new SessionManager();
 const networkManager = new NetworkManager();
 
@@ -59,6 +66,26 @@ class App {
             case CONTROLLER_WELCOME:
                 this.setCurrentController(name);
                 this.isLoggedIn(() => new WelcomeController, () => new LoginController());
+                break;
+
+            case CONTROLLER_GOALS:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new GoalsController(), () => new LoginController());
+                break;
+
+            case CONTROLLER_STATISTICS:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new StatisticsController(), () => new LoginController());
+                break;
+
+            case CONTROLLER_PROFILE:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new ProfileController(), () => new LoginController());
+                break;
+
+            case CONTROLLER_SOCIAL:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new SocialController(), () => new LoginController());
                 break;
 
             case CONTROLLER_UPLOAD:
