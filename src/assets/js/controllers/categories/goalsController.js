@@ -11,6 +11,7 @@ class GoalsController extends CategoryController{
         $.get("views/home.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
+
         this.updateCurrentCategoryColor("--color-category-goals");
 
     }

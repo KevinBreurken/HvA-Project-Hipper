@@ -19,9 +19,9 @@ const CONTROLLER_STATISTICS = "statistics";
 const CONTROLLER_PROFILE = "profile";
 const CONTROLLER_SOCIAL = "social";
 
-
 const sessionManager = new SessionManager();
 const networkManager = new NetworkManager();
+const nav = new NavbarController();
 
 class App {
 
@@ -49,13 +49,11 @@ class App {
         }
 
         switch (name) {
-            case CONTROLLER_SIDEBAR:
-                new NavbarController();
-                break;
 
             case CONTROLLER_LOGIN:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new WelcomeController(), () => new LoginController());
+                nav.setNavState(navState.None)
+                this.isLoggedIn(() => new LoginController(), () => new LoginController());
                 break;
 
             case CONTROLLER_LOGOUT:
@@ -65,31 +63,37 @@ class App {
 
             case CONTROLLER_WELCOME:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new WelcomeController, () => new LoginController());
+                nav.setNavState(navState.None)
+                this.isLoggedIn(() => new LoginController, () => new LoginController());
                 break;
 
             case CONTROLLER_HOME:
                 this.setCurrentController(name);
+                nav.setNavState(navState.User)
                 this.isLoggedIn(() => new HomeController(), () => new LoginController());
                 break;
 
             case CONTROLLER_GOALS:
                 this.setCurrentController(name);
+                nav.setNavState(navState.User)
                 this.isLoggedIn(() => new GoalsController(), () => new LoginController());
                 break;
 
             case CONTROLLER_STATISTICS:
                 this.setCurrentController(name);
+                nav.setNavState(navState.User)
                 this.isLoggedIn(() => new StatisticsController(), () => new LoginController());
                 break;
 
             case CONTROLLER_PROFILE:
                 this.setCurrentController(name);
+                nav.setNavState(navState.User)
                 this.isLoggedIn(() => new ProfileController(), () => new LoginController());
                 break;
 
             case CONTROLLER_SOCIAL:
                 this.setCurrentController(name);
+                nav.setNavState(navState.User)
                 this.isLoggedIn(() => new SocialController(), () => new LoginController());
                 break;
 
@@ -100,7 +104,9 @@ class App {
             default:
                 return false;
         }
-
+        //Send to the navigation what controller is loaded
+        nav.setSelectedCategory(name)
+        
         return true;
     }
 
