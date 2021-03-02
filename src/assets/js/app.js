@@ -68,6 +68,11 @@ class App {
                 this.isLoggedIn(() => new WelcomeController, () => new LoginController());
                 break;
 
+            case CONTROLLER_HOME:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new HomeController(), () => new LoginController());
+                break;
+
             case CONTROLLER_GOALS:
                 this.setCurrentController(name);
                 this.isLoggedIn(() => new GoalsController(), () => new LoginController());

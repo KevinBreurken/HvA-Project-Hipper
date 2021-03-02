@@ -16,22 +16,23 @@ class NavbarController {
         const sidebarView = $(data);
 
         //Find all anchors and register the click-event
-        sidebarView.find("a").on("click", this.handleClickMenuItem);
+        sidebarView.find("button").on("click", this.handleClickMenuItem);
         //TODO: Add logic here to determine which menu items should be visible or not
-
+        
         //Empty the sidebar-div and add the resulting view to the page
         $(".sidebar").empty().append(sidebarView);
     }
 
-    handleClickMenuItem() {
+    async handleClickMenuItem() {
         //Get the data-controller from the clicked element (this)
         const controller = $(this).attr("data-controller");
 
         //Pass the action to a new function for further processing
-        app.loadController(controller);
+        await app.loadController(controller);
 
-        //Change the current color to the color of the given category
-        document.documentElement.style.setProperty('--color-curent-category', "#709963");
+        //Select the clicked button
+        $('.bottom-nav-element').attr("selected",false);
+        $(this).attr("selected",true)
 
         //Return false to prevent reloading the page
         return false;
