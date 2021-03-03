@@ -8,7 +8,7 @@ class ProfileController extends CategoryController {
     constructor() {
         super();
 
-        $.get("views/home.html")
+        $.get("views/profile.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
         this.updateCurrentCategoryColor("--color-category-profile");

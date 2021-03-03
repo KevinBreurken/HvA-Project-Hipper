@@ -8,7 +8,7 @@ class GoalsController extends CategoryController{
     constructor() {
         super();
 
-        $.get("views/home.html")
+        $.get("views/goals.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
 
@@ -18,8 +18,13 @@ class GoalsController extends CategoryController{
 
     //Called when the login.html has been loaded
     setup(data) {
+        //Load the login-content into memory
+        this.view = $(data);
 
+        //Empty the content-div and add the resulting view to the page
+        $(".content").empty().append(this.view);
     }
+
     //Called when the login.html failed to load
     error() {
         $(".content").html("Failed to load content!");

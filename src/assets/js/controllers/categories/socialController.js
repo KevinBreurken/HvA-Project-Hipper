@@ -3,12 +3,12 @@
  *
  * @author Pim Meijer
  */
-class SocialController extends CategoryController{
+class SocialController extends CategoryController {
 
     constructor() {
         super();
 
-        $.get("views/home.html")
+        $.get("views/social.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
         this.updateCurrentCategoryColor("--color-category-social");
@@ -23,6 +23,7 @@ class SocialController extends CategoryController{
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.view);
     }
+
     //Called when the login.html failed to load
     error() {
         $(".content").html("Failed to load content!");

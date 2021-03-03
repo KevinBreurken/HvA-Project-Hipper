@@ -19,7 +19,6 @@
 
 #navigation-bottom .navbar-nav > li :hover {
     background-color: #e4e4e4;
-    /*color: #ffffff !important;*/
 }
 
 #navigation-top {
@@ -31,11 +30,21 @@
     background-color: var(--color-category-current) !important;
 }
 
-.bottom-nav-element {
+.nav-link {
     border: none;
     background-color: #ffffff;
+    font-size: 30px;
 }
 
-.bottom-nav-element:focus {
+.nav-link:hover {
+    background-color: #e4e4e4;
+}
+
+.nav-link:active{
+    color: white !important;
+    background-color: var(--color-category-default);
+}
+
+.nav-link:focus {
     outline: none;
 }

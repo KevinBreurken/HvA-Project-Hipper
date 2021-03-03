@@ -8,7 +8,7 @@ class StatisticsController extends CategoryController{
     constructor() {
         super();
 
-        $.get("views/home.html")
+        $.get("views/statistics.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
 

@@ -3,14 +3,17 @@
  *
  * @author Pim Meijer
  */
-class LoginController {
+class LoginController extends CategoryController{
 
     constructor() {
+        super()
         this.userRepository = new UserRepository();
 
         $.get("views/login.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
+
+        this.updateCurrentCategoryColor("--color-category-login");
     }
 
     //Called when the login.html has been loaded
