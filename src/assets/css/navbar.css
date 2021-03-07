@@ -4,7 +4,6 @@
 
 .navbar-brand {
     padding-top: 0;
-    padding-left: 16px;
 }
 
 #header-title {
@@ -32,6 +31,7 @@
 }
 
 #navigation-top {
+    padding-left: 8px;
     border-bottom: 8px solid var(--color-category-current);
 }
 
@@ -53,17 +53,19 @@
 }
 
 .nav-link:active{
-    color: white !important;
+    color: #ffffff !important;
     background-color: var(--color-category-default);
 }
 
 .nav-link:focus {
     outline: none;
+    background-color: #e4e4e4;
 }
 
 .navbar-toggler {
-    margin-right: 16px;
+    margin: 8px 16px 8px 0;
     border: none;
     background-color: var(--color-category-current) !important;
     font-size: 30px;
+
 }

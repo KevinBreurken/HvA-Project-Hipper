@@ -12,6 +12,6 @@ class CategoryController {
 
     //Called when the login.html failed to load
     error() {
-        $(".content").html("Failed to load content!");
+        $(".content").html(`Failed to load ${this.constructor.name} view!`);
     }
 }

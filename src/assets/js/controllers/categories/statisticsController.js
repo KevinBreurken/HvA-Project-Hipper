@@ -3,17 +3,16 @@
  *
  * @author Pim Meijer
  */
-class StatisticsController extends CategoryController{
+class StatisticsController extends CategoryController {
 
     constructor() {
         super();
 
         $.get("views/statistics.html")
             .done((data) => this.setup(data))
-            .fail(() => this.error());
+            .fail(() => super.error());
 
         this.updateCurrentCategoryColor("--color-category-statistics");
-
     }
 
     //Called when the login.html has been loaded
@@ -23,9 +22,5 @@ class StatisticsController extends CategoryController{
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.view);
-    }
-    //Called when the login.html failed to load
-    error() {
-        $(".content").html("Failed to load content!");
     }
 }

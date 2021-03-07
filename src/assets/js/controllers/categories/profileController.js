@@ -10,9 +10,9 @@ class ProfileController extends CategoryController {
 
         $.get("views/profile.html")
             .done((data) => this.setup(data))
-            .fail(() => this.error());
-        this.updateCurrentCategoryColor("--color-category-profile");
+            .fail(() => super.error());
 
+        this.updateCurrentCategoryColor("--color-category-profile");
     }
 
     //Called when the login.html has been loaded
@@ -24,8 +24,4 @@ class ProfileController extends CategoryController {
         $(".content").empty().append(this.view);
     }
 
-    //Called when the login.html failed to load
-    error() {
-        $(".content").html("Failed to load content!");
-    }
 }

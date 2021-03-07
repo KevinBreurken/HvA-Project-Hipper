@@ -10,9 +10,8 @@ class SocialController extends CategoryController {
 
         $.get("views/social.html")
             .done((data) => this.setup(data))
-            .fail(() => this.error());
+            .fail(() => super.error());
         this.updateCurrentCategoryColor("--color-category-social");
-
     }
 
     //Called when the login.html has been loaded
@@ -24,8 +23,4 @@ class SocialController extends CategoryController {
         $(".content").empty().append(this.view);
     }
 
-    //Called when the login.html failed to load
-    error() {
-        $(".content").html("Failed to load content!");
-    }
 }
