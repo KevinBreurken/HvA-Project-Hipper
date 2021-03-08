@@ -93,7 +93,7 @@ class App {
 
             case CONTROLLER_SOCIAL:
                 this.setCurrentController(name);
-                nav.setNavState(navState.User)
+                nav.setNavState(navState.Caretaker)
                 this.isLoggedIn(() => new SocialController(), () => new LoginController());
                 break;
 

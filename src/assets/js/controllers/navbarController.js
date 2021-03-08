@@ -49,6 +49,7 @@ class NavbarController {
     setNavState(stateEnum) {
         $('#right-nav').toggle(stateEnum === navState.User || stateEnum === navState.Caretaker);
         $('.nav-type-user').toggle(stateEnum === navState.User);
+        $('.nav-type-caretaker').toggle(stateEnum === navState.Caretaker);
     }
 
 }
