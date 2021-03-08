@@ -22,5 +22,4 @@ class HomeController extends CategoryController {
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.view);
     }
-
 }
