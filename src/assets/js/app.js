@@ -7,6 +7,7 @@
  *
  * @author Lennard Fonteijn & Pim Meijer
  */
+const CONTROLLER_CARETAKER = "caretaker";
 const CONTROLLER_SIDEBAR = "sidebar";
 const CONTROLLER_LOGIN = "login";
 const CONTROLLER_LOGOUT = "logout";
@@ -59,6 +60,11 @@ class App {
             case CONTROLLER_WELCOME:
                 this.setCurrentController(name);
                 this.isLoggedIn(() => new WelcomeController, () => new LoginController());
+                break;
+
+            case CONTROLLER_CARETAKER:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new CaretakerController(), () => new LoginController());
                 break;
 
             case CONTROLLER_UPLOAD:
@@ -114,6 +120,7 @@ class App {
      */
     handleLogout() {
         sessionManager.remove("username");
+        sessionManager.remove("role");
 
         //go to login screen
         this.loadController(CONTROLLER_LOGIN);

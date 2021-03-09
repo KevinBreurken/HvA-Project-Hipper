@@ -39,9 +39,15 @@ class LoginController {
         try{
             //await keyword 'stops' code until data is returned - can only be used in async function
             const user = await this.userRepository.login(username, password);
-
             sessionManager.set("username", user.username);
-            app.loadController(CONTROLLER_WELCOME);
+            sessionManager.set("role", user.role);
+
+            // Based on their role give them a different controller
+            if (user.role === 1) {
+                app.loadController(CONTROLLER_CARETAKER)
+            } else {
+                app.loadController(CONTROLLER_WELCOME);
+            }
 
         } catch(e) {
             //if unauthorized error show error to user
