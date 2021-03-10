@@ -1,0 +1,92 @@
+html, body {
+    min-height: 100vh;
+    justify-content: center;
+    height: 100%;
+
+}
+
+.content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.container-fluid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    margin-bottom: 180px;
+
+
+}
+
+
+.col-lg-12 {
+    height: 80%
+}
+
+.avatar img {
+    margin: 0 auto;
+
+
+}
+
+/*.row{*/
+/*    border: 2px solid black;*/
+/*}*/
+
+/*#welkom-text{*/
+/*    position: absolute;*/
+/*}*/
+
+#speech-bubble {
+    width: 200px;
+    height: 90px;
+    top: 172px;
+    left: 40px;
+    position: absolute;
+}
+
+.col-lg-3 {
+    height: 200px;
+    /*padding-left: 30px !important;*/
+    /*padding-right:30px !important;*/
+    padding-bottom: 10px;
+}
+
+.cards-row {
+    max-width: 80%;
+
+}
+
+.cards {
+    background-color: #86C7C3;
+    height: 100%;
+    width: 90%;
+    border-radius: 10%;
+    color: white;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+    margin: auto;
+    min-width: 150px;
+    margin-bottom: 10px;
+}
+
+.cards h2, p {
+    text-align: center;
+    padding: 10px 5px 5px 5px;
+}
+
+.cards p {
+    font-size: 20px;
+    padding-top: 20px;
+}
+
+@media all and (max-width: 991px) {
+    .cards-row{
+        margin-top: 280px;
+    }
+}
+
