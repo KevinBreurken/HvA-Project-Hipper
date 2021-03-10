@@ -3,7 +3,7 @@
  *
  * @author Pim Meijer
  */
-class LoginController extends CategoryController{
+class LoginController extends CategoryController {
 
     constructor() {
         super()
@@ -43,16 +43,16 @@ class LoginController extends CategoryController{
         const username = this.loginView.find("[name='username']").val();
         const password = this.loginView.find("[name='password']").val();
 
-        try{
+        try {
             //await keyword 'stops' code until data is returned - can only be used in async function
             const user = await this.userRepository.login(username, password);
 
             sessionManager.set("username", user.username);
             app.loadController(CONTROLLER_HOME);
 
-        } catch(e) {
+        } catch (e) {
             //if unauthorized error show error to user
-            if(e.code === 401) {
+            if (e.code === 401) {
                 this.loginView
                     .find(".error")
                     .html(e.reason);
