@@ -30,6 +30,8 @@ html, body {
 
 .avatar img {
     margin: 0 auto;
+    width: 500px;
+    height: 500px;
 
 
 }
@@ -66,13 +68,23 @@ html, body {
     background-color: #86C7C3;
     height: 100%;
     width: 90%;
-    border-radius: 10%;
+    border-radius: 20px;
     color: white;
-    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
     margin: auto;
     min-width: 150px;
     margin-bottom: 10px;
+
 }
+
+.cards:hover {
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+}
+
+a:visited, a:hover, a:active {
+    text-decoration: none !important;
+
+}
+
 
 .cards h2, p {
     text-align: center;
@@ -85,7 +97,7 @@ html, body {
 }
 
 @media all and (max-width: 991px) {
-    .cards-row{
+    .cards-row {
         margin-top: 280px;
     }
 }
