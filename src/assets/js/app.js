@@ -7,7 +7,6 @@
  *
  * @author Lennard Fonteijn & Pim Meijer
  */
-const CONTROLLER_SIDEBAR = "sidebar";
 const CONTROLLER_LOGIN = "login";
 const CONTROLLER_LOGOUT = "logout";
 const CONTROLLER_WELCOME = "welcome";
