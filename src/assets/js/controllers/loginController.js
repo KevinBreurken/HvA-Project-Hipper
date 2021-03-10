@@ -13,11 +13,15 @@ class LoginController extends CategoryController{
             .done((data) => this.setup(data))
             .fail(() => this.error());
 
-        this.updateCurrentCategoryColor("--color-category-login");
     }
 
     //Called when the login.html has been loaded
     setup(data) {
+        //Set the navigation color to the correct CSS variable.
+        this.updateCurrentCategoryColor("--color-category-login");
+        //Set the navigation to the correct state.
+        nav.setNavigationState(navState.None)
+
         //Load the login-content into memory
         this.loginView = $(data);
 

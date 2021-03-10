@@ -1,3 +1,7 @@
+/**
+ * Enum containing the different state of the navigation.
+ * @type {{Caretaker: number, User: number, None: number}}
+ */
 const navState = {
     None: 0,
     User: 1,
@@ -5,16 +9,16 @@ const navState = {
 };
 
 /**
- * Responsible for handling the actions happening on sidebar view
+ * Responsible for handling the actions happening on sidebar view.
  *
  * @author Lennard Fonteijn, Pim Meijer, Kevin Breurken
  */
 class NavbarController {
-    constructor() {
 
+    constructor() {
         $.get("views/navbar.html")
             .done((data) => this.setup(data))
-            .fail(() => super.error());
+            .fail(() => this.error());
     }
 
     //Called when the navbar.html has been loaded
@@ -41,15 +45,27 @@ class NavbarController {
         return false;
     }
 
-    setSelectedCategory(controllerName) {
+    /**
+     * Changes the selected category on the bottom navigation.
+     * @param controllerName value that is checked on the button's 'data-controller' attribute.
+     */
+    setSelectedCategoryButton(controllerName) {
         $('.bottom-nav-element').attr("selected", false);
         $(`.bottom-nav-element[data-controller="${controllerName}"]`).attr("selected", true);
     }
 
-    setNavState(stateEnum) {
-        $('#right-nav').toggle(stateEnum === navState.User || stateEnum === navState.Caretaker);
-        $('.nav-type-user').toggle(stateEnum === navState.User);
-        $('.nav-type-caretaker').toggle(stateEnum === navState.Caretaker);
+    /**
+     * Changes the state of navigation by an given enum state. (use navState)
+     * @param navEnumState state to set the navigation to e.g. User / Caretaker.
+     */
+    setNavigationState(navEnumState) {
+        $('#right-nav').toggle(navEnumState === navState.User || navEnumState === navState.Caretaker);
+        $('.nav-type-user').toggle(navEnumState === navState.User);
+        $('.nav-type-caretaker').toggle(navEnumState === navState.Caretaker);
     }
 
+    //Called when the view failed to load
+    error() {
+        $(".content").html(`Failed to load navigation view!`);
+    }
 }

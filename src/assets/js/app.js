@@ -26,9 +26,6 @@ const nav = new NavbarController();
 class App {
 
     init() {
-        //Always load the sidebar
-        this.loadController(CONTROLLER_SIDEBAR);
-
         //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
         this.loadControllerFromUrl(CONTROLLER_WELCOME);
     }
@@ -52,7 +49,6 @@ class App {
 
             case CONTROLLER_LOGIN:
                 this.setCurrentController(name);
-                nav.setNavState(navState.None)
                 this.isLoggedIn(() => new LoginController(), () => new LoginController());
                 break;
 
@@ -63,37 +59,31 @@ class App {
 
             case CONTROLLER_WELCOME:
                 this.setCurrentController(name);
-                nav.setNavState(navState.None)
                 this.isLoggedIn(() => new LoginController, () => new LoginController());
                 break;
 
             case CONTROLLER_HOME:
                 this.setCurrentController(name);
-                nav.setNavState(navState.User)
                 this.isLoggedIn(() => new HomeController(), () => new LoginController());
                 break;
 
             case CONTROLLER_GOALS:
                 this.setCurrentController(name);
-                nav.setNavState(navState.User)
                 this.isLoggedIn(() => new GoalsController(), () => new LoginController());
                 break;
 
             case CONTROLLER_STATISTICS:
                 this.setCurrentController(name);
-                nav.setNavState(navState.User)
                 this.isLoggedIn(() => new StatisticsController(), () => new LoginController());
                 break;
 
             case CONTROLLER_PROFILE:
                 this.setCurrentController(name);
-                nav.setNavState(navState.User)
                 this.isLoggedIn(() => new ProfileController(), () => new LoginController());
                 break;
 
             case CONTROLLER_SOCIAL:
                 this.setCurrentController(name);
-                nav.setNavState(navState.Caretaker)
                 this.isLoggedIn(() => new SocialController(), () => new LoginController());
                 break;
 
@@ -105,8 +95,8 @@ class App {
                 return false;
         }
         //Send to the navigation what controller is loaded
-        nav.setSelectedCategory(name)
-        
+        nav.setSelectedCategoryButton(name)
+
         return true;
     }
 
