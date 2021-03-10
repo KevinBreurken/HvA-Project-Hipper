@@ -5,11 +5,13 @@
         <a class="navbar-text text-secondary home-back-element" id="header-title" style="font-size: 52px"
            data-controller="home">HIPPER-HOP</a>
     </a>
+    <div class="navbar-toggler-anchor">
     <button class="navbar-toggler navbar-dark ml-auto hidden-sm-up float-xs-right" type="button" data-toggle="collapse"
             data-target="#navigation-bottom"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
+    </div>
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -60,6 +62,13 @@
                     PATIËNTEN
                 </button>
             </li>
+
+            <li class="nav-type-user nav-item d-md-block d-lg-none">
+                <button class="nav-link text-secondary bottom-nav-element" data-controller="logout" href="#">
+                    UITLOGGEN
+                </button>
+            </li>
+
         </ul>
     </div>
 </nav>

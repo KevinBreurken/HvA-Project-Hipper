@@ -62,6 +62,11 @@ class NavbarController {
         $('#right-nav').toggle(navEnumState === navState.User || navEnumState === navState.Caretaker);
         $('.nav-type-user').toggle(navEnumState === navState.User);
         $('.nav-type-caretaker').toggle(navEnumState === navState.Caretaker);
+        //For the mobile hamburgermenu
+        $('.navbar-toggler-anchor').toggle(navEnumState !== navState.None);
+        if(navEnumState === navState.None) {
+            $('#navigation-bottom').collapse('hide');
+        }
     }
 
     //Called when the view failed to load
