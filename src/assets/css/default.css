@@ -1,3 +1,20 @@
+:root {
+    --color-category-current: #c4c4c4;
+    --color-category-default: #c4c4c4;
+    --color-category-home: #86c7c3;
+    --color-category-goals: #709963;
+    --color-category-statistics: #9697c5;
+    --color-category-profile: #dd9d75;
+    --color-category-social: #c05b73;
+    --color-subcategory-notifications: #ffa447;
+
+    --color-hover-element: #e4e4e4;
+}
+
+body {
+    font-family: "Ropa Sans", sans-serif;
+}
+
 footer {
     position: fixed;
     left: 0;
