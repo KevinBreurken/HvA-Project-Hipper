@@ -27,7 +27,6 @@ class NavbarController {
         const sidebarView = $(data);
         //Find all anchors and register the click-event
         sidebarView.find("button").on("click", this.handleClickMenuItem);
-        sidebarView.find("p").on("click", this.handleClickMenuItem);
 
         //Empty the sidebar-div and add the resulting view to the page
         $(".sidebar").empty().append(sidebarView);

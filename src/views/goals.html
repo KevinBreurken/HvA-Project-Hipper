@@ -1,16 +1,27 @@
 <div class="row justify-content-md-center">
-    <div class="col-lg-6 pad-container">
+    <div class="col-lg-5 pad-container">
         <div class="w-100 pad-container-header">
             JOUW PAM PROGRESSIE
         </div>
         <div class="w-100 pad-container-content">
             <div class="pad-progress-container p-2">
                 <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0"
-                         aria-valuemax="100"></div>
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30"
+                    <div id="bar-type-past" class="progress-bar" role="progressbar" style="width: 30%"
+                         aria-valuenow="15" aria-valuemin="0"
+                         aria-valuemax="100">
+                        <div class="progress-pin-element d-none d-lg-block">
+                            <div class="progress-pin-text">
+                                VORIGE
+                            </div>
+                            <div class="progress-pin-pam">
+                                10<br>PAM
+                            </div>
+                        </div>
+                    </div>
+                    <div id="bar-type-yesterday" class="progress-bar" role="progressbar" style="width: 10%"
+                         aria-valuenow="30"
                          aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-pin-element">
+                        <div class="progress-pin-element d-none d-lg-block">
                             <div class="progress-pin-text">
                                 NU
                             </div>
@@ -19,9 +30,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="progress-bar-striped bg-info progress-bar-animated" role="progressbar"
-                         style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-pin-element">
+                    <div id="bar-type-goal" class="progress-bar-striped progress-bar-animated" role="progressbar"
+                         style="width: 40%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-pin-element d-none d-lg-block">
                             <div class="progress-pin-text">
                                 DOEL
                             </div>
@@ -32,10 +43,10 @@
                     </div>
                     <div class="progress-bar-end">
                         <div class="progress-pin-element" id="progress-bar-end">
-                            <div class="progress-pin-text pin-end">
+                            <div id="pin-end-text" class="progress-pin-text ">
                                 EIND
                             </div>
-                            <div class="progress-pin-pam pin-end">
+                            <div id="pin-end-pam" class="progress-pin-pam">
                                 2000<br>PAM
                             </div>
                         </div>
