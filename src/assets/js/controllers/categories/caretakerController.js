@@ -4,17 +4,20 @@
  *
  * @author Lennard Fonteijn & Pim Meijer
  */
-class CaretakerController {
+class CaretakerController extends CategoryController {
 
     constructor() {
+        super()
         console.log(sessionManager.get("role"));
-        $.get("views/caretaker/home.html")
-            .done((data) => this.setup(data))
-            .fail(() => this.error());
+        this.loadView("views/caretaker/home.html");
     }
 
     //Called when the welcome.html has been loaded
     setup(data) {
+        //Set the navigation color to the correct CSS variable.
+        this.updateCurrentCategoryColor("--color-category-default");
+        //Set the navigation to the correct state.
+        nav.setNavigationState(navState.Caretaker);
         //Load the welcome-content into memory
         this.caretakerView = $(data);
 
@@ -26,8 +29,4 @@ class CaretakerController {
 
     }
 
-    //Called when the login.html fails to load
-    error() {
-        $(".content").html("Failed to load content!");
-    }
 }

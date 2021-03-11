@@ -52,7 +52,6 @@ class LoginController extends CategoryController {
             // Based on their role give them a different controller
             if (user.role === 1) {
                 app.loadController(CONTROLLER_CARETAKER)
-                nav.setNavigationState(navState.Caretaker);
             } else {
                 app.loadController(CONTROLLER_HOME);
             }
