@@ -7,6 +7,7 @@
  *
  * @author Lennard Fonteijn & Pim Meijer
  */
+const CONTROLLER_CARETAKER = "caretaker";
 const CONTROLLER_LOGIN = "login";
 const CONTROLLER_LOGOUT = "logout";
 const CONTROLLER_WELCOME = "welcome";
@@ -48,7 +49,7 @@ class App {
 
             case CONTROLLER_LOGIN:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new LoginController(), () => new LoginController());
+                this.isLoggedIn(() => new WelcomeController(), () => new LoginController());
                 break;
 
             case CONTROLLER_LOGOUT:
@@ -63,7 +64,7 @@ class App {
 
             case CONTROLLER_HOME:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new HomeController(), () => new LoginController());
+                this.isAdmin(() => new CaretakerController(), () => this.isLoggedIn(() => new HomeController(), () => new LoginController()));
                 break;
 
             case CONTROLLER_GOALS:
@@ -84,6 +85,11 @@ class App {
             case CONTROLLER_SOCIAL:
                 this.setCurrentController(name);
                 this.isLoggedIn(() => new SocialController(), () => new LoginController());
+                break;
+
+            case CONTROLLER_CARETAKER:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new CaretakerController(), () => new LoginController());
                 break;
 
             case CONTROLLER_UPLOAD:
@@ -136,11 +142,20 @@ class App {
         }
     }
 
+    isAdmin(whenYes, whenNo) {
+        if (sessionManager.get("role") === 1) {
+            whenYes();
+        } else {
+            whenNo();
+        }
+    }
+
     /**
      * Removes username via sessionManager and loads the login screen
      */
     handleLogout() {
         sessionManager.remove("username");
+        sessionManager.remove("role");
 
         //go to login screen
         this.loadController(CONTROLLER_LOGIN);
