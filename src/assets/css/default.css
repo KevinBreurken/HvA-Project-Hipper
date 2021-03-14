@@ -89,6 +89,13 @@ h3 {
     font-size: 20px;
     font-weight: bold;
     position: relative;
+
+    /* disable progress bar transitions */
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
 }
 
 .progress-bar-striped {
@@ -98,7 +105,7 @@ h3 {
 .progress-pin-element {
     color: var(--color-text);
     position: absolute;
-    left: 99%;
+    left: 100%;
     top: -16px;
     width: 4px;
     height: 68px;
@@ -120,7 +127,6 @@ h3 {
     text-align: center;
 }
 
-
 .progress-pin-pam {
     position: absolute;
     left: -24px;
@@ -137,11 +143,11 @@ h3 {
 }
 
 #pin-end-text {
-    left: -60px;
+    left: -56px;
 }
 
 #pin-end-pam {
-    left: -38px;
+    left: -29px;
 }
 
 .bar-color-past {
@@ -177,6 +183,5 @@ h3 {
     float: left;
     width: 32px;
     height: 32px;
-    margin: 2px;
-    margin-right: 12px;
+    margin: 2px 12px 2px 2px;
 }
