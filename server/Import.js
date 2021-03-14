@@ -41,6 +41,7 @@ fs.readFile('./random_generated.json', 'utf-8', (err, data) => {
                         //still need to get turned into binary
                         kwartierScore = data[nummer].epochValues[dag].scores
                         console.log("      kwartier: " + kwartierScores)
+                        kwartierScore = hex2bin(kwartierScore)
 
                         //get pam score
                         pamScore = data[nummer].todayValues[dag].values[0].pam
@@ -62,3 +63,9 @@ fs.readFile('./random_generated.json', 'utf-8', (err, data) => {
 
     }
 })
+
+//converts hexadecimal to binary
+//copied from: https://stackoverflow.com/questions/45053624/convert-hex-to-binary-in-javascript
+function hex2bin(hex){
+    return ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
+}
