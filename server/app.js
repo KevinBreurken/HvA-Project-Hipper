@@ -11,6 +11,7 @@ const cryptoHelper = require("./utils/cryptoHelper");
 const corsConfig = require("./utils/corsConfigHelper");
 const app = express();
 const fileUpload = require("express-fileupload");
+const jsonimport = require("./import.js")
 
 //logger lib  - 'short' is basic logging info
 app.use(morgan("short"));
