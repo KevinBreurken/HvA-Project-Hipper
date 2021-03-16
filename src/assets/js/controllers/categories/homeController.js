@@ -21,5 +21,26 @@ class HomeController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
+
+        const username = sessionManager.get("username");
+
+        //display random greeting sentence
+        const greetingSentence = this.pickRandomGreeting();
+        this.view.find("#welkom-text").html(`${greetingSentence} ${username}`);
+        this.fitText();
+    }
+
+    pickRandomGreeting() {
+        const zinnen = ["Goed je weer te zien", "Goedemiddag", "Hallo"];
+        const randomgetal = Math.floor(Math.random() * zinnen.length);
+        return zinnen[randomgetal];
+    }
+
+    fitText() {
+        const stringLength = this.pickRandomGreeting();
+        if (stringLength > 29) {
+            const element = document.getElementById("welkom-text");
+            element.style.fontSize = "29px";
+        }
     }
 }

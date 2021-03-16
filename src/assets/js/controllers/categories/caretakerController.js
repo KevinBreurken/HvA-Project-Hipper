@@ -12,7 +12,7 @@ class CaretakerController extends CategoryController {
         this.loadView("views/caretaker/home.html");
     }
 
-    //Called when the welcome.html has been loaded
+    //Called when the home.html has been loaded
     setup(data) {
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-default");

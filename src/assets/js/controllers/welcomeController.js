@@ -11,20 +11,32 @@ class WelcomeController {
         $.get("views/welcome.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
+        console.log("kan je me zien")
+
+
     }
 
-    //Called when the welcome.html has been loaded
+    //Called when the home.html has been loaded
     setup(data) {
         //Load the welcome-content into memory
         this.welcomeView = $(data);
 
         //Set the name in the view from the session
-        this.welcomeView.find(".name").html(sessionManager.get("username"));
+        const username = sessionManager.get("username");
+        this.welcomeView.find(".name").html(username);
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.welcomeView);
 
         this.fetchRooms(1256);
+
+        //display random greeting sentence
+        const greetingSentence = this.pickRandomGreeting();
+        this.welcomeView.find("#welkom-text").html(`${greetingSentence} ${username}`);
+        this.fitText();
+
+        console.log(data);
+
     }
 
     /**
@@ -50,4 +62,6 @@ class WelcomeController {
     error() {
         $(".content").html("Failed to load content!");
     }
+
+
 }
