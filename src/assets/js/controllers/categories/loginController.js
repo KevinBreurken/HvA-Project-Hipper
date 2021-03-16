@@ -3,18 +3,25 @@
  *
  * @author Pim Meijer
  */
-class LoginController {
+class LoginController extends CategoryController {
 
     constructor() {
+        super()
         this.userRepository = new UserRepository();
 
         $.get("views/login.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
+
     }
 
     //Called when the login.html has been loaded
     setup(data) {
+        //Set the navigation color to the correct CSS variable.
+        this.updateCurrentCategoryColor("--color-category-login");
+        //Set the navigation to the correct state.
+        nav.setNavigationState(navState.None)
+
         //Load the login-content into memory
         this.loginView = $(data);
 
@@ -36,16 +43,22 @@ class LoginController {
         const username = this.loginView.find("[name='username']").val();
         const password = this.loginView.find("[name='password']").val();
 
-        try{
+        try {
             //await keyword 'stops' code until data is returned - can only be used in async function
             const user = await this.userRepository.login(username, password);
-
             sessionManager.set("username", user.username);
-            app.loadController(CONTROLLER_WELCOME);
+            sessionManager.set("role", user.role);
 
-        } catch(e) {
+            // Based on their role give them a different controller
+            if (user.role === 1) {
+                app.loadController(CONTROLLER_CARETAKER)
+            } else {
+                app.loadController(CONTROLLER_HOME);
+            }
+
+        } catch (e) {
             //if unauthorized error show error to user
-            if(e.code === 401) {
+            if (e.code === 401) {
                 this.loginView
                     .find(".error")
                     .html(e.reason);

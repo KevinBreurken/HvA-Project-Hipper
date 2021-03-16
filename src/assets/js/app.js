@@ -7,21 +7,25 @@
  *
  * @author Lennard Fonteijn & Pim Meijer
  */
-const CONTROLLER_SIDEBAR = "sidebar";
+const CONTROLLER_CARETAKER = "caretaker";
 const CONTROLLER_LOGIN = "login";
 const CONTROLLER_LOGOUT = "logout";
 const CONTROLLER_WELCOME = "welcome";
 const CONTROLLER_UPLOAD = "upload";
 
+const CONTROLLER_HOME = "home";
+const CONTROLLER_GOALS = "goals";
+const CONTROLLER_STATISTICS = "statistics";
+const CONTROLLER_PROFILE = "profile";
+const CONTROLLER_SOCIAL = "social";
+
 const sessionManager = new SessionManager();
 const networkManager = new NetworkManager();
+const nav = new NavbarController();
 
 class App {
 
     init() {
-        //Always load the sidebar
-        this.loadController(CONTROLLER_SIDEBAR);
-
         //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
         this.loadControllerFromUrl(CONTROLLER_WELCOME);
     }
@@ -42,9 +46,6 @@ class App {
         }
 
         switch (name) {
-            case CONTROLLER_SIDEBAR:
-                new NavbarController();
-                break;
 
             case CONTROLLER_LOGIN:
                 this.setCurrentController(name);
@@ -58,7 +59,37 @@ class App {
 
             case CONTROLLER_WELCOME:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new WelcomeController, () => new LoginController());
+                this.isLoggedIn(() => new LoginController, () => new LoginController());
+                break;
+
+            case CONTROLLER_HOME:
+                this.setCurrentController(name);
+                this.isAdmin(() => new CaretakerController(), () => this.isLoggedIn(() => new HomeController(), () => new LoginController()));
+                break;
+
+            case CONTROLLER_GOALS:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new GoalsController(), () => new LoginController());
+                break;
+
+            case CONTROLLER_STATISTICS:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new StatisticsController(), () => new LoginController());
+                break;
+
+            case CONTROLLER_PROFILE:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new ProfileController(), () => new LoginController());
+                break;
+
+            case CONTROLLER_SOCIAL:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new SocialController(), () => new LoginController());
+                break;
+
+            case CONTROLLER_CARETAKER:
+                this.setCurrentController(name);
+                this.isLoggedIn(() => new CaretakerController(), () => new LoginController());
                 break;
 
             case CONTROLLER_UPLOAD:
@@ -68,6 +99,8 @@ class App {
             default:
                 return false;
         }
+        //Send to the navigation what controller is loaded
+        nav.setSelectedCategoryButton(name)
 
         return true;
     }
@@ -109,11 +142,20 @@ class App {
         }
     }
 
+    isAdmin(whenYes, whenNo) {
+        if (sessionManager.get("role") === 1) {
+            whenYes();
+        } else {
+            whenNo();
+        }
+    }
+
     /**
      * Removes username via sessionManager and loads the login screen
      */
     handleLogout() {
         sessionManager.remove("username");
+        sessionManager.remove("role");
 
         //go to login screen
         this.loadController(CONTROLLER_LOGIN);
