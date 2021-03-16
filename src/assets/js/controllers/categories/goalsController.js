@@ -19,9 +19,9 @@ class GoalsController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.view);
-        this.setPreviousProgress(Math.random() * 100);
-        this.setGoalProgress(Math.random() * 100);
-        this.setNowProgress(Math.random() * 100);
+        this.setProgress('#goal-previous', Math.random() * 100, 30, true)
+        this.setProgress('#goal-now', Math.random() * 100, 30, false)
+        this.setProgress('#goal-goal', Math.random() * 100, 30, true)
         window.onresize = function (event) {
             adjustProgressbarOnScreenResize();
         }
@@ -31,18 +31,13 @@ class GoalsController extends CategoryController {
         this.updateCurrentCategoryColor("--color-category-goals");
     }
 
-    setPreviousProgress(percentage) {
-        $('#progress-text-previous').toggle(percentage > 5);
-        $('#goal-previous').css("width", percentage + '%');
-    }
-
-    setNowProgress(percentage) {
-        $('#goal-now').css("width", percentage + '%');
-    }
-
-    setGoalProgress(percentage) {
-        $('#progress-text-goal').toggle(percentage > 5);
-        $('#goal-goal').css("width", percentage + '%');
+    setProgress(element, percentage, displayValue, hideOnLowPercent) {
+        const barElement = $(element);
+        const pinElement = barElement.find('.progress-pin-element');
+        barElement.css("width", percentage + '%');
+        pinElement.find('.pam-value').html(displayValue);
+        if (hideOnLowPercent)
+            barElement.find('.progress-pin-element').toggle(percentage > 5);
     }
 
 }
@@ -51,23 +46,20 @@ class GoalsController extends CategoryController {
  *  Called by onresize to change the labels on the progressbar.
  */
 function adjustProgressbarOnScreenResize() {
-    hideElementIfDistance('progress-text-previous', 'progress-text-now');
-    hideElementIfDistance('progress-text-now', 'progress-text-goal');
-    hideElementIfDistance('progress-text-goal', 'progress-bar-end');
+    hideElementIfDistance('#goal-previous', '#goal-now');
+    hideElementIfDistance('#goal-now', '#goal-goal');
+    hideElementIfDistance('#goal-goal', '#progress-bar-end');
 }
 
 /**
  * Determines when an element needs to be hidden by calculating the difference between two elements.
  */
 function hideElementIfDistance(toHideId, compareId) {
-    const rootTextElement = document.getElementById(toHideId).getElementsByClassName('progress-pin-text')[0];
-    const rootBound = rootTextElement.getBoundingClientRect();
-    const compareBound = document.getElementById(compareId)
-        .getElementsByClassName('progress-pin-text')[0].getBoundingClientRect();
+    const rootTextElement = $(toHideId).find('.progress-pin-text');
+    const compareElement = $(compareId).find('.progress-pin-text');
+    const distance = (compareElement.offset().left - rootTextElement.offset().left);
 
-    const distance = (compareBound.x - rootBound.x)
     $(rootTextElement).css("visibility", distance < 70 ? "hidden" : "visible");
-    $(document.getElementById(toHideId)
-        .getElementsByClassName('pam-label')[0]).css("visibility", distance < 70 ? "hidden" : "visible");
-    $(document.getElementById(toHideId)).css("visibility", distance < 40 ? "hidden" : "visible");
+    $(toHideId).find('.pam-label').css("visibility", distance < 70 ? "hidden" : "visible");
+    $(toHideId).find('.progress-pin-element').css("visibility", distance < 35 ? "hidden" : "visible");
 }
