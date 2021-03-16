@@ -12,8 +12,6 @@ class GoalsController extends CategoryController {
 
     //Called when the login.html has been loaded.
     setup(data) {
-        //Set the navigation color to the correct CSS variable.
-        this.updateCurrentCategoryColor("--color-category-goals");
         //Set the navigation to the correct state.
         nav.setNavigationState(navState.User)
         //Load the login-content into memory.
@@ -21,14 +19,16 @@ class GoalsController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.view);
-        this.setPreviousProgress(0);
-        this.setGoalProgress(0);
-        this.setNowProgress(0);
+        this.setPreviousProgress(Math.random() * 100);
+        this.setGoalProgress(Math.random() * 100);
+        this.setNowProgress(Math.random() * 100);
         window.onresize = function (event) {
             adjustProgressbarOnScreenResize();
         }
 
         adjustProgressbarOnScreenResize();
+        //Set the navigation color to the correct CSS variable.
+        this.updateCurrentCategoryColor("--color-category-goals");
     }
 
     setPreviousProgress(percentage) {
@@ -47,21 +47,27 @@ class GoalsController extends CategoryController {
 
 }
 
+/**
+ *  Called by onresize to change the labels on the progressbar.
+ */
 function adjustProgressbarOnScreenResize() {
-    hideIfDistance('progress-text-previous', 'progress-text-now');
-    hideIfDistance('progress-text-now', 'progress-text-goal');
-    hideIfDistance('progress-text-goal', 'progress-bar-end');
+    hideElementIfDistance('progress-text-previous', 'progress-text-now');
+    hideElementIfDistance('progress-text-now', 'progress-text-goal');
+    hideElementIfDistance('progress-text-goal', 'progress-bar-end');
 }
 
-function hideIfDistance(rootId, compareId) {
-    const rootTextElement = document.getElementById(rootId).getElementsByClassName('progress-pin-text')[0];
+/**
+ * Determines when an element needs to be hidden by calculating the difference between two elements.
+ */
+function hideElementIfDistance(toHideId, compareId) {
+    const rootTextElement = document.getElementById(toHideId).getElementsByClassName('progress-pin-text')[0];
     const rootBound = rootTextElement.getBoundingClientRect();
     const compareBound = document.getElementById(compareId)
         .getElementsByClassName('progress-pin-text')[0].getBoundingClientRect();
 
     const distance = (compareBound.x - rootBound.x)
     $(rootTextElement).css("visibility", distance < 70 ? "hidden" : "visible");
-    $(document.getElementById(rootId)
+    $(document.getElementById(toHideId)
         .getElementsByClassName('pam-label')[0]).css("visibility", distance < 70 ? "hidden" : "visible");
-    $(document.getElementById(rootId)).css("visibility", distance < 40 ? "hidden" : "visible");
+    $(document.getElementById(toHideId)).css("visibility", distance < 40 ? "hidden" : "visible");
 }
