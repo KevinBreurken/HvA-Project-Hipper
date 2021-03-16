@@ -19,9 +19,7 @@ class GoalsController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.view);
-        this.setProgress('#goal-previous', Math.random() * 100, 30, true)
-        this.setProgress('#goal-now', Math.random() * 100, 30, false)
-        this.setProgress('#goal-goal', Math.random() * 100, 30, true)
+        this.exampleProgress();
         window.onresize = function (event) {
             adjustProgressbarOnScreenResize();
         }
@@ -31,15 +29,29 @@ class GoalsController extends CategoryController {
         this.updateCurrentCategoryColor("--color-category-goals");
     }
 
+    exampleProgress(){
+        const totalPAMGoal = Math.round(Math.random() * 1000);
+        const previousDoneProgress = Math.round(Math.random() * totalPAMGoal);
+        const yesterdayDoneProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress))
+        const goalProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress - yesterdayDoneProgress))
+        this.setTotalGoal(totalPAMGoal)
+
+        this.setProgress('#goal-previous', previousDoneProgress/totalPAMGoal * 100, previousDoneProgress, true)
+        this.setProgress('#goal-now', yesterdayDoneProgress/totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress, false)
+        this.setProgress('#goal-goal', goalProgress/totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress + goalProgress, false)
+    }
+
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
         const barElement = $(element);
-        const pinElement = barElement.find('.progress-pin-element');
         barElement.css("width", percentage + '%');
-        pinElement.find('.pam-value').html(displayValue);
+        barElement.find('.pam-value').html(displayValue);
         if (hideOnLowPercent)
             barElement.find('.progress-pin-element').toggle(percentage > 5);
     }
 
+    setTotalGoal(value){
+        $('#progress-bar-end').find('.pam-value').html(value);
+    }
 }
 
 /**
@@ -61,5 +73,5 @@ function hideElementIfDistance(toHideId, compareId) {
 
     $(rootTextElement).css("visibility", distance < 70 ? "hidden" : "visible");
     $(toHideId).find('.pam-label').css("visibility", distance < 70 ? "hidden" : "visible");
-    $(toHideId).find('.progress-pin-element').css("visibility", distance < 35 ? "hidden" : "visible");
+    $(toHideId).find('.progress-pin-element').css("visibility", distance < 40 ? "hidden" : "visible");
 }
