@@ -1,9 +1,9 @@
-
 .wrapper-home .content {
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin: 0 auto;
 }
 
 
@@ -93,7 +93,7 @@
 
 @media all and (max-width: 991px) {
     .cards-row {
-        margin-top: 280px;
+        margin-top: 100px;
     }
 }
 
