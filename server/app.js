@@ -40,12 +40,12 @@ app.post("/user/login", (req, res) => {
     const password = req.body.password;
 
     db.handleQuery(connectionPool, {
-        query: "SELECT username, password FROM user WHERE username = ? AND password = ?",
+        query: "SELECT username, password, `role` FROM user WHERE username = ? AND password = ?",
         values: [username, password]
     }, (data) => {
         if (data.length === 1) {
             //return just the username for now, never send password back!
-            res.status(httpOkCode).json({"username": data[0].username});
+            res.status(httpOkCode).json({"username": data[0].username, "role": data[0].role});
         } else {
             //wrong username
             res.status(authorizationErrCode).json({reason: "Wrong username or password"});
@@ -83,6 +83,11 @@ app.post("/upload", function (req, res) {
         return res.status(httpOkCode).json("OK");
     });
 });
+
+// Routes for caretaker
+const caretakerRoutes = require('./routes/caretaker.js');
+app.use("/caretaker", caretakerRoutes);
+
 //------- END ROUTES -------
 
 module.exports = app;
