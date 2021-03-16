@@ -20,45 +20,34 @@ fs.readFile('./random_generated.json', 'utf-8', (err, data) => {
     for (let nummer = 0; nummer < data.length; nummer++) {
         //get serial numbers
         serieNummer = data[nummer].pamnr
-        console.log("nummer: " + serieNummer)
 
         const connectionPool = query.init();
         query.handleQuery(connectionPool, {
                 query: "SELECT serienummer, datum FROM pam_score WHERE serienummer = ?",
-                values: [0]
+                values: [serieNummer]
             }, (queryData) => {
-                //just give all data back as json
-                //res.status(httpOkCode).json(queryData);
-                console.log(queryData)
-
                 for (let loopDatum = 0; loopDatum < queryData.length; loopDatum++) {
-                    console.log(queryData[loopDatum].datum)
+                    datums.push(JSON.stringify(queryData[loopDatum].datum).substring(1, 11))
                 }
 
                 //loop through dates
                 for (let dag = 0; dag < data[nummer].epochValues.length; dag++) {
-
                     //get datum
                     datum = data[nummer].epochValues[dag].date
-                    console.log("   datum: " + datum)
 
-                    if (datums.indexOf(datum) == -1) {
+                    if (datums.indexOf(datum) === -1) {
                         //get kwartier scores
-                        //still need to get turned into binary
                         kwartierScore = data[nummer].epochValues[dag].scores
-                        console.log("      kwartier: " + kwartierScore)
                         kwartierScore = hex2bin(kwartierScore)
 
                         //get pam score
                         pamScore = data[nummer].todayValues[dag].values[0].pam
-                        console.log("      Pam: " + pamScore)
+
 
                         query.handleQuery(connectionPool, {
                                 query: "INSERT INTO pam_score VALUES (0, ?, ?, ?, ?);",
                                 values: [serieNummer, datum, pamScore, kwartierScore]
                             }, (data) => {
-                                //just give all data back as json
-                                //res.status(httpOkCode).json(data);
                             }, (err) => console.log("400")
                         );
                     }
@@ -72,6 +61,63 @@ fs.readFile('./random_generated.json', 'utf-8', (err, data) => {
 
 //converts hexadecimal to binary
 //copied from: https://stackoverflow.com/questions/45053624/convert-hex-to-binary-in-javascript
-function hex2bin(hex){
-    return ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
+function hex2bin(hex) {
+    hex = hex.replace("0x", "").toLowerCase();
+    var out = "";
+    for (var c of hex) {
+        switch (c) {
+            case '0':
+                out += "0000";
+                break;
+            case '1':
+                out += "0001";
+                break;
+            case '2':
+                out += "0010";
+                break;
+            case '3':
+                out += "0011";
+                break;
+            case '4':
+                out += "0100";
+                break;
+            case '5':
+                out += "0101";
+                break;
+            case '6':
+                out += "0110";
+                break;
+            case '7':
+                out += "0111";
+                break;
+            case '8':
+                out += "1000";
+                break;
+            case '9':
+                out += "1001";
+                break;
+            case 'a':
+                out += "1010";
+                break;
+            case 'b':
+                out += "1011";
+                break;
+            case 'c':
+                out += "1100";
+                break;
+            case 'd':
+                out += "1101";
+                break;
+            case 'e':
+                out += "1110";
+                break;
+            case 'f':
+                out += "1111";
+                break;
+            default:
+                return "";
+        }
+    }
+
+    return out;
 }
