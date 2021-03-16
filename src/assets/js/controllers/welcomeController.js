@@ -11,6 +11,9 @@ class WelcomeController {
         $.get("views/welcome.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
+        console.log("kan je me zien")
+
+
     }
 
     //Called when the welcome.html has been loaded
@@ -19,12 +22,19 @@ class WelcomeController {
         this.welcomeView = $(data);
 
         //Set the name in the view from the session
-        this.welcomeView.find(".name").html(sessionManager.get("username"));
+        const username = sessionManager.get("username");
+        this.welcomeView.find(".name").html(username);
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.welcomeView);
 
         this.fetchRooms(1256);
+
+        //display random greeting sentence
+        const greetingSentence = this.pickRandomGreeting();
+        this.welcomeView.find("#welkom-text").html(`${greetingSentence} ${username}`);
+        this.fitText();
+
     }
 
     /**
@@ -49,5 +59,19 @@ class WelcomeController {
     //Called when the login.html fails to load
     error() {
         $(".content").html("Failed to load content!");
+    }
+
+    pickRandomGreeting() {
+        const zinnen = ["Goed je weer te zien", "Goedemiddag", "Hallo"];
+        const randomgetal = Math.floor(Math.random() * zinnen.length);
+        return zinnen[randomgetal];
+    }
+
+    fitText() {
+        const stringLength = this.pickRandomGreeting();
+        if (stringLength > 29) {
+            const element = document.getElementById("welkom-text");
+            element.style.fontSize = "29px";
+        }
     }
 }
