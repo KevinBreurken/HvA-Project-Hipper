@@ -16,7 +16,7 @@ class WelcomeController {
 
     }
 
-    //Called when the welcome.html has been loaded
+    //Called when the home.html has been loaded
     setup(data) {
         //Load the welcome-content into memory
         this.welcomeView = $(data);
@@ -34,6 +34,8 @@ class WelcomeController {
         const greetingSentence = this.pickRandomGreeting();
         this.welcomeView.find("#welkom-text").html(`${greetingSentence} ${username}`);
         this.fitText();
+
+        console.log(data);
 
     }
 
@@ -61,17 +63,5 @@ class WelcomeController {
         $(".content").html("Failed to load content!");
     }
 
-    pickRandomGreeting() {
-        const zinnen = ["Goed je weer te zien", "Goedemiddag", "Hallo"];
-        const randomgetal = Math.floor(Math.random() * zinnen.length);
-        return zinnen[randomgetal];
-    }
 
-    fitText() {
-        const stringLength = this.pickRandomGreeting();
-        if (stringLength > 29) {
-            const element = document.getElementById("welkom-text");
-            element.style.fontSize = "29px";
-        }
-    }
 }
