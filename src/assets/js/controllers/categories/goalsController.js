@@ -29,16 +29,19 @@ class GoalsController extends CategoryController {
         this.updateCurrentCategoryColor("--color-category-goals");
     }
 
-    exampleProgress(){
+    exampleProgress() {
         const totalPAMGoal = Math.round(Math.random() * 1000);
         const previousDoneProgress = Math.round(Math.random() * totalPAMGoal);
         const yesterdayDoneProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress))
         const goalProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress - yesterdayDoneProgress))
         this.setTotalGoal(totalPAMGoal)
 
-        this.setProgress('#goal-previous', previousDoneProgress/totalPAMGoal * 100, previousDoneProgress, true)
-        this.setProgress('#goal-now', yesterdayDoneProgress/totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress, false)
-        this.setProgress('#goal-goal', goalProgress/totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress + goalProgress, false)
+        $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
+        $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${goalProgress} PAM punten.
+                kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
+        this.setProgress('#goal-previous', previousDoneProgress / totalPAMGoal * 100, previousDoneProgress, true)
+        this.setProgress('#goal-now', yesterdayDoneProgress / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress, true)
+        this.setProgress('#goal-goal', goalProgress / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress + goalProgress, false)
     }
 
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
@@ -49,7 +52,7 @@ class GoalsController extends CategoryController {
             barElement.find('.progress-pin-element').toggle(percentage > 5);
     }
 
-    setTotalGoal(value){
+    setTotalGoal(value) {
         $('#progress-bar-end').find('.pam-value').html(value);
     }
 }
