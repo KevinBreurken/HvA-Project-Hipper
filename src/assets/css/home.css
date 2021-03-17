@@ -81,14 +81,15 @@
 }
 
 
-.cards h2, p {
+.cards h2{
     text-align: center;
     padding: 10px 5px 5px 5px;
 }
 
 .cards p {
+    text-align: center;
     font-size: 20px;
-    padding-top: 20px;
+    padding: 20px 5px 5px;
 }
 
 @media all and (max-width: 991px) {
