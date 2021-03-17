@@ -1,5 +1,6 @@
 /* Cards */
 .statistics-container .card-header {
+    border-radius: 30px 30px 0px 0px;
     background-color: var(--color-category-current);
 }
 
@@ -9,6 +10,7 @@
 
 /* Set fixed width for cards now, make this dynamic later */
 .statistics-container .card {
+    border-radius: 30px 30px 30px 30px;
     width: 350px;
 }
 
