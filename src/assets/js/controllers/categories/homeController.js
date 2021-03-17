@@ -28,6 +28,8 @@ class HomeController extends CategoryController {
         const greetingSentence = this.pickRandomGreeting();
         this.view.find("#welkom-text").html(`${greetingSentence} ${username}`);
         this.fitText();
+
+        $(".cards").click(nav.handleClickMenuItem)
     }
 
     pickRandomGreeting() {
