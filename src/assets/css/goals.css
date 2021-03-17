@@ -1,0 +1,118 @@
+.pad-progress-container {
+    margin-top: 64px;
+    margin-bottom: 64px;
+    background-color: var(--color-category-current);
+    border-radius: 10px;
+}
+
+.progress {
+    height: 40px;
+    border-radius: 4px;
+    overflow: visible;
+}
+
+.progress .progress-bar:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.progress-bar {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+
+    /* disable progress bar transitions */
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+}
+
+.progress-bar-striped {
+    position: relative;
+}
+
+.progress-pin-element {
+    color: var(--color-text);
+    position: absolute;
+    left: 100%;
+    top: -16px;
+    width: 4px;
+    height: 68px;
+    background-color: var(--color-text);
+    z-index: 1;
+    border-radius: 30px;
+
+    text-align: center;
+    font-size: 20px !important;
+    font-weight: bold;
+}
+
+.progress-pin-text {
+    position: relative;
+    left: -50px;
+    width: 100px;
+    height: 100px;
+    top: -32px;
+    text-align: center;
+}
+
+.progress-pin-pam {
+    position: absolute;
+    left: -24px;
+    top: 68px;
+    text-align: center;
+    line-height: 1;
+    width: 50px;
+}
+
+.progress-bar-end {
+    position: relative;
+    margin-left: auto;
+    float: right;
+}
+
+#pin-end-text {
+    left: -56px;
+}
+
+#pin-end-pam {
+    left: -29px;
+}
+
+.bar-color-past {
+    background-color: var(--color-progress-previous);
+}
+
+.bar-color-yesterday {
+    background-color: var(--color-progress-yesterday);
+}
+
+.bar-color-goal {
+    background-color: var(--color-progress-goal);
+}
+
+/* basic positioning */
+.legend {
+    list-style: none;
+    font-size: 20px;
+    padding-inline-start: 8px;
+}
+
+.legend li {
+    margin-right: 10px;
+    padding-bottom: 8px;
+}
+
+.legend li p {
+    margin-bottom: 0
+}
+
+.legend span {
+    border: 1px solid #ccc;
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin: 2px 12px 2px 2px;
+}
