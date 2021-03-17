@@ -13,6 +13,7 @@
 }
 
 #navigation-top {
+    font-family: "Ropa Sans", sans-serif;
     padding-left: 8px;
     border-bottom: 8px solid var(--color-category-current);
 }
@@ -44,6 +45,10 @@
 }
 
 /* --- NAVIGATION BOTTOM --- */
+#navigation-bottom{
+    font-family: "Ropa Sans", sans-serif;
+}
+
 #navigation-bottom .navbar-nav > li {
     padding-left: 32px;
     padding-right: 32px;
