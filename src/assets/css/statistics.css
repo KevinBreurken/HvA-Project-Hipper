@@ -1,0 +1,4 @@
+/* Cards */
+.statistics-container .card-header {
+    background-color: var(--color-category-current);
+}
