@@ -1,0 +1,41 @@
+/* Cards */
+.statistics-container .card-header {
+    background-color: var(--color-category-current);
+}
+
+.statistics-container .card-header h3 {
+    color: white;
+}
+
+/* Set fixed width for cards now, make this dynamic later */
+.statistics-container .card {
+    width: 350px;
+}
+
+/* Remove padding from H3 in the arrow div */
+.arrow-div h2{
+    color: var(--color-category-current);
+    margin-bottom: 0;
+}
+
+.arrow-div i {
+    color: var(--color-category-current);
+}
+
+/* Set backgroud color for stats button */
+.stats-button {
+    color: white;
+    background-color: var(--color-category-current);
+}
+
+.stats-button:hover {
+    color: white;
+    filter: brightness(110%);
+}
+
+/* Add this for responsive cards right now, might change later */
+@media (max-width: 375px) {
+    .statistics-container .card {
+        margin: 0 20px;
+    }
+}
