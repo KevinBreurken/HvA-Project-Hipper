@@ -7,6 +7,11 @@
 /*    font-family: 'Raleway', sans-serif;*/
 /*}*/
 
+.form-control{
+    width: 150%!important;
+}
+
+
 a:hover {
     text-decoration: none;
 }
