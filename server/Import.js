@@ -23,7 +23,7 @@ fs.readFile('./random_generated.json', 'utf-8', (err, data) => {
 
         const connectionPool = query.init();
         query.handleQuery(connectionPool, {
-                query: "SELECT serienummer, datum FROM pam_score WHERE serienummer = ?",
+                query: "SELECT Serialnumber, Date FROM pam_score WHERE Serialnumber = ?",
                 values: [serieNummer]
             }, (queryData) => {
                 for (let loopDatum = 0; loopDatum < queryData.length; loopDatum++) {
