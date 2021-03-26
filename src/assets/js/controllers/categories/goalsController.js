@@ -8,6 +8,7 @@ class GoalsController extends CategoryController {
     constructor() {
         super();
         this.loadView("views/goals.html");
+        this.pamRepository = new PamRepository();
     }
 
     //Called when the login.html has been loaded.
@@ -27,7 +28,19 @@ class GoalsController extends CategoryController {
         adjustProgressbarOnScreenResize();
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-goals");
+
+        // this.retrievePam();
     }
+
+    async retrievePam(){
+        try {
+            //await keyword 'stops' code until data is returned - can only be used in async function
+            const roomData = await this.pamRepository.getPam(2);
+        } catch (e) {
+            console.log("error while fetching rooms", e);
+        }
+    }
+
 
     exampleProgress() {
         const totalPAMGoal = Math.round(Math.random() * 1000);

@@ -54,6 +54,17 @@ app.post("/user/login", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
+app.post("/pam", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `Quarterly_score` from `pam_score` WHERE Rehabilitator_ID = ?",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data)
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
 //dummy data example - rooms
 app.post("/room_example", (req, res) => {
 
@@ -83,10 +94,6 @@ app.post("/upload", function (req, res) {
         return res.status(httpOkCode).json("OK");
     });
 });
-
-// Routes for caretaker
-const caretakerRoutes = require('./routes/caretaker.js');
-app.use("/caretaker", caretakerRoutes);
 
 //------- END ROUTES -------
 
