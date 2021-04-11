@@ -9,24 +9,9 @@ class PamGoalDailyRepository {
         this.route = "/pam/goal/daily"
     }
 
-    async getAll() {
-
-    }
-
-    async delete() {
-
-    }
-
     async getPamDailyGoal(id) {
         return await networkManager
             .doRequest(`${this.route}`, {"id": id}, "POST");
     }
 
-    async register(username, password) {
-
-    }
-
-    async update(id, values = {}) {
-
-    }
 }
