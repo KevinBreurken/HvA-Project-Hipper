@@ -21,12 +21,10 @@ class GoalsController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.view);
-        this.exampleProgress();
         window.onresize = function (event) {
             adjustProgressbarOnScreenResize();
         }
 
-        adjustProgressbarOnScreenResize();
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-goals");
 
@@ -40,8 +38,8 @@ class GoalsController extends CategoryController {
     async retrieveProgressData(){
 
         const dailyPamGoal = await this.retrieveDailyPamGoal();
-
-        console.log(dailyPamGoal);
+        
+        this.setProgressBarData(dailyPamGoal[0]['Pam_goal_daily']);
     }
 
     async retrievePam(){
@@ -62,20 +60,19 @@ class GoalsController extends CategoryController {
         }
     }
 
-
-    exampleProgress() {
+    setProgressBarData(dailyPamGoal){
         const totalPAMGoal = Math.round(Math.random() * 1000);
         const previousDoneProgress = Math.round(Math.random() * totalPAMGoal);
         const yesterdayDoneProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress))
-        const goalProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress - yesterdayDoneProgress))
         this.setTotalGoal(totalPAMGoal)
 
         $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
-        $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${goalProgress} PAM punten.
+        $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${dailyPamGoal} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
         this.setProgress('#goal-previous', previousDoneProgress / totalPAMGoal * 100, previousDoneProgress, true)
         this.setProgress('#goal-now', yesterdayDoneProgress / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress, true)
-        this.setProgress('#goal-goal', goalProgress / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress + goalProgress, false)
+        this.setProgress('#goal-goal', dailyPamGoal / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress + dailyPamGoal, false)
+        adjustProgressbarOnScreenResize();
     }
 
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
