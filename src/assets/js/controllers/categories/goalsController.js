@@ -9,6 +9,7 @@ class GoalsController extends CategoryController {
         super();
         this.loadView("views/goals.html");
         this.pamRepository = new PamRepository();
+        this.pamGoalDailyRepository = new PamGoalDailyRepository();
     }
 
     //Called when the login.html has been loaded.
@@ -29,7 +30,18 @@ class GoalsController extends CategoryController {
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-goals");
 
-        // this.retrievePam();
+        this.retrieveProgressData();
+    }
+
+    /**
+     * Function that calls multiple requests to populate the progress bar.
+     * @returns {Promise<void>}
+     */
+    async retrieveProgressData(){
+
+        const dailyPamGoal = await this.retrieveDailyPamGoal();
+
+        console.log(dailyPamGoal);
     }
 
     async retrievePam(){
@@ -37,7 +49,16 @@ class GoalsController extends CategoryController {
             //await keyword 'stops' code until data is returned - can only be used in async function
             const roomData = await this.pamRepository.getPam(2);
         } catch (e) {
-            console.log("error while fetching rooms", e);
+            console.log("error while fetching pam data.", e);
+        }
+    }
+
+    async retrieveDailyPamGoal(){
+        try {
+            return await this.pamGoalDailyRepository.getPamDailyGoal(0);
+        } catch (e) {
+            console.log("error while fetching daily pam goal.", e);
+            return 0;
         }
     }
 

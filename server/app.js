@@ -65,6 +65,16 @@ app.post("/pam", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
+app.post("/pam/goal/daily", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `Pam_goal_daily` from `rehabilitator` WHERE Rehabilitator_ID = ?",
+        values: [req.body.id]
+    }, (data) => {
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
 //dummy data example - rooms
 app.post("/room_example", (req, res) => {
 
