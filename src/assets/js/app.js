@@ -23,6 +23,8 @@ const sessionManager = new SessionManager();
 const networkManager = new NetworkManager();
 const nav = new NavbarController();
 
+let currentController;
+
 class App {
 
     init() {
@@ -45,11 +47,14 @@ class App {
             controllerData = {};
         }
 
+        if(currentController !== undefined)
+            currentController.remove();
+
         switch (name) {
 
             case CONTROLLER_LOGIN:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new WelcomeController(), () => new LoginController());
+                currentController = this.isLoggedIn(() => new WelcomeController(), () => new LoginController());
                 break;
 
             case CONTROLLER_LOGOUT:
@@ -59,37 +64,38 @@ class App {
 
             case CONTROLLER_WELCOME:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new LoginController, () => new LoginController());
+                currentController = this.isLoggedIn(() => new LoginController, () => new LoginController());
                 break;
 
             case CONTROLLER_HOME:
                 this.setCurrentController(name);
-                this.isAdmin(() => new CaretakerController(), () => this.isLoggedIn(() => new HomeController(), () => new LoginController()));
+                currentController = this.isAdmin(() => new CaretakerController(),
+                    () => this.isLoggedIn(() => new HomeController(), () => new LoginController()));
                 break;
 
             case CONTROLLER_GOALS:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new GoalsController(), () => new LoginController());
+                currentController = this.isLoggedIn(() => new GoalsController(), () => new LoginController());
                 break;
 
             case CONTROLLER_STATISTICS:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new StatisticsController(), () => new LoginController());
+                currentController = this.isLoggedIn(() => new StatisticsController(), () => new LoginController());
                 break;
 
             case CONTROLLER_PROFILE:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new ProfileController(), () => new LoginController());
+                currentController = this.isLoggedIn(() => new ProfileController(), () => new LoginController());
                 break;
 
             case CONTROLLER_SOCIAL:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new SocialController(), () => new LoginController());
+                currentController = this.isLoggedIn(() => new SocialController(), () => new LoginController());
                 break;
 
             case CONTROLLER_CARETAKER:
                 this.setCurrentController(name);
-                this.isLoggedIn(() => new CaretakerController(), () => new LoginController());
+                currentController = this.isLoggedIn(() => new CaretakerController(), () => new LoginController());
                 break;
 
             case CONTROLLER_UPLOAD:
@@ -136,17 +142,17 @@ class App {
      */
     isLoggedIn(whenYes, whenNo) {
         if (sessionManager.get("username")) {
-            whenYes();
+            return whenYes();
         } else {
-            whenNo();
+            return whenNo();
         }
     }
 
     isAdmin(whenYes, whenNo) {
         if (sessionManager.get("role") === 1) {
-            whenYes();
+            return whenYes();
         } else {
-            whenNo();
+            return whenNo();
         }
     }
 
