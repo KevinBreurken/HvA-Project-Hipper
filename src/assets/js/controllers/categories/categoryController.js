@@ -28,6 +28,9 @@ class CategoryController {
     setup(data) {
     }
 
+    remove() {
+    }
+
     //Called when the view failed to load.
     error() {
         $(".content").html(`Failed to load ${this.constructor.name} view!`);

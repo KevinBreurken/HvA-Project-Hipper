@@ -40,6 +40,11 @@ class GoalsController extends CategoryController {
         this.setProgressBarData(dailyPamGoal[0]['Pam_goal_daily']);
     }
 
+    remove() {
+        super.remove();
+        window.onresize = null;
+    }
+
     async retrievePam(){
         try {
             //await keyword 'stops' code until data is returned - can only be used in async function
