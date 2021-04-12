@@ -48,6 +48,7 @@ class LoginController extends CategoryController {
             const user = await this.userRepository.login(username, password);
             sessionManager.set("username", user.username);
             sessionManager.set("role", user.role);
+            sessionManager.set("userID", user.userID)
 
             // Based on their role give them a different controller
             if (user.role === 1) {
