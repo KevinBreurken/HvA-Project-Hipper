@@ -34,10 +34,10 @@ class GoalsController extends CategoryController {
      * Function that calls multiple requests to populate the progress bar.
      * @returns {Promise<void>}
      */
-    async retrieveProgressData(){
+    async retrieveProgressData() {
         const dailyPamGoal = await this.retrieveDailyPamGoal();
-
-        this.setProgressBarData(dailyPamGoal[0]['Pam_goal_daily']);
+        const totalPamGoal = await this.retrieveTotalPamGoal();
+        this.setProgressBarData(totalPamGoal[0]['Pam_goal_total'], dailyPamGoal[0]['Pam_goal_daily']);
     }
 
     remove() {
@@ -45,7 +45,7 @@ class GoalsController extends CategoryController {
         window.onresize = null;
     }
 
-    async retrievePam(){
+    async retrievePam() {
         try {
             //await keyword 'stops' code until data is returned - can only be used in async function
             const roomData = await this.pamRepository.getPam(sessionManager.get("userID"));
@@ -54,7 +54,7 @@ class GoalsController extends CategoryController {
         }
     }
 
-    async retrieveDailyPamGoal(){
+    async retrieveDailyPamGoal() {
         try {
             return await this.rehabilitatorRepository.getPamDailyGoal(sessionManager.get("userID"));
         } catch (e) {
@@ -63,18 +63,26 @@ class GoalsController extends CategoryController {
         }
     }
 
-    setProgressBarData(dailyPamGoal){
-        const totalPAMGoal = Math.round(Math.random() * 1000);
-        const previousDoneProgress = Math.round(Math.random() * totalPAMGoal);
-        const yesterdayDoneProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress))
-        this.setTotalGoal(totalPAMGoal)
+    async retrieveTotalPamGoal() {
+        try {
+            return await this.rehabilitatorRepository.getTotalGoal(sessionManager.get("userID"));
+        } catch (e) {
+            console.log("error while fetching daily pam goal.", e);
+            return 0;
+        }
+    }
+
+    setProgressBarData(totalPamGoal, dailyPamGoal) {
+        const previousDoneProgress = Math.round(Math.random() * totalPamGoal);
+        const yesterdayDoneProgress = Math.round(Math.random() * (totalPamGoal - previousDoneProgress))
+        this.setTotalGoal(totalPamGoal)
 
         $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${dailyPamGoal} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
-        this.setProgress('#goal-previous', previousDoneProgress / totalPAMGoal * 100, previousDoneProgress, true)
-        this.setProgress('#goal-now', yesterdayDoneProgress / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress, true)
-        this.setProgress('#goal-goal', dailyPamGoal / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress + dailyPamGoal, false)
+        this.setProgress('#goal-previous', previousDoneProgress / totalPamGoal * 100, previousDoneProgress, true)
+        this.setProgress('#goal-now', yesterdayDoneProgress / totalPamGoal * 100, previousDoneProgress + yesterdayDoneProgress, true)
+        this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, previousDoneProgress + yesterdayDoneProgress + dailyPamGoal, false)
         adjustProgressbarOnScreenResize();
     }
 

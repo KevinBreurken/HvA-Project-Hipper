@@ -14,4 +14,9 @@ class RehabilitatorRepository {
             .doRequest(`${this.route}/goal/daily`, {"id": id}, "POST");
     }
 
+    async getTotalGoal(id) {
+        return await networkManager
+            .doRequest(`${this.route}/goal/total`, {"id": id}, "POST");
+    }
+
 }
