@@ -54,6 +54,18 @@ app.post("/user/login", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
+app.post("/user", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `Name`,`Birthdate`,`Description`,`Adress`,`Postalcode` from `rehabilitator` WHERE Rehabilitator_ID = ?",
+        values: [req.body.id]
+    }, (data) => {
+        console.log("testie" + data)
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
+//Miguel code
 app.post("/pam", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `Quarterly_score` from `pam_score` WHERE Rehabilitator_ID = ?",
