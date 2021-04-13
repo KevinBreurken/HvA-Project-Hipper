@@ -37,7 +37,9 @@ class GoalsController extends CategoryController {
     async retrieveProgressData() {
         const dailyPamGoal = await this.retrieveDailyPamGoal();
         const totalPamGoal = await this.retrieveTotalPamGoal();
-        this.setProgressBarData(totalPamGoal[0]['Pam_goal_total'], dailyPamGoal[0]['Pam_goal_daily']);
+        const currentlyEarnedPam = await this.retrieveEarnedPam();
+
+        this.setProgressBarData(totalPamGoal,currentlyEarnedPam, dailyPamGoal);
     }
 
     remove() {
@@ -48,15 +50,29 @@ class GoalsController extends CategoryController {
     async retrievePam() {
         try {
             //await keyword 'stops' code until data is returned - can only be used in async function
-            const roomData = await this.pamRepository.getPam(sessionManager.get("userID"));
+            return await this.pamRepository.getPam(sessionManager.get("userID"));
         } catch (e) {
             console.log("error while fetching pam data.", e);
         }
     }
 
+    async retrieveEarnedPam() {
+        const allPam = await this.retrievePam();
+        let totalScore = 0;
+        //Loop through every PAM score.
+        for (let i = 0; i < allPam.length; i++) {
+            //Loop through every digit of PAM score.
+            for (let j = 0; j < allPam[i]['Quarterly_score'].length; j++) {
+                totalScore += parseInt(allPam[i]['Quarterly_score'][j]);
+            }
+        }
+        return totalScore;
+    }
+
     async retrieveDailyPamGoal() {
         try {
-            return await this.rehabilitatorRepository.getPamDailyGoal(sessionManager.get("userID"));
+            const dailyGoal = await this.rehabilitatorRepository.getPamDailyGoal(sessionManager.get("userID"));
+            return dailyGoal[0]['Pam_goal_daily'];
         } catch (e) {
             console.log("error while fetching daily pam goal.", e);
             return 0;
@@ -65,24 +81,24 @@ class GoalsController extends CategoryController {
 
     async retrieveTotalPamGoal() {
         try {
-            return await this.rehabilitatorRepository.getTotalGoal(sessionManager.get("userID"));
+            const totalGoal = await this.rehabilitatorRepository.getTotalGoal(sessionManager.get("userID"));
+            return totalGoal[0]['Pam_goal_total'];
         } catch (e) {
             console.log("error while fetching daily pam goal.", e);
             return 0;
         }
     }
 
-    setProgressBarData(totalPamGoal, dailyPamGoal) {
-        const previousDoneProgress = Math.round(Math.random() * totalPamGoal);
-        const yesterdayDoneProgress = Math.round(Math.random() * (totalPamGoal - previousDoneProgress))
+    setProgressBarData(totalPamGoal,currentlyEarnedPam, dailyPamGoal) {
+        const yesterdayDoneProgress = 20;
         this.setTotalGoal(totalPamGoal)
 
         $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${dailyPamGoal} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
-        this.setProgress('#goal-previous', previousDoneProgress / totalPamGoal * 100, previousDoneProgress, true)
-        this.setProgress('#goal-now', yesterdayDoneProgress / totalPamGoal * 100, previousDoneProgress + yesterdayDoneProgress, true)
-        this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, previousDoneProgress + yesterdayDoneProgress + dailyPamGoal, false)
+        this.setProgress('#goal-previous', 0, 0, true)
+        this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
+        this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
         adjustProgressbarOnScreenResize();
     }
 

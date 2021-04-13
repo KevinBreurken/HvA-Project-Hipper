@@ -56,13 +56,19 @@ app.post("/user/login", (req, res) => {
 
 app.post("/pam", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `Quarterly_score` from `pam_score` WHERE Rehabilitator_ID = ?",
+        query: "SELECT `Rehabilitator_ID` from `rehabilitator` WHERE User_ID = ?",
         values: [req.body.id]
     }, (data) => {
-        console.log(data)
-        res.send(data)
+
+        db.handleQuery(connectionPool, {
+            query: "SELECT `Quarterly_score` from `pam_score` WHERE Rehabilitator_ID = ?",
+            values: [data[0]['Rehabilitator_ID']]
+        }, (data) => {
+            res.send(data)
+        }, (err) => res.status(badRequestCode).json({reason: err}));
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
+
 });
 
 app.post("/rehabilitator/goal/daily", (req, res) => {
