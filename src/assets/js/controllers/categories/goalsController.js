@@ -9,7 +9,7 @@ class GoalsController extends CategoryController {
         super();
         this.loadView("views/goals.html");
         this.pamRepository = new PamRepository();
-        this.pamGoalDailyRepository = new RehabilitatorRepository();
+        this.rehabilitatorRepository = new RehabilitatorRepository();
     }
 
     //Called when the login.html has been loaded.
@@ -56,7 +56,7 @@ class GoalsController extends CategoryController {
 
     async retrieveDailyPamGoal(){
         try {
-            return await this.pamGoalDailyRepository.getPamDailyGoal(sessionManager.get("userID"));
+            return await this.rehabilitatorRepository.getPamDailyGoal(sessionManager.get("userID"));
         } catch (e) {
             console.log("error while fetching daily pam goal.", e);
             return 0;
