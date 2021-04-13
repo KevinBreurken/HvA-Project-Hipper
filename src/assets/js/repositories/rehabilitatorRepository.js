@@ -3,15 +3,15 @@
  * Make sure all functions are using the async keyword when interacting with network!
  *
  */
-class PamGoalDailyRepository {
+class RehabilitatorRepository {
 
     constructor() {
-        this.route = "/pam/goal/daily"
+        this.route = "/rehabilitator"
     }
 
     async getPamDailyGoal(id) {
         return await networkManager
-            .doRequest(`${this.route}`, {"id": id}, "POST");
+            .doRequest(`${this.route}/goal/daily`, {"id": id}, "POST");
     }
 
 }

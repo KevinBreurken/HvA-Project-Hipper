@@ -9,7 +9,7 @@ class GoalsController extends CategoryController {
         super();
         this.loadView("views/goals.html");
         this.pamRepository = new PamRepository();
-        this.pamGoalDailyRepository = new PamGoalDailyRepository();
+        this.pamGoalDailyRepository = new RehabilitatorRepository();
     }
 
     //Called when the login.html has been loaded.
