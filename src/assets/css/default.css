@@ -66,3 +66,52 @@ h3 {
     padding: 16px;
     margin-bottom: 64px;
 }
+
+.btn-primary{
+    background-color: #27AE60;
+    border-radius: 15px;
+    font-weight: bold;
+    width: 50%;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    margin-left: 25%;
+}
+
+.btn-primary:hover{
+    background-color: var(--color-category-current);
+    border-radius: 15px;
+    font-weight: bold;
+    width: 50%;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+input[type=text], input[type=password]{
+    width: 100% !important;
+    text-align: center;
+    border-radius: 15px !important;
+}
+
+.logintext{
+    text-align: center;
+}
+
+#help{
+    text-align: center;
+}
+
+.logininput{
+    margin-top: 5%;
+}
+
+.imagelogo{
+    position: absolute;
+    width: 161px;
+    height: 37px;
+    transform: rotate(-90.36deg);
+    margin-top: -5%;
+}
+
+@media (max-width: 1919px) {
+    .imagelogo{
+        display: none;
+    }
+}
