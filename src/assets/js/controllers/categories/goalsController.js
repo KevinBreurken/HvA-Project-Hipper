@@ -36,8 +36,7 @@ class GoalsController extends CategoryController {
      */
     async retrieveProgressData(){
         const dailyPamGoal = await this.retrieveDailyPamGoal();
-
-        this.setProgressBarData(dailyPamGoal[0]['Pam_goal_daily']);
+        this.setProgressBarData(dailyPamGoal[0]['pam_goal_daily']);
     }
 
     remove() {
