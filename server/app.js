@@ -56,15 +56,14 @@ app.post("/user/login", (req, res) => {
 
 app.post("/pam", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `Rehabilitator_ID` from `rehabilitator` WHERE User_ID = ?",
+        query: "SELECT `id` from `rehabilitator` WHERE user_id = ?",
         values: [req.body.id]
     }, (data) => {
-
         db.handleQuery(connectionPool, {
-            query: "SELECT `Quarterly_score` from `pam_score` WHERE Rehabilitator_ID = ?",
-            values: [data[0]['Rehabilitator_ID']]
-        }, (data) => {
-            res.send(data)
+            query: "SELECT `quarterly_score` from `pam_score` WHERE rehabilitator_id = ?",
+            values: [data[0]['id']]
+        }, (datapam) => {
+            res.send(datapam)
         }, (err) => res.status(badRequestCode).json({reason: err}));
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
@@ -83,7 +82,7 @@ app.post("/rehabilitator/goal/daily", (req, res) => {
 
 app.post("/rehabilitator/goal/total", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `Pam_goal_total` from `rehabilitator` WHERE User_ID = ?",
+        query: "SELECT `pam_goal_total` from `rehabilitator` WHERE user_id = ?",
         values: [req.body.id]
     }, (data) => {
         res.send(data)

@@ -13,21 +13,22 @@ class GoalsController extends CategoryController {
     }
 
     //Called when the login.html has been loaded.
-    setup(data) {
+    async setup(data) {
         //Set the navigation to the correct state.
         nav.setNavigationState(navState.User)
         //Load the login-content into memory.
         this.view = $(data);
-
-        //Empty the content-div and add the resulting view to the page
-        $(".content").empty().append(this.view);
+        $(".content").empty();
         window.onresize = function (event) {
             adjustProgressbarOnScreenResize();
         }
 
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-goals");
-        this.retrieveProgressData();
+        const pamdata = await this.retrieveProgressData();
+        //Empty the content-div and add the resulting view to the page
+        $(".content").append(this.view);
+        this.setProgressBarData(pamdata['total'],pamdata['current'], pamdata['daily']);
     }
 
     /**
@@ -39,7 +40,7 @@ class GoalsController extends CategoryController {
         const totalPamGoal = await this.retrieveTotalPamGoal();
         const currentlyEarnedPam = await this.retrieveEarnedPam();
 
-        this.setProgressBarData(totalPamGoal,currentlyEarnedPam, dailyPamGoal);
+        return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal};
     }
 
     remove() {
@@ -62,8 +63,8 @@ class GoalsController extends CategoryController {
         //Loop through every PAM score.
         for (let i = 0; i < allPam.length; i++) {
             //Loop through every digit of PAM score.
-            for (let j = 0; j < allPam[i]['Quarterly_score'].length; j++) {
-                totalScore += parseInt(allPam[i]['Quarterly_score'][j]);
+            for (let j = 0; j < allPam[i]['quarterly_score'].length; j++) {
+                totalScore += parseInt(allPam[i]['quarterly_score'][j]);
             }
         }
         return totalScore;
@@ -72,7 +73,7 @@ class GoalsController extends CategoryController {
     async retrieveDailyPamGoal() {
         try {
             const dailyGoal = await this.rehabilitatorRepository.getPamDailyGoal(sessionManager.get("userID"));
-            return dailyGoal[0]['Pam_goal_daily'];
+            return dailyGoal[0]['pam_goal_daily'];
         } catch (e) {
             console.log("error while fetching daily pam goal.", e);
             return 0;
@@ -82,7 +83,7 @@ class GoalsController extends CategoryController {
     async retrieveTotalPamGoal() {
         try {
             const totalGoal = await this.rehabilitatorRepository.getTotalGoal(sessionManager.get("userID"));
-            return totalGoal[0]['Pam_goal_total'];
+            return totalGoal[0]['pam_goal_total'];
         } catch (e) {
             console.log("error while fetching daily pam goal.", e);
             return 0;
