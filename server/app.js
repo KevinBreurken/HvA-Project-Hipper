@@ -40,12 +40,12 @@ app.post("/user/login", (req, res) => {
     const password = req.body.password;
 
     db.handleQuery(connectionPool, {
-        query: "SELECT `username`, `password`, `user_ID`, `role` FROM user WHERE username = ? AND password = ?",
+        query: "SELECT `username`, `password`, `id`, `role` FROM user WHERE username = ? AND password = ?",
         values: [username, password]
     }, (data) => {
         if (data.length === 1) {
             //return just the username for now, never send password back!
-            res.status(httpOkCode).json({"username": data[0].username, "role": data[0].role, "userID": data[0].user_ID});
+            res.status(httpOkCode).json({"username": data[0].username, "role": data[0].role, "userID": data[0].id});
         } else {
             //wrong username
             res.status(authorizationErrCode).json({reason: "Wrong username or password"});
@@ -73,7 +73,7 @@ app.post("/pam", (req, res) => {
 
 app.post("/rehabilitator/goal/daily", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `Pam_goal_daily` from `rehabilitator` WHERE User_ID = ?",
+        query: "SELECT `pam_goal_daily` from `rehabilitator` WHERE user_id = ?",
         values: [req.body.id]
     }, (data) => {
         res.send(data)
