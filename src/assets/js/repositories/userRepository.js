@@ -37,4 +37,9 @@ class UserRepository {
     async update(id, values = {}) {
 
     }
+
+    async getUserInfo(id) {
+        return await networkManager
+            .doRequest(`${this.route}`, {"id": id}, "POST");
+    }
 }

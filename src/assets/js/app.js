@@ -162,7 +162,7 @@ class App {
     handleLogout() {
         sessionManager.remove("username");
         sessionManager.remove("role");
-        sessionManager.remove("userID");
+        sessionManager.remove("id");
 
         //go to login screen
         this.loadController(CONTROLLER_LOGIN);

@@ -40,12 +40,14 @@ app.post("/user/login", (req, res) => {
     const password = req.body.password;
 
     db.handleQuery(connectionPool, {
-        query: "SELECT `username`, `password`, `user_ID`, `role` FROM user WHERE username = ? AND password = ?",
+        query: "SELECT username, password, id, `role` FROM user WHERE username = ? AND password = ?",
         values: [username, password]
     }, (data) => {
         if (data.length === 1) {
             //return just the username for now, never send password back!
-            res.status(httpOkCode).json({"username": data[0].username, "role": data[0].role, "userID": data[0].user_ID});
+            console.log(data);
+            res.status(httpOkCode).json({"username": data[0].username, "role": data[0].role, "userID": data[0].id});
+
         } else {
             //wrong username
             res.status(authorizationErrCode).json({reason: "Wrong username or password"});
@@ -56,16 +58,16 @@ app.post("/user/login", (req, res) => {
 
 app.post("/user", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `Name`,`Birthdate`,`Description`,`Adress`,`Postalcode` from `rehabilitator` WHERE Rehabilitator_ID = ?",
+        query: "SELECT `Name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype` from `rehabilitator` WHERE user_ID = ?",
         values: [req.body.id]
     }, (data) => {
-        console.log("testie" + data)
+        console.log(data)
         res.send(data)
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
-//Miguel code
+
 app.post("/pam", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `Quarterly_score` from `pam_score` WHERE Rehabilitator_ID = ?",
