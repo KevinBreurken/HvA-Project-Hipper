@@ -36,12 +36,11 @@ class GoalsController extends CategoryController {
         const goalProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress - yesterdayDoneProgress))
         this.setTotalGoal(totalPAMGoal)
 
-        $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
-        $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${goalProgress} PAM punten.
-                kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
         this.setProgress('#goal-previous', previousDoneProgress / totalPAMGoal * 100, previousDoneProgress, true)
         this.setProgress('#goal-now', yesterdayDoneProgress / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress, true)
         this.setProgress('#goal-goal', goalProgress / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress + goalProgress, false)
+
+        motivationalController.fillMotivationalContent(totalPAMGoal, yesterdayDoneProgress);
     }
 
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
