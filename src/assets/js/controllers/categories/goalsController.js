@@ -28,6 +28,7 @@ class GoalsController extends CategoryController {
         const pamdata = await this.retrieveProgressData();
         //Empty the content-div and add the resulting view to the page
         $(".content").append(this.view);
+        this.loadActivities();
         this.setProgressBarData(pamdata['total'],pamdata['current'], pamdata['daily']);
     }
 
@@ -107,6 +108,14 @@ class GoalsController extends CategoryController {
     setProgressBarData(totalPamGoal,currentlyEarnedPam, dailyPamGoal) {
         const yesterdayDoneProgress = 20;
         this.setTotalGoal(totalPamGoal)
+
+        $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
+        $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${dailyPamGoal} PAM punten.
+                kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
+        this.setProgress('#goal-previous', 0, 0, true)
+        this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
+        this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
+        adjustProgressbarOnScreenResize();
     }
     
     generateActivityCard(cardData) {
@@ -123,21 +132,6 @@ class GoalsController extends CategoryController {
                 ${pamText}
             </div>
         </div>`;
-    }
-
-    setProgressBarData(dailyPamGoal) {
-        const totalPAMGoal = Math.round(Math.random() * 1000);
-        const previousDoneProgress = Math.round(Math.random() * totalPAMGoal);
-        const yesterdayDoneProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress))
-        this.setTotalGoal(totalPAMGoal)
-
-        $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
-        $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${dailyPamGoal} PAM punten.
-                kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
-        this.setProgress('#goal-previous', 0, 0, true)
-        this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
-        this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
-        adjustProgressbarOnScreenResize();
     }
 
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
