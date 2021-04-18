@@ -19,4 +19,8 @@ class RehabilitatorRepository {
             .doRequest(`${this.route}/goal/total`, {"id": id}, "POST");
     }
 
+    async getPamActivities(id){
+        return await networkManager
+            .doRequest(`${this.route}/activities`, {"id": id}, "POST");
+    }
 }

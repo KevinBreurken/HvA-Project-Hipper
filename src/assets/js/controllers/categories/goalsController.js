@@ -80,6 +80,20 @@ class GoalsController extends CategoryController {
         }
     }
 
+    async loadActivities() {
+        try {
+            const activities = await this.rehabilitatorRepository.getPamActivities(sessionManager.get("userID"));
+            const activityContainer = $('#activity-container');
+            activityContainer.empty();
+            for (let i = 0; i < activities.length; i++) {
+                activityContainer.append(this.generateActivityCard(activities[i]));
+            }
+
+        } catch (e) {
+            console.log("error while fetching activities.", e);
+        }
+    }
+    
     async retrieveTotalPamGoal() {
         try {
             const totalGoal = await this.rehabilitatorRepository.getTotalGoal(sessionManager.get("userID"));
@@ -93,6 +107,29 @@ class GoalsController extends CategoryController {
     setProgressBarData(totalPamGoal,currentlyEarnedPam, dailyPamGoal) {
         const yesterdayDoneProgress = 20;
         this.setTotalGoal(totalPamGoal)
+    }
+    
+    generateActivityCard(cardData) {
+        const pamText = cardData['earnable_pam'] === null ? "" : `<p class="goal-card-subheader">${cardData['earnable_pam']} verwachten PAM punten</p>`;
+        return `
+        <div class="goal-card-container mx-auto">
+            <h5 class="goal-card-header">${cardData['header']}</h5>
+            <div class="goal-card-content">
+                <div class="mx-auto">
+                    <img src="./assets/img/goal-activities/map.svg" alt="website logo" width="45%" class="mx-auto d-block">
+                </div>
+                <p class="goal-card-subheader">${cardData['subheader']}</p>
+                <p>${cardData['content']}</p>
+                ${pamText}
+            </div>
+        </div>`;
+    }
+
+    setProgressBarData(dailyPamGoal) {
+        const totalPAMGoal = Math.round(Math.random() * 1000);
+        const previousDoneProgress = Math.round(Math.random() * totalPAMGoal);
+        const yesterdayDoneProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress))
+        this.setTotalGoal(totalPAMGoal)
 
         $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${dailyPamGoal} PAM punten.
@@ -114,6 +151,7 @@ class GoalsController extends CategoryController {
     setTotalGoal(value) {
         $('#progress-bar-end').find('.pam-value').html(value);
     }
+
 }
 
 /**
