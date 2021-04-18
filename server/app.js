@@ -89,6 +89,15 @@ app.post("/room_example", (req, res) => {
 
 });
 
+app.post("/caretaker/all", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `r`.* FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ?",
+        values: [req.body.userID]
+    }, (data) => {
+        res.status(httpOkCode).json(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}))
+})
+
 app.post("/upload", function (req, res) {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(badRequestCode).json({ reason: "No files were uploaded." });
