@@ -29,13 +29,16 @@ class GoalsController extends CategoryController {
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-goals");
 
-        // this.retrievePam();
+        this.retrievePam().then((event) => {
+            console.log(event);
+        });
     }
 
-    async retrievePam(){
+    async retrievePam(id){
         try {
             //await keyword 'stops' code until data is returned - can only be used in async function
-            const roomData = await this.pamRepository.getPam(2);
+            const pamData = await this.pamRepository.getPam(id);
+            return pamData;
         } catch (e) {
             console.log("error while fetching rooms", e);
         }
