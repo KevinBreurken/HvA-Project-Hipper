@@ -6,6 +6,8 @@
 let statsChart;
 let momentArray = [];
 let weekData = [0,0,0,0,0,0,0];
+let pamDates;
+
 class StatisticsController extends CategoryController {
     constructor() {
         super();
@@ -28,6 +30,10 @@ class StatisticsController extends CategoryController {
         // this.pamRepository.getPam(sessionManager.get(""))
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
+
+        this.getPamDates().then((e) => {
+            pamDates = e;
+        });
 
         //When clicked the advance stats button, show stats
         $(document).on("click", ".advanced-stats", () => this.changeScreen(true));
@@ -55,6 +61,13 @@ class StatisticsController extends CategoryController {
     }
 
     /**
+     * Get pam dates
+     * @returns {Promise<void>}
+     */
+    async getPamDates() {
+        return await this.userRepository.getAll(sessionManager.get("id"));
+    }
+    /**
      * Update the stats chart
      */
     updateChart() {
@@ -71,7 +84,6 @@ class StatisticsController extends CategoryController {
                 weekData[dateIso - 1] = moment.pam_score;
             }
         })
-        console.log(weekData);
         statsChart.data.datasets[0].data = weekData;
         statsChart.update();
     }
@@ -81,8 +93,10 @@ class StatisticsController extends CategoryController {
      * @returns {Promise<void>}
      */
     async makeStats() {
-        // Get the pamscores.
-        let pamDates = await this.userRepository.getAll(sessionManager.get("id"));
+        // Destroy the chart first if exists NOT DONE RICK
+        if (statsChart) {
+            statsChart.destroy();
+        }
 
         // Convert dates into moment objects
         momentArray = pamDates.map((number) => {
