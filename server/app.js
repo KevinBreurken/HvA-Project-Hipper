@@ -75,6 +75,22 @@ app.post("/rehabilitator/goal/daily", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
+app.post("/rehabilitator/activities", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `id` from `rehabilitator` WHERE user_id = ?",
+        values: [req.body.id]
+    }, (data) => {
+        db.handleQuery(connectionPool, {
+            query: "SELECT * from `pam_activity` WHERE rehabilitator_id = ?",
+            values: [data[0]['id']]
+        }, (activityData) => {
+            res.send(activityData)
+        }, (err) => res.status(badRequestCode).json({reason: err}));
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+
+});
+
 //dummy data example - rooms
 app.post("/room_example", (req, res) => {
 
