@@ -13,7 +13,7 @@ class GoalsController extends CategoryController {
     }
 
     //Called when the login.html has been loaded.
-    setup(data) {
+    async setup(data) {
         //Set the navigation to the correct state.
         nav.setNavigationState(navState.User)
         //Load the login-content into memory.
@@ -28,13 +28,14 @@ class GoalsController extends CategoryController {
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-goals");
         this.retrieveProgressData();
+        this.loadActivities();
     }
 
     /**
      * Function that calls multiple requests to populate the progress bar.
      * @returns {Promise<void>}
      */
-    async retrieveProgressData(){
+    async retrieveProgressData() {
         const dailyPamGoal = await this.retrieveDailyPamGoal();
         this.setProgressBarData(dailyPamGoal[0]['pam_goal_daily']);
     }
@@ -44,7 +45,7 @@ class GoalsController extends CategoryController {
         window.onresize = null;
     }
 
-    async retrievePam(){
+    async retrievePam() {
         try {
             //await keyword 'stops' code until data is returned - can only be used in async function
             const roomData = await this.pamRepository.getPam(sessionManager.get("userID"));
@@ -53,7 +54,7 @@ class GoalsController extends CategoryController {
         }
     }
 
-    async retrieveDailyPamGoal(){
+    async retrieveDailyPamGoal() {
         try {
             return await this.rehabilitatorRepository.getPamDailyGoal(sessionManager.get("userID"));
         } catch (e) {
@@ -62,7 +63,38 @@ class GoalsController extends CategoryController {
         }
     }
 
-    setProgressBarData(dailyPamGoal){
+    async loadActivities() {
+        try {
+            const activities = await this.rehabilitatorRepository.getPamActivities(sessionManager.get("userID"));
+            const activityContainer = $('#activity-container');
+            activityContainer.empty();
+            for (let i = 0; i < activities.length; i++) {
+                activityContainer.append(this.generateActivityCard(activities[i]));
+            }
+
+        } catch (e) {
+            console.log("error while fetching activities.", e);
+            return 0;
+        }
+    }
+
+    generateActivityCard(cardData) {
+        const pamText = cardData['earnable_pam'] === null ? "" : `<p class="goal-card-subheader">${cardData['earnable_pam']} verwachten PAM punten</p>`;
+        return `
+        <div class="goal-card-container mx-auto">
+            <h5 class="goal-card-header">${cardData['header']}</h5>
+            <div class="goal-card-content">
+                <div class="mx-auto">
+                    <img src="./assets/img/goal-activities/map.svg" alt="website logo" width="45%" class="mx-auto d-block">
+                </div>
+                <p class="goal-card-subheader">${cardData['subheader']}</p>
+                <p>${cardData['content']}</p>
+                ${pamText}
+            </div>
+        </div>`;
+    }
+
+    setProgressBarData(dailyPamGoal) {
         const totalPAMGoal = Math.round(Math.random() * 1000);
         const previousDoneProgress = Math.round(Math.random() * totalPAMGoal);
         const yesterdayDoneProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress))
@@ -88,6 +120,7 @@ class GoalsController extends CategoryController {
     setTotalGoal(value) {
         $('#progress-bar-end').find('.pam-value').html(value);
     }
+
 }
 
 /**
