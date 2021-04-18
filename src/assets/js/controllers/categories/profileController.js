@@ -23,34 +23,66 @@ class ProfileController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
-        this.retrieveUserInfo();
+        this.retrieveRehabilitatorInfo();
+        this.retrieveCaretakerInfo();
 
     }
 
-    async retrieveUserInfo() {
+    async retrieveRehabilitatorInfo() {
         try {
-            const currentID = sessionManager.get("userID");
-            const roomData = await this.userRepository.getUserInfo(currentID);
+            const currentLoggedID = sessionManager.get("userID");
+            const roomData = await this.userRepository.getUserInfo(currentLoggedID);
             //convert birthdate to string
             var birthdate = roomData[0].Birthdate
             var birthdateString = birthdate.toString();
             var age = this.getAge(birthdateString)
 
             console.log(roomData)
-            document.getElementById("name").innerText = roomData[0].Name
-            document.getElementById("age").innerText = age
-            document.getElementById("adress").innerText = roomData[0].Adress
-            document.getElementById("bloodtype").innerText = roomData[0].Bloodtype
-            document.getElementById("description").innerText = roomData[0].Description
-            document.getElementById("postalcode").innerText = roomData[0].Postalcode
-            //profile pic
-            document.getElementById("profile_pic").src = `assets/img/rehabilitator/${currentID}_profile_pic.png`;
+            document.querySelectorAll(".name_rehabilitator").forEach((element) => {
+               element.innerText = roomData[0].Name
+            })
+            document.querySelector(".age_rehabilitator").innerText = age
+            document.querySelector(".adress_rehabilitator").innerText = roomData[0].Adress
+            document.querySelector(".bloodtype_rehabilitator").innerText = roomData[0].Bloodtype
+            document.querySelector(".description_rehabilitator").innerText = roomData[0].Description
+            document.querySelector(".postalcode_rehabilitator").innerText = roomData[0].Postalcode
+            // //profile pic
+            document.querySelector(".profile_pic_rehabilitator").src = `assets/img/rehabilitator/${currentLoggedID}_profile_pic.png`;
+
 
         } catch (e) {
             console.log("error while fetching rooms", e);
         }
 
     }
+
+    async retrieveCaretakerInfo() {
+        try {
+            const currentLoggedID = sessionManager.get("userID");
+            const roomData = await this.userRepository.getCaretakerInfo(currentLoggedID);
+            console.log(roomData)
+            const caretakerID = roomData[0].caretaker_id;
+            const fullname = roomData[0].first_name + " " +  roomData[0].last_name
+
+            document.querySelectorAll(".name_caretaker").forEach((element) => {
+                element.innerText = fullname
+            })
+            document.querySelector(".phone_caretaker").innerText = roomData[0].phone
+            document.querySelector(".email_caretaker").innerText = roomData[0].email
+            document.querySelector(".experience1_caretaker").innerText = roomData[0].experience_field1
+            document.querySelector(".experience2_caretaker").innerText = roomData[0].experience_field2
+            document.querySelector(".experience3_caretaker").innerText = roomData[0].experience_field3
+            document.querySelector(".description_caretaker").innerText = roomData[0].description
+            //profile pic
+            document.querySelector(".profile_pic_caretaker").src = `assets/img/caretaker/${caretakerID}_profile_pic.png`;
+
+        } catch (e) {
+            console.log("error while fetching rooms", e);
+        }
+
+    }
+
+
 
     getAge(dateString) {
         var today = new Date();

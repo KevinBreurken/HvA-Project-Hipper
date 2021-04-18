@@ -55,10 +55,21 @@ app.post("/user/login", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
-
-app.post("/user", (req, res) => {
+//retrieve rehabilitator info
+app.post("/user/rehabilitator", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `Name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype` from `rehabilitator` WHERE user_ID = ?",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data)
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+//retrieve caretaker info
+app.post("/user/caretaker", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `caretaker_id`,`first_name`,`last_name`,`email`,`phone`, `description`, `experience_field1`,`experience_field2`, `experience_field3` from `caretaker` WHERE user_ID = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data)
@@ -105,14 +116,14 @@ app.post("/room_example", (req, res) => {
 
 app.post("/upload", function (req, res) {
     if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(badRequestCode).json({ reason: "No files were uploaded." });
+        return res.status(badRequestCode).json({reason: "No files were uploaded."});
     }
 
     let sampleFile = req.files.sampleFile;
 
     sampleFile.mv(wwwrootPath + "/uploads/test.jpg", function (err) {
         if (err) {
-            return res.status(badRequestCode).json({ reason: err });
+            return res.status(badRequestCode).json({reason: err});
         }
 
         return res.status(httpOkCode).json("OK");

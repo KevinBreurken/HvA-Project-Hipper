@@ -40,6 +40,12 @@ class UserRepository {
 
     async getUserInfo(id) {
         return await networkManager
-            .doRequest(`${this.route}`, {"id": id}, "POST");
+            .doRequest(`${this.route}/rehabilitator`, {"id": id}, "POST");
     }
+
+    async getCaretakerInfo(id) {
+        return await networkManager
+            .doRequest(`${this.route}/caretaker`, {"id": id}, "POST");
+    }
+
 }
