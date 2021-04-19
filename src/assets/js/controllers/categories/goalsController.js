@@ -35,7 +35,8 @@ class GoalsController extends CategoryController {
         $(".content").append(this.view);
         this.loadActivities();
         this.setProgressBarData(pamdata['total'],pamdata['current'], pamdata['daily']);
-        this.fillMotivationalContent(pamdata.total, pamdata.current);
+        this.fillMotivationalContent(pamdata['total'], pamdata['current']);
+        $("#pam-goal-today").html(`PAM Doel voor vandaag: ${pamdata['daily']} punten`);
     }
 
     /**
