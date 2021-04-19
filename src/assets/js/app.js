@@ -101,7 +101,8 @@ class App {
 
             case CONTROLLER_PATIENTS:
                 this.setCurrentController(name);
-                currentController = this.isLoggedIn(() => new PatientsController(),() => new LoginController());
+                currentController = this.isAdmin(() => new PatientsController(),
+                    () => this.isLoggedIn(() => new HomeController(), () => new LoginController()));
                 break;
 
             case CONTROLLER_UPLOAD:

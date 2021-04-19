@@ -9,7 +9,6 @@ class CaretakerController extends CategoryController {
     constructor() {
         super();
         this.loadView("views/caretaker/home.html");
-        this.caretakerRepository = new CaretakerRepository();
     }
 
     //Called when the home.html has been loaded
@@ -26,15 +25,5 @@ class CaretakerController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.caretakerView);
-
-        this.caretakerRepository.getAllRehab(sessionManager.get("userID")).then(data => {
-            this.createPatients(data)
-        });
-
     }
-
-    createPatients(patients) {
-        console.log(patients);
-    }
-
 }
