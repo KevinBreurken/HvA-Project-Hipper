@@ -39,6 +39,11 @@ h3 {
     margin-top: 32px;
 }
 
+.category-container {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+}
+
 /* Pad Container */
 .pad-container-header {
     background-color: var(--color-category-current);
