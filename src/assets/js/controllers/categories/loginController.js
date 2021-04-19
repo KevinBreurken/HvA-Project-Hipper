@@ -49,7 +49,8 @@ class LoginController extends CategoryController {
 
             sessionManager.set("username", user.username);
             sessionManager.set("role", user.role);
-            sessionManager.set("id", user.id);
+            sessionManager.set("userID", user.userID);
+
 
             // Based on their role give them a different controller
             if (user.role === 1) {

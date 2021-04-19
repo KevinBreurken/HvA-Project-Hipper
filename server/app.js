@@ -40,12 +40,12 @@ app.post("/user/login", (req, res) => {
     const password = req.body.password;
 
     db.handleQuery(connectionPool, {
-        query: "SELECT username, password, `role`, `id` FROM user WHERE username = ? AND password = ?",
+        query: "SELECT `username`, `password`, `id`, `role` FROM user WHERE username = ? AND password = ?",
         values: [username, password]
     }, (data) => {
         if (data.length === 1) {
             //return just the username for now, never send password back!
-            res.status(httpOkCode).json({"username": data[0].username, "role": data[0].role, "id": data[0].id});
+            res.status(httpOkCode).json({"username": data[0].username, "role": data[0].role, "userID": data[0].id});
         } else {
             //wrong username
             res.status(authorizationErrCode).json({reason: "Wrong username or password"});
@@ -53,13 +53,76 @@ app.post("/user/login", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
-
-app.post("/pam", (req, res) => {
+//retrieve rehabilitator info
+app.post("/user/rehabilitator", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `Quarterly_score` from `pam_score` WHERE Rehabilitator_ID = ?",
+        query: "SELECT `Name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype` from `rehabilitator` WHERE user_ID = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data)
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+//retrieve caretaker info
+app.post("/user/caretaker", (req, res) => {
+    console.log(req.body.id)
+    db.handleQuery(connectionPool, {
+        query: "SELECT caretaker.caretaker_id, caretaker.first_name, caretaker.last_name, caretaker.email, caretaker.phone, caretaker.description, caretaker.experience_field1, caretaker.experience_field2, caretaker.experience_field3 FROM caretaker INNER JOIN rehabilitator ON rehabilitator.caretaker_id = caretaker.caretaker_id WHERE rehabilitator.user_id = ?",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data)
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
+app.post("/pam", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `id` from `rehabilitator` WHERE user_id = ?",
+        values: [req.body.id]
+    }, (data) => {
+        db.handleQuery(connectionPool, {
+            query: "SELECT `quarterly_score` from `pam_score` WHERE rehabilitator_id = ?",
+            values: [data[0]['id']]
+        }, (datapam) => {
+            res.send(datapam)
+        }, (err) => res.status(badRequestCode).json({reason: err}));
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+
+});
+
+app.post("/rehabilitator/goal/daily", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `pam_goal_daily` from `rehabilitator` WHERE user_id = ?",
+        values: [req.body.id]
+    }, (data) => {
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
+app.post("/rehabilitator/activities", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `id` from `rehabilitator` WHERE user_id = ?",
+        values: [req.body.id]
+    }, (data) => {
+        db.handleQuery(connectionPool, {
+            query: "SELECT * from `pam_activity` WHERE rehabilitator_id = ?",
+            values: [data[0]['id']]
+        }, (activityData) => {
+            res.send(activityData)
+        }, (err) => res.status(badRequestCode).json({reason: err}));
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
+app.post("/rehabilitator/goal/total", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `pam_goal_total` from `rehabilitator` WHERE user_id = ?",
+        values: [req.body.id]
+    }, (data) => {
         res.send(data)
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
@@ -92,14 +155,14 @@ app.post("/room_example", (req, res) => {
 
 app.post("/upload", function (req, res) {
     if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(badRequestCode).json({ reason: "No files were uploaded." });
+        return res.status(badRequestCode).json({reason: "No files were uploaded."});
     }
 
     let sampleFile = req.files.sampleFile;
 
     sampleFile.mv(wwwrootPath + "/uploads/test.jpg", function (err) {
         if (err) {
-            return res.status(badRequestCode).json({ reason: err });
+            return res.status(badRequestCode).json({reason: err});
         }
 
         return res.status(httpOkCode).json("OK");

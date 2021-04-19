@@ -65,7 +65,7 @@ class StatisticsController extends CategoryController {
      * @returns {Promise<void>}
      */
     async getPamDates() {
-        return await this.userRepository.getAll(sessionManager.get("id"));
+        return await this.userRepository.getAll(sessionManager.get("userID"));
     }
     /**
      * Update the stats chart
