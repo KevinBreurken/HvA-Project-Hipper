@@ -90,6 +90,18 @@ app.post("/rehabilitator/activities", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 
 });
+app.post("/social", (req, res) => {
+
+    db.handleQuery(connectionPool, {
+            query: "SELECT * FROM `social_message` WHERE id = ?",
+            values: [req.body.userID]
+        }, (data) => {
+            //just give all data back as json
+            res.status(httpOkCode).json(data);
+        }, (err) => res.status(badRequestCode).json({reason: err})
+    );
+
+});
 
 //dummy data example - rooms
 app.post("/room_example", (req, res) => {

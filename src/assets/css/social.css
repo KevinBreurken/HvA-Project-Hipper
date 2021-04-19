@@ -68,14 +68,16 @@ a:hover {
     text-align: center;
     background-color: var(--color-category-current);
     color: #ffffff;
-    font-size: 0.9rem;
+    font-size: 20px;
+    font-weight: bold;
     text-transform: none;
     transition: background-color .8s;
-    border-radius: 25px;
+    border-radius: 0;
 }
 
 .btn-submit:hover {
     background-color: #8f4559;
+    color: #ffffff;
     -webkit-transition: background-color .8s;
     -moz-transition: background-color .8s;
     -o-transition: background-color .8s;
