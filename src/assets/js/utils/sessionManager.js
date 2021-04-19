@@ -24,6 +24,10 @@ class SessionManager {
         return this.session[key];
     }
 
+    getAll() {
+        return this.session;
+    }
+
      set(key, value) {
         this.session[key] = value;
 

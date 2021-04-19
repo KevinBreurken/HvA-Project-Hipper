@@ -46,6 +46,7 @@ class LoginController extends CategoryController {
         try {
             //await keyword 'stops' code until data is returned - can only be used in async function
             const user = await this.userRepository.login(username, password);
+
             sessionManager.set("username", user.username);
             sessionManager.set("role", user.role);
             sessionManager.set("userID", user.userID);

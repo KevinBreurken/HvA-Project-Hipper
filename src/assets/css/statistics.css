@@ -35,6 +35,7 @@
     filter: brightness(110%);
 }
 
+/*Chart some margin bottom*/
 /* Add this for responsive cards right now, might change later */
 @media (max-width: 375px) {
     .statistics-container .card {

@@ -10,8 +10,9 @@ class UserRepository {
         this.route = "/user"
     }
 
-    async getAll() {
-
+    async getAll(id) {
+        return await networkManager
+            .doRequest(`${this.route}/data`, {"id": id}, "POST");
     }
 
     /**

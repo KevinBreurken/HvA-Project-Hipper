@@ -7,6 +7,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const db = require("./utils/databaseHelper");
+const charts = require("chart.js/dist/chart.min");
 const cryptoHelper = require("./utils/cryptoHelper");
 const corsConfig = require("./utils/corsConfigHelper");
 const app = express();
@@ -24,7 +25,6 @@ app.use(bodyParser.json());
 
 //CORS config - Cross Origin Requests
 app.use(corsConfig);
-
 //File uploads
 app.use(fileUpload());
 
@@ -77,7 +77,6 @@ app.post("/user/caretaker", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
-
 app.post("/pam", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `id` from `rehabilitator` WHERE user_id = ?",
@@ -127,6 +126,17 @@ app.post("/rehabilitator/goal/total", (req, res) => {
         res.send(data)
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
+// Get data from user
+app.post("/user/data", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `p`.`pam_score`, `p`.`date` FROM `pam_score` as `p` INNER JOIN `rehabilitator` as `r` on `r`.`id` = `p`.`rehabilitator_id` WHERE `r`.`user_id` = ?",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data);
+        res.send(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}))
 });
 
 //dummy data example - rooms

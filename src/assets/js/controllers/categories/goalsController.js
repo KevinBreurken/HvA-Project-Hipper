@@ -100,7 +100,7 @@ class GoalsController extends CategoryController {
             console.log("error while fetching activities.", e);
         }
     }
-    
+
     async retrieveTotalPamGoal() {
         try {
             const totalGoal = await this.rehabilitatorRepository.getTotalGoal(sessionManager.get("userID"));
@@ -123,7 +123,7 @@ class GoalsController extends CategoryController {
         this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
         adjustProgressbarOnScreenResize();
     }
-    
+
     generateActivityCard(cardData) {
         const pamText = cardData['earnable_pam'] === null ? "" : `<p class="goal-card-subheader">${cardData['earnable_pam']} verwachten PAM punten</p>`;
         return `
