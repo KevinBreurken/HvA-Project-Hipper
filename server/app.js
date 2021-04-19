@@ -56,13 +56,18 @@ app.post("/user/login", (req, res) => {
 
 app.post("/pam", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `quarterly_score` from `pam_score` WHERE rehabilitator_ID = ?",
+        query: "SELECT `id` from `rehabilitator` WHERE user_id = ?",
         values: [req.body.id]
     }, (data) => {
-        console.log(data)
-        res.send(data)
+        db.handleQuery(connectionPool, {
+            query: "SELECT `quarterly_score` from `pam_score` WHERE rehabilitator_id = ?",
+            values: [data[0]['id']]
+        }, (datapam) => {
+            res.send(datapam)
+        }, (err) => res.status(badRequestCode).json({reason: err}));
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
+
 });
 
 app.post("/rehabilitator/goal/daily", (req, res) => {
@@ -88,7 +93,16 @@ app.post("/rehabilitator/activities", (req, res) => {
         }, (err) => res.status(badRequestCode).json({reason: err}));
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
+});
 
+app.post("/rehabilitator/goal/total", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `pam_goal_total` from `rehabilitator` WHERE user_id = ?",
+        values: [req.body.id]
+    }, (data) => {
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
 //dummy data example - rooms
