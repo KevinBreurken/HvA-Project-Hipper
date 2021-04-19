@@ -28,7 +28,7 @@ footer {
 }
 
 p {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 h3 {
@@ -37,6 +37,11 @@ h3 {
 
 .content {
     margin-top: 32px;
+}
+
+.category-container {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
 }
 
 /* Pad Container */
@@ -102,15 +107,6 @@ input[type=text], input[type=password] {
 }
 
 .imagelogo {
-    position: absolute;
-    width: 161px;
-    height: 37px;
-    transform: rotate(-90.36deg);
-    margin-top: -5%;
-}
-
-@media (max-width: 1919px) {
-    .imagelogo {
-        display: none;
-    }
+    padding-left: 10px;
+    padding-bottom: 10px;
 }
