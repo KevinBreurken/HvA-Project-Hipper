@@ -6,7 +6,7 @@
 <!--        <div class="w-100 pad-container-content">-->
 <!--            <div class="tittle-container text-center">-->
 <!--                <h2 class="">DR. SUZIE LEE CRUMPLER </h2>-->
-<!--                <img src="assets/img/verzorger_auto_x1_toned.png">-->
+<!--                <img src="assets/img/1_profile_pic.png">-->
 <!--            </div>-->
 <!--            <div class="contact-info">-->
 <!--                <h3>Beschrijving</h3>-->
@@ -35,24 +35,52 @@
 
 
 <div class="row justify-content-md-center">
-    <div class="col-lg-6 pad-container">
-        <div class="w-100 pad-container-header">
-            UW ZORGVERLENER - DR.SUZIE LEE CRUMPLER
-        </div>
-        <div class="w-100 pad-container-content">
+    <div class="col-lg-5 m-3 mb-5 profile-container">
+        <h1 class="pl-3 profile-title"><b>UW ZORGVERLENER - <span class="name_caretaker"></span>
             <div class="row pb-3">
-                <div class="col-lg-5 image-border1">
-                    <img class="imgcaregiver" src="assets/img/verzorger_auto_x1_toned.png" alt="verzorger">
+                <div class="col-lg-5 image-border2">
+                    <img class="imgcaregiver profile_pic_caretaker" src=""
+                         onerror="if (this.src !== 'error.jpg') this.src = 'assets/img/default.jpeg';" alt="verzorger">
                 </div>
                 <div class="col-lg-5 rehabilitator-text">
-                    <p style="font-size: 24px;"><small><ins>Contact:</ins><br>
-                        Telefoon: +31-637564839<br>
-                        E-Mail: drsuzcrump@doctor.com<br>
+                    <p style="font-size: 24px;"><small>
+                        <ins>Contact:</ins>
                         <br>
-                        <ins>Ervaring:</ins><br>
-                        Fysiotherapeut  - 2 jaar<br>
-                        Revalidatiearts - 6 jaar
+                        Naam: <span class="name_caretaker"></span><br>
+                        Telefoon: <span class="phone_caretaker"></span><br>
+                        E-Mail: <span class="email_caretaker"></span><br>
+
+                        <ins>Ervaring:</ins>
+                        <br>
+                        <span class="experience1_caretaker"></span><br>
+                        <span class="experience2_caretaker"></span><br>
+                        <span class="experience3_caretaker"></span><br>
                     </small></p>
+                </div>
+            </div>
+
+            <h2 class="mb-2"><b>Beschrijving</b></h2>
+            <p style="font-size: 24px; padding-bottom: 20px">
+                <span class="description_caretaker"></span>
+            </p>
+    </div>
+</div>
+
+<div class="row justify-content-md-center">
+    <div class="col-lg-5 m-3 mb-5 profile-container">
+        <h1 class="pl-3 profile-title"><b>DEEL UW REVALIDATIE VOORTGANG</b></h1>
+
+        <h2 class="mb-2"><b>Beschrijving</b></h2>
+        <p style="font-size: 24px; padding-bottom: 20px">
+            Wilt u wat delen met andere revalidanten? heeft u tips/suggesties of wilt u gewoon iets gezelligs plaatsen?
+            Typ uw bericht hieronder en verstuur het om met andere te delen!
+        </p>
+
+        <form class="contact-form" method="POST" action="send">
+            <!-- Message -->
+            <div class="form-group row">
+                <div class="col-lg-8">
+                    <textarea class="form-control form-control-sm" name="message" rows="15" required></textarea>
                 </div>
             </div>
 
@@ -160,4 +188,3 @@
         </div>
     </div>
 </div>
-
