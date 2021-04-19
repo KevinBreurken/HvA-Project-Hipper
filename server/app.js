@@ -68,8 +68,9 @@ app.post("/user/rehabilitator", (req, res) => {
 });
 //retrieve caretaker info
 app.post("/user/caretaker", (req, res) => {
+    console.log(req.body.id)
     db.handleQuery(connectionPool, {
-        query: "SELECT `caretaker_id`,`first_name`,`last_name`,`email`,`phone`, `description`, `experience_field1`,`experience_field2`, `experience_field3` from `caretaker` WHERE user_ID = ?",
+        query: "SELECT caretaker.caretaker_id, caretaker.first_name, caretaker.last_name, caretaker.email, caretaker.phone, caretaker.description, caretaker.experience_field1, caretaker.experience_field2, caretaker.experience_field3 FROM caretaker INNER JOIN rehabilitator ON rehabilitator.caretaker_id = caretaker.caretaker_id WHERE rehabilitator.user_id = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data)

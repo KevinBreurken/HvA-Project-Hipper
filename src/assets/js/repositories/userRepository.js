@@ -38,7 +38,7 @@ class UserRepository {
 
     }
 
-    async getUserInfo(id) {
+    async getRehabilitatorInfo(id) {
         return await networkManager
             .doRequest(`${this.route}/rehabilitator`, {"id": id}, "POST");
     }
