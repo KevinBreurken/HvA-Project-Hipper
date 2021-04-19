@@ -18,6 +18,7 @@ const CONTROLLER_GOALS = "goals";
 const CONTROLLER_STATISTICS = "statistics";
 const CONTROLLER_PROFILE = "profile";
 const CONTROLLER_SOCIAL = "social";
+const CONTROLLER_PATIENTS = "patients";
 
 const sessionManager = new SessionManager();
 const networkManager = new NetworkManager();
@@ -96,6 +97,11 @@ class App {
             case CONTROLLER_CARETAKER:
                 this.setCurrentController(name);
                 currentController = this.isLoggedIn(() => new CaretakerController(), () => new LoginController());
+                break;
+
+            case CONTROLLER_PATIENTS:
+                this.setCurrentController(name);
+                currentController = this.isLoggedIn(() => new PatientsController(),() => new LoginController());
                 break;
 
             case CONTROLLER_UPLOAD:
