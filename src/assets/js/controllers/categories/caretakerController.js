@@ -7,8 +7,7 @@
 class CaretakerController extends CategoryController {
 
     constructor() {
-        super()
-        console.log(sessionManager.get("role"));
+        super();
         this.loadView("views/caretaker/home.html");
     }
 
@@ -26,7 +25,5 @@ class CaretakerController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.caretakerView);
-
     }
-
 }

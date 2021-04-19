@@ -1,0 +1,143 @@
+.pad-caretaker-header-title{
+    background-color: var(--color-category-current);
+    border: 4px solid var(--color-category-current);
+    height: auto;
+    padding: 5px 5px 5px 15px;
+
+    /* text */
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: bold;
+    line-height: 40px;
+    font-size: 30px;
+    color: #ffffff;
+}
+
+.pad-caretaker-header1{
+    background-color: var(--color-category-current);
+    border: 4px solid var(--color-category-current);
+    height: auto;
+    padding-bottom: 4px;
+
+    /* text */
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: bold;
+    line-height: 40px;
+    font-size: 30px;
+    color: #ffffff;
+    text-align: center;
+}
+.pad-caretaker-content {
+    border: 4px solid var(--color-category-current);
+    border-top: none;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    padding: 16px;
+    margin-bottom: 64px;
+    color: #666666;
+}
+
+.imgpatient1{
+     width: 324px;
+     height: 300px;
+     margin-left: -18px;
+     margin-top: -65px;
+     border: 4px solid var(--color-category-current);
+ }
+
+.imgpatient2{
+    width: 324px;
+    height: 300px;
+    margin-left: -18px;
+    margin-top: -65px;
+    border: 4px solid var(--color-category-current);
+}
+.ct-year{
+    margin-bottom: 0;
+}
+.ct-gender{
+    margin-bottom: 0;
+}
+.ct-bloodtype{
+    margin-bottom: 0;
+}
+.ct-status{
+    margin-bottom: 0;
+}
+.ct-contacttitle{
+    margin-bottom: 0;
+}
+.ct-phonenumber{
+    margin-bottom: 0;
+}
+.ct-mail{
+    margin-bottom: 0;
+}
+.btn1{
+    background-color: var(--color-category-current);
+    border: 4px solid var(--color-category-current);
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: bold;
+    line-height: 40px;
+    font-size: 25px;
+    color: #ffffff;
+    border-radius: 0;
+}
+
+.btn2{
+    background-color: var(--color-category-current);
+    border: 4px solid var(--color-category-current);
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: bold;
+    line-height: 40px;
+    font-size: 25px;
+    color: #ffffff;
+    border-radius: 0;
+}
+
+.btn3{
+    background-color: var(--color-category-current);
+    border: 4px solid var(--color-category-current);
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: bold;
+    line-height: 40px;
+    font-size: 25px;
+    color: #ffffff;
+    border-radius: 0;
+}
+
+.btn4{
+    background-color: #709963;
+    border: 4px solid #709963;
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: bold;
+    line-height: 40px;
+    font-size: 25px;
+    color: #ffffff;
+    border-radius: 0;
+}
+@media (max-width: 1919px){
+    .pad-caretaker-header1{
+        text-align: center;
+        padding-right: 0;
+    }
+    .pad-caretaker-header2{
+        text-align: center;
+        padding-right: 0;
+    }
+    .imgpatient1{
+        margin-top: -16px;
+        margin-left: -16px;
+    }
+    .imgpatient2{
+        margin-top: -16px;
+        margin-left: -16px;
+    }
+    .btn1{
+        margin-bottom: 5%;
+    }
+    .btn2{
+        margin-bottom: 5%;
+    }
+    .btn3{
+        margin-bottom: 5%;
+    }
+}
