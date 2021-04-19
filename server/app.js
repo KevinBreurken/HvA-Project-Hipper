@@ -7,7 +7,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const db = require("./utils/databaseHelper");
-const charts = require("chart.js/dist/chart.min");
 const cryptoHelper = require("./utils/cryptoHelper");
 const corsConfig = require("./utils/corsConfigHelper");
 const app = express();
