@@ -47,7 +47,8 @@ class ProfileController extends CategoryController {
             document.querySelector(".description_rehabilitator").innerText = rehabilitatorData[0].Description
             document.querySelector(".postalcode_rehabilitator").innerText = rehabilitatorData[0].Postalcode
             // //profile pic
-            document.querySelector(".profile_pic_rehabilitator").src = `assets/img/rehabilitator/${currentLoggedID}_profile_pic.png`;
+            document.querySelector(".profile_pic_rehabilitator").src =
+                rehabilitatorData[0]['Gender'] === "Vrouw" ? 'assets/img/patient2.png' : 'assets/img/patient1.png';
 
 
         } catch (e) {
