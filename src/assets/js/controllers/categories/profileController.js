@@ -38,8 +38,9 @@ class ProfileController extends CategoryController {
             var age = this.getAge(birthdateString)
 
             console.log(rehabilitatorData)
+            const fullname = rehabilitatorData[0].first_name + " " + rehabilitatorData[0].last_name
             document.querySelectorAll(".name_rehabilitator").forEach((element) => {
-                element.innerText = rehabilitatorData[0].Name
+                element.innerText = fullname
             })
             document.querySelector(".age_rehabilitator").innerText = age
             document.querySelector(".adress_rehabilitator").innerText = rehabilitatorData[0].Adress
