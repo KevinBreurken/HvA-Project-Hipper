@@ -35,6 +35,15 @@
     filter: brightness(110%);
 }
 
+/* Give the arrows on advanced statistics click mouse */
+.fa-arrow-left {
+    cursor: pointer;
+}
+
+.fa-arrow-right {
+    cursor: pointer;
+}
+
 /*Chart some margin bottom*/
 /* Add this for responsive cards right now, might change later */
 @media (max-width: 375px) {

@@ -41,6 +41,15 @@ class StatisticsController extends CategoryController {
 
         // When the datepicker changes value
         $(document).on("change", ".datepicker-stats", () => this.updateChart());
+
+        // The left and right arrow on click
+        $(document).on("click", ".fa-arrow-left", () => {
+            this.changeWeekArrows("left");
+        });
+
+        $(document).on("click", ".fa-arrow-right", () => {
+            this.changeWeekArrows("right");
+        });
     }
 
     /**
@@ -66,6 +75,23 @@ class StatisticsController extends CategoryController {
      */
     async getPamDates() {
         return await this.userRepository.getAll(sessionManager.get("userID"));
+    }
+
+    /**
+     * Uses the arrows on statistic to change the week
+     */
+    changeWeekArrows(direction) {
+        if (direction === "left") {
+            let firstVal = moment($(".datepicker-stats").val());
+            firstVal = firstVal.subtract("1", "weeks");
+            $(".datepicker-stats").val(firstVal.format("YYYY-MM-DD"));
+            this.updateChart();
+        } else {
+            let firstVal = moment($(".datepicker-stats").val());
+            firstVal = firstVal.add("1", "weeks");
+            $(".datepicker-stats").val(firstVal.format("YYYY-MM-DD"));
+            this.updateChart();
+        }
     }
     /**
      * Update the stats chart
