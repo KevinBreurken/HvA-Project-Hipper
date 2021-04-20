@@ -38,7 +38,8 @@ class PatientsController extends CategoryController {
             blocky.clone().insertAfter(blocky);
             blocky.attr('class', 'block-' + i + ' row justify-content-md-center mt-5')
             //set the data in html
-            $(".ct-name", blocky).text(patients[i].name);
+            console.log(patients)
+            $(".ct-name", blocky).text(`${patients[i]['first_name']} ${patients[i]['last_name']}`);
             $(".ct-year", blocky).text("Leeftijd: " + this.getAge(patients[i].birthdate));
             $(".ct-gender", blocky).text("Geslacht: " + patients[i].gender);
             $(".ct-bloodtype", blocky).text("Bloed type: " + patients[i].bloodtype);
