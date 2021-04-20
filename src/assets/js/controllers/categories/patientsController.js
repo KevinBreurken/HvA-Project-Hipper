@@ -38,7 +38,8 @@ class PatientsController extends CategoryController {
             blocky.clone().insertAfter(blocky);
             blocky.attr('class', 'block-' + i + ' row justify-content-md-center mt-5')
             //set the data in html
-            $(".ct-name", blocky).text(patients[i].name);
+            console.log(patients)
+            $(".ct-name", blocky).text(`${patients[i]['first_name']} ${patients[i]['last_name']}`);
             $(".ct-year", blocky).text("Leeftijd: " + this.getAge(patients[i].birthdate));
             $(".ct-gender", blocky).text("Geslacht: " + patients[i].gender);
             $(".ct-bloodtype", blocky).text("Bloed type: " + patients[i].bloodtype);
@@ -48,11 +49,9 @@ class PatientsController extends CategoryController {
             $(".ct-description", blocky).text(patients[i].description);
             //img changing to men
             if (patients[i].gender === "Vrouw"){
-                blocky.find(".imgpatient1").attr('class', 'imgpatient-' + i)
-                $(".imgpatient-" + i).attr('src','assets/img/patient2.png')
+                blocky.find(".imgpatient").attr('src','assets/img/patient2.png')
             } else {
-                blocky.find(".imgpatient-" + (i-1)).attr('class', 'imgpatient-' + i)
-                $(".imgpatient-" + i).attr('src','assets/img/patient1.png')
+                blocky.find(".imgpatient").attr('src','assets/img/patient1.png')
             }
         }
         $(".block-primary").remove();
