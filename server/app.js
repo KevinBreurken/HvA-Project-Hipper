@@ -55,7 +55,7 @@ app.post("/user/login", (req, res) => {
 //retrieve rehabilitator info
 app.post("/user/rehabilitator", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype` from `rehabilitator` WHERE user_ID = ?",
+        query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender` from `rehabilitator` WHERE user_ID = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data)
