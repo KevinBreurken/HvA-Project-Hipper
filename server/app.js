@@ -126,6 +126,15 @@ app.post("/rehabilitator/goal/total", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+app.post("/rehabilitator/goal/date", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `appointment_date` from `rehabilitator` WHERE user_id = ?",
+        values: [req.body.id]
+    }, (data) => {
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
 
 // Get data from user
 app.post("/user/data", (req, res) => {

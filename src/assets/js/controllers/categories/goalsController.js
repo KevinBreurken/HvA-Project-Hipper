@@ -37,6 +37,8 @@ class GoalsController extends CategoryController {
         this.setProgressBarData(pamdata['total'],pamdata['current'], pamdata['daily']);
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
         $("#pam-goal-today").html(`PAM Doel voor vandaag: ${pamdata['daily']} punten`);
+        $("#pam-deadlinegoal-text").html(`Uw volgende afspraak is op: ${pamdata['date']}`);
+        $("#pam-dailygoal-text").html(`Om het PAM totaal te bereiken moet u dagelijks ${pamdata['daily']} PAM punten behalen.`);
     }
 
     /**
@@ -47,8 +49,9 @@ class GoalsController extends CategoryController {
         const dailyPamGoal = await this.retrieveDailyPamGoal();
         const totalPamGoal = await this.retrieveTotalPamGoal();
         const currentlyEarnedPam = await this.retrieveEarnedPam();
+        const appointmentDate = await this.retrieveAppointmentDate();
 
-        return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal};
+        return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal, "date": appointmentDate};
     }
 
     remove() {
@@ -108,6 +111,18 @@ class GoalsController extends CategoryController {
             return totalGoal[0]['pam_goal_total'];
         } catch (e) {
             console.log("error while fetching daily pam goal.", e);
+            return 0;
+        }
+    }
+    async retrieveAppointmentDate(){
+        try {
+            const appDate = await this.rehabilitatorRepository.getAppointmentDate(sessionManager.get("userID"));
+            const appointmentDate = appDate[0]['appointment_date'];
+            const date = new Date(appointmentDate);
+            const finaldate = date.getDate() + '/' +(date.getMonth()+1) + '/' + date.getFullYear();
+            return finaldate;
+        }catch (e){
+            console.log("error while fetching appointment date.", e);
             return 0;
         }
     }
