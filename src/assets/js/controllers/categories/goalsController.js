@@ -37,6 +37,8 @@ class GoalsController extends CategoryController {
         this.setProgressBarData(pamdata['total'],pamdata['current'], pamdata['daily']);
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
         $("#pam-goal-today").html(`PAM Doel voor vandaag: ${pamdata['daily']} punten`);
+        $("#pam-deadlinegoal-text").html(`Uw volgende afspraak is op: ${pamdata['date']}`);
+        $("#pam-dailygoal-text").html(`Om het PAM totaal te bereiken moet u dagelijks ${pamdata['daily']} PAM punten behalen.`);
     }
 
     /**
@@ -47,8 +49,9 @@ class GoalsController extends CategoryController {
         const dailyPamGoal = await this.retrieveDailyPamGoal();
         const totalPamGoal = await this.retrieveTotalPamGoal();
         const currentlyEarnedPam = await this.retrieveEarnedPam();
+        const appointmentDate = await this.retrieveAppointmentDate();
 
-        return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal};
+        return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal, "date": appointmentDate};
     }
 
     remove() {
@@ -111,6 +114,18 @@ class GoalsController extends CategoryController {
             return 0;
         }
     }
+    async retrieveAppointmentDate(){
+        try {
+            const appDate = await this.rehabilitatorRepository.getAppointmentDate(sessionManager.get("userID"));
+            const appointmentDate = appDate[0]['appointment_date'];
+            const date = new Date(appointmentDate);
+            const finaldate = date.getDate() + '/' +(date.getMonth()+1) + '/' + date.getFullYear();
+            return finaldate;
+        }catch (e){
+            console.log("error while fetching appointment date.", e);
+            return 0;
+        }
+    }
 
     setProgressBarData(totalPamGoal,currentlyEarnedPam, dailyPamGoal) {
         const yesterdayDoneProgress = 20;
@@ -119,6 +134,9 @@ class GoalsController extends CategoryController {
         $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${dailyPamGoal} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
+        $('#bar-color-total-text').html(`Totaal doel van ${totalPamGoal} PAM punten`);
+        $('#bar-color-goal-text').html(`${dailyPamGoal} PAM punten doel voor vandaag`);
+        $('#bar-color-yesterday-text').html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
         this.setProgress('#goal-previous', 0, 0, true)
         this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
         this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
@@ -144,7 +162,7 @@ class GoalsController extends CategoryController {
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
         const barElement = $(element);
         barElement.css("width", percentage + '%');
-        barElement.find('.pam-value').html(displayValue);
+        // barElement.find('.pam-value').html(displayValue);
         if (hideOnLowPercent)
             barElement.find('.progress-pin-element').toggle(percentage > 5);
     }
@@ -179,9 +197,9 @@ class GoalsController extends CategoryController {
  *  Called by onresize to change the labels on the progressbar.
  */
 function adjustProgressbarOnScreenResize() {
-    hideElementIfDistance('#goal-previous', '#goal-now');
-    hideElementIfDistance('#goal-now', '#goal-goal');
-    hideElementIfDistance('#goal-goal', '#progress-bar-end');
+    // hideElementIfDistance('#goal-previous', '#goal-now');
+    // hideElementIfDistance('#goal-now', '#goal-goal');
+    // hideElementIfDistance('#goal-goal', '#progress-bar-end');
 }
 
 /**
