@@ -24,9 +24,6 @@ class GoalsController extends CategoryController {
         //Load the login-content into memory.
         this.view = $(data);
         $(".content").empty();
-        window.onresize = function (event) {
-            adjustProgressbarOnScreenResize();
-        }
 
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-goals");
@@ -37,8 +34,8 @@ class GoalsController extends CategoryController {
         this.setProgressBarData(pamdata['total'],pamdata['current'], pamdata['daily']);
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
         $("#pam-goal-today").html(`PAM Doel voor vandaag: ${pamdata['daily']} punten`);
-        $("#pam-deadlinegoal-text").html(`Uw volgende afspraak is op: ${pamdata['date']}`);
-        $("#pam-dailygoal-text").html(`Om het PAM totaal te bereiken moet u dagelijks ${pamdata['daily']} PAM punten behalen.`);
+        $("#pam-deadlinegoal-text").html(`<b>Uw volgende afspraak is op: ${pamdata['date']}</b>`);
+        $("#pam-dailygoal-text").html(`<b>Om het PAM totaal te bereiken moet u dagelijks ${pamdata['daily']} PAM punten behalen.</b>`);
     }
 
     /**
@@ -52,11 +49,6 @@ class GoalsController extends CategoryController {
         const appointmentDate = await this.retrieveAppointmentDate();
 
         return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal, "date": appointmentDate};
-    }
-
-    remove() {
-        super.remove();
-        window.onresize = null;
     }
 
     async retrievePam() {
@@ -140,7 +132,6 @@ class GoalsController extends CategoryController {
         this.setProgress('#goal-previous', 0, 0, true)
         this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
         this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
-        adjustProgressbarOnScreenResize();
     }
 
     generateActivityCard(cardData) {
@@ -191,26 +182,4 @@ class GoalsController extends CategoryController {
             return 4;
         }
     }
-}
-
-/**
- *  Called by onresize to change the labels on the progressbar.
- */
-function adjustProgressbarOnScreenResize() {
-    // hideElementIfDistance('#goal-previous', '#goal-now');
-    // hideElementIfDistance('#goal-now', '#goal-goal');
-    // hideElementIfDistance('#goal-goal', '#progress-bar-end');
-}
-
-/**
- * Determines when an element needs to be hidden by calculating the difference between two elements.
- */
-function hideElementIfDistance(toHideId, compareId) {
-    const rootTextElement = $(toHideId).find('.progress-pin-text');
-    const compareElement = $(compareId).find('.progress-pin-text');
-    const distance = (compareElement.offset().left - rootTextElement.offset().left);
-
-    $(rootTextElement).css("visibility", distance < 70 ? "hidden" : "visible");
-    $(toHideId).find('.pam-label').css("visibility", distance < 70 ? "hidden" : "visible");
-    $(toHideId).find('.progress-pin-element').css("visibility", distance < 40 ? "hidden" : "visible");
 }
