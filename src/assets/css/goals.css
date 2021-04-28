@@ -93,6 +93,10 @@
     background-color: var(--color-progress-goal);
 }
 
+.bar-color-total {
+    background-color: var(--color-hover-element);
+}
+
 /* basic positioning */
 .legend {
     list-style: none;

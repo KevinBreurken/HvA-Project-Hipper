@@ -134,6 +134,9 @@ class GoalsController extends CategoryController {
         $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${dailyPamGoal} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
+        $('#bar-color-total-text').html(`Totaal doel van ${totalPamGoal} PAM punten`);
+        $('#bar-color-goal-text').html(`${dailyPamGoal} PAM punten doel voor vandaag`);
+        $('#bar-color-yesterday-text').html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
         this.setProgress('#goal-previous', 0, 0, true)
         this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
         this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
@@ -159,7 +162,7 @@ class GoalsController extends CategoryController {
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
         const barElement = $(element);
         barElement.css("width", percentage + '%');
-        barElement.find('.pam-value').html(displayValue);
+        // barElement.find('.pam-value').html(displayValue);
         if (hideOnLowPercent)
             barElement.find('.progress-pin-element').toggle(percentage > 5);
     }
@@ -194,9 +197,9 @@ class GoalsController extends CategoryController {
  *  Called by onresize to change the labels on the progressbar.
  */
 function adjustProgressbarOnScreenResize() {
-    hideElementIfDistance('#goal-previous', '#goal-now');
-    hideElementIfDistance('#goal-now', '#goal-goal');
-    hideElementIfDistance('#goal-goal', '#progress-bar-end');
+    // hideElementIfDistance('#goal-previous', '#goal-now');
+    // hideElementIfDistance('#goal-now', '#goal-goal');
+    // hideElementIfDistance('#goal-goal', '#progress-bar-end');
 }
 
 /**
