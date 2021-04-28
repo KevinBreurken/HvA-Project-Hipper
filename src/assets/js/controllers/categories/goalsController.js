@@ -31,11 +31,24 @@ class GoalsController extends CategoryController {
         //Empty the content-div and add the resulting view to the page
         $(".content").append(this.view);
         this.loadActivities();
-        this.setProgressBarData(pamdata['total'],pamdata['current'], pamdata['daily']);
+        this.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['daily']);
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
         $("#pam-goal-today").html(`PAM Doel voor vandaag: ${pamdata['daily']} punten`);
-        $("#pam-deadlinegoal-text").html(`<b>Uw volgende afspraak is op: ${pamdata['date']}</b>`);
-        $("#pam-dailygoal-text").html(`<b>Om het PAM totaal te bereiken moet u dagelijks ${pamdata['daily']} PAM punten behalen.</b>`);
+        $("#pam-dailygoal-text").html(`<b>Om het PAM totaal te bereiken moet u voor vandaag ${pamdata['daily']} PAM punten behalen.</b>`);
+
+        const dateDisplayText = pamdata['date'].getDate() + '/' + (pamdata['date'].getMonth() + 1) + '/' + pamdata['date'].getFullYear();
+        const dateExpired = (pamdata['date'] < new Date());
+        const preText = dateExpired ? "Uw afspraak was op: " : "Uw volgende afspraak is op: ";
+        $("#pam-deadlinegoal-text").html(`<b>${preText}${dateDisplayText}</b>`);
+        this.setAppointmentState(dateExpired)
+    }
+
+    setAppointmentState(state) {
+        $('#pam-dailygoal-text').toggle(!state);
+        $('#goal-li').toggle(!state);
+        $('#motivational-title').toggle(!state);
+        $('#motivational-description').toggle(!state);
+        $('#appointment-expired-text').toggle(state);
     }
 
     /**
@@ -43,10 +56,10 @@ class GoalsController extends CategoryController {
      * @returns {Promise<void>}
      */
     async retrieveProgressData() {
-        const dailyPamGoal = await this.retrieveDailyPamGoal();
         const totalPamGoal = await this.retrieveTotalPamGoal();
         const currentlyEarnedPam = await this.retrieveEarnedPam();
         const appointmentDate = await this.retrieveAppointmentDate();
+        const dailyPamGoal = await this.retrieveDailyPamGoal(totalPamGoal,appointmentDate);
 
         return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal, "date": appointmentDate};
     }
@@ -73,12 +86,13 @@ class GoalsController extends CategoryController {
         return totalScore;
     }
 
-    async retrieveDailyPamGoal() {
+    async retrieveDailyPamGoal(total,appointment) {
         try {
-            const dailyGoal = await this.rehabilitatorRepository.getPamDailyGoal(sessionManager.get("userID"));
-            return dailyGoal[0]['pam_goal_daily'];
+            const diffInMs = new Date(appointment) - new Date();
+            const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+            return total / diffInDays;
         } catch (e) {
-            console.log("error while fetching daily pam goal.", e);
+            console.log("error while calculating daily pam goal.", e);
             return 0;
         }
     }
@@ -106,27 +120,27 @@ class GoalsController extends CategoryController {
             return 0;
         }
     }
-    async retrieveAppointmentDate(){
+
+    async retrieveAppointmentDate() {
         try {
             const appDate = await this.rehabilitatorRepository.getAppointmentDate(sessionManager.get("userID"));
             const appointmentDate = appDate[0]['appointment_date'];
             const date = new Date(appointmentDate);
-            const finaldate = date.getDate() + '/' +(date.getMonth()+1) + '/' + date.getFullYear();
-            return finaldate;
-        }catch (e){
+            return date;
+        } catch (e) {
             console.log("error while fetching appointment date.", e);
             return 0;
         }
     }
 
-    setProgressBarData(totalPamGoal,currentlyEarnedPam, dailyPamGoal) {
+    setProgressBarData(totalPamGoal, currentlyEarnedPam, dailyPamGoal) {
         const yesterdayDoneProgress = 20;
         this.setTotalGoal(totalPamGoal)
 
         $('#yesterday-text').html(`Gisteren heeft u ${yesterdayDoneProgress} PAM punten gehaald`);
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${dailyPamGoal} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
-        $('#bar-color-total-text').html(`Totaal doel van ${totalPamGoal} PAM punten`);
+        $('#bar-color-total-text').html(`${totalPamGoal} PAM punten als totaal doel`);
         $('#bar-color-goal-text').html(`${dailyPamGoal} PAM punten doel voor vandaag`);
         $('#bar-color-yesterday-text').html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
         this.setProgress('#goal-previous', 0, 0, true)
@@ -162,21 +176,21 @@ class GoalsController extends CategoryController {
         $('#progress-bar-end').find('.pam-value').html(value);
     }
 
-    fillMotivationalContent(total, current){
+    fillMotivationalContent(total, current) {
         const progresionIndex = this.calculateProgress(total, current);
         $('#motivational-title').empty().append(this.titlesMotivational[progresionIndex]);
         $('#motivational-description').empty().append(this.motvivationalContent[progresionIndex]);
     }
 
-    calculateProgress(total, current){
-        const progression = Math.floor((current / total)*100);
-        if (progression < 10){
+    calculateProgress(total, current) {
+        const progression = Math.floor((current / total) * 100);
+        if (progression < 10) {
             return 0;
-        } else if (progression < 50){
+        } else if (progression < 50) {
             return 1;
-        } else if (progression < 80){
+        } else if (progression < 80) {
             return 2;
-        } else if (progression < 100){
+        } else if (progression < 100) {
             return 3;
         } else {
             return 4;
