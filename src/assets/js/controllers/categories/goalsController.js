@@ -23,31 +23,29 @@ class GoalsController extends CategoryController {
         nav.setNavigationState(navState.User)
         //Load the login-content into memory.
         this.view = $(data);
-        //Create the progress component.
-        this.progressBar = new ProgressComponent(this.view.find("#progress-anchor"));
         $(".content").empty();
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-goals");
+        //Create the progress component.
+        this.progressBar = await new ProgressComponent(this.view.find("#progress-anchor"));
+        const pamdata = await this.progressBar.retrieveProgressData(sessionManager.get("userID"));
+        this.progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['daily']);
         //Empty the content-div and add the resulting view to the page
         $(".content").append(this.view);
         this.loadActivities();
-        const pamdata = await this.progressBar.retrieveProgressData(sessionManager.get("userID"));
-        this.progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['daily']);
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
 
         $("#pam-dailygoal-text").html(`<b>Om het PAM totaal te bereiken moet u voor vandaag ${pamdata['daily']} PAM punten behalen.</b>`);
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${pamdata['daily']} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
-        const dateDisplayText = pamdata['date'].getDate() + '/' + (pamdata['date'].getMonth() + 1) + '/' + pamdata['date'].getFullYear();
         const dateExpired = (pamdata['date'] < new Date());
-        const preText = dateExpired ? "Uw afspraak was op: " : "Uw volgende afspraak is op: ";
-        this.progressBar.setAppointmentText(`<b>${preText}${dateDisplayText}</b>`);
+        this.progressBar.setAppointmentText(pamdata['date']);
         this.setAppointmentState(dateExpired)
     }
 
     setAppointmentState(state) {
         $('#pam-dailygoal-text').toggle(!state);
-        $('#goal-li').toggle(!state);
+        this.progressBar.htmlRoot.find(".goal-li").toggle(!state);
         $('#motivational-title').toggle(!state);
         $('#motivational-description').toggle(!state);
         $('#appointment-expired-text').toggle(state);

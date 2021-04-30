@@ -1,12 +1,12 @@
 class ProgressComponent {
     constructor(htmlRoot) {
+        this.pamRepository = new PamRepository();
+        this.rehabilitatorRepository = new RehabilitatorRepository();
+
         $.get("src/views/component/progressComponent.html").done((data) => {
             this.htmlRoot = htmlRoot;
             htmlRoot.append(data);
         })
-
-        this.pamRepository = new PamRepository();
-        this.rehabilitatorRepository = new RehabilitatorRepository();
     }
 
     setProgressBarData(totalPamGoal, currentlyEarnedPam, dailyPamGoal) {
@@ -14,7 +14,7 @@ class ProgressComponent {
         this.htmlRoot.find(".legend-earned").html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
         this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM punten doel voor vandaag`);
         this.htmlRoot.find(".legend-total").html(`${totalPamGoal} PAM punten als totaal doel`);
-
+        //Bar
         this.htmlRoot.find('.pam-value').html(totalPamGoal);
         this.setProgress('#goal-previous', 0, 0, true)
         this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
@@ -24,13 +24,15 @@ class ProgressComponent {
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
         const barElement = this.htmlRoot.find(element);
         barElement.css("width", percentage + '%');
-        // barElement.find('.pam-value').html(displayValue);
         if (hideOnLowPercent)
             barElement.find('.progress-pin-element').toggle(percentage > 5);
     }
 
-    setAppointmentText(text) {
-        this.htmlRoot.find(".appointment-text").html(text);
+    setAppointmentText(appointmentDate) {
+        const dateDisplayText = appointmentDate.getDate() + '/' + (appointmentDate.getMonth() + 1) + '/' + appointmentDate.getFullYear();
+        const dateExpired = (appointmentDate < new Date());
+        const preText = dateExpired ? "Uw afspraak was op: " : "Uw volgende afspraak is op: ";
+        this.htmlRoot.find(".appointment-text").html(`<b>${preText}${dateDisplayText}</b>`);
     }
 
     async calculateDailyPamGoal(leftToDoPam, appointment) {
