@@ -76,6 +76,18 @@ app.post("/user/caretaker", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
+//messages
+app.post("/messages", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT message.content, rehabilitator.first_name, rehabilitator.birthdate FROM message INNER JOIN rehabilitator ON message.rehabilitator_id = rehabilitator.id",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data)
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
 app.post("/pam", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `id` from `rehabilitator` WHERE user_id = ?",
