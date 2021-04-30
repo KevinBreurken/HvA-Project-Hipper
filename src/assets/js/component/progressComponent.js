@@ -31,7 +31,7 @@ class ProgressComponent {
     setAppointmentText(appointmentDate) {
         const dateDisplayText = appointmentDate.getDate() + '/' + (appointmentDate.getMonth() + 1) + '/' + appointmentDate.getFullYear();
         const dateExpired = (appointmentDate < new Date());
-        const preText = dateExpired ? "Uw afspraak was op: " : "Uw volgende afspraak is op: ";
+        const preText = dateExpired ? "Laatste afspraak was op: " : "Volgende afspraak is op: ";
         this.htmlRoot.find(".appointment-text").html(`<b>${preText}${dateDisplayText}</b>`);
     }
 
