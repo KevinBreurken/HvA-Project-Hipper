@@ -33,7 +33,7 @@ class GoalsController extends CategoryController {
         this.progressBar.setAppointmentText(pamdata['date']);
         //Empty the content-div and add the resulting view to the page
         $(".content").append(this.view);
-        this.loadActivities();
+        this.loadActivities(pamdata['daily']);
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
 
         $("#pam-dailygoal-text").html(`<b>Om het PAM totaal te bereiken moet u voor vandaag ${pamdata['daily']} PAM punten behalen.</b>`);
@@ -51,9 +51,9 @@ class GoalsController extends CategoryController {
         $('#appointment-expired-text').toggle(state);
     }
 
-    async loadActivities() {
+    async loadActivities(dailyPam) {
         try {
-            const activities = await this.rehabilitatorRepository.getPamActivities(sessionManager.get("userID"));
+            const activities = await this.rehabilitatorRepository.getPamActivities(dailyPam);
             const activityContainer = $('#activity-container');
             activityContainer.empty();
             for (let i = 0; i < activities.length; i++) {

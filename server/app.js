@@ -104,16 +104,10 @@ app.post("/rehabilitator/goal/daily", (req, res) => {
 
 app.post("/rehabilitator/activities", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `id` from `rehabilitator` WHERE user_id = ?",
-        values: [req.body.id]
-    }, (data) => {
-        db.handleQuery(connectionPool, {
-            query: "SELECT * from `pam_activity` WHERE rehabilitator_id = ?",
-            values: [data[0]['id']]
-        }, (activityData) => {
-            res.send(activityData)
-        }, (err) => res.status(badRequestCode).json({reason: err}));
-
+        query: "SELECT * from `pam_activity` WHERE ? BETWEEN daily_pam_min AND daily_pam_max",
+        values: [req.body.daily]
+    }, (activityData) => {
+        res.send(activityData)
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
