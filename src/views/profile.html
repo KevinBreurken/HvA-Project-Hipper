@@ -6,7 +6,7 @@
         <div class="w-100 pad-container-content">
             <div class="row pb-3">
                 <div class="col-lg-5 image-border1">
-                    <img class="imgrehabilitator profile_pic_rehabilitator" src=""
+                    <img class="imgrehabilitator profile_pic_rehabilitator" id="file_uploader" src="https://qph.fs.quoracdn.net/main-qimg-2b21b9dd05c757fe30231fac65b504dd"
                          onerror="if (this.src !== 'error.jpg') this.src = 'assets/img/default_image.png';" alt="Revalidant">
                 </div>
                 <div class="col-lg-5 rehabilitator-text">
@@ -15,7 +15,9 @@
                         Leeftijd: <span class="age_rehabilitator"></span><br>
                         Adres: <span class="adress_rehabilitator">Doornbloemstraat 56</span><br>
                         Postcode: <span class="postalcode_rehabilitator">3218JK</span><br>
-                        Bloedtype: <span class="bloodtype_rehabilitator">O</span>
+                        Bloedtype: <span class="bloodtype_rehabilitator">O</span><br>
+                        Foto uploaden:
+                        <input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" >
                     </small></p>
                 </div>
             </div>

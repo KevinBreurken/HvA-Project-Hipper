@@ -48,9 +48,12 @@ class ProfileController extends CategoryController {
             document.querySelector(".description_rehabilitator").innerText = rehabilitatorData[0].Description
             document.querySelector(".postalcode_rehabilitator").innerText = rehabilitatorData[0].Postalcode
             // //profile pic
-            document.querySelector(".profile_pic_rehabilitator").src =
-                rehabilitatorData[0]['Gender'] === "Vrouw" ? 'assets/img/patient2.png' : 'assets/img/patient1.png';
-
+            // document.querySelector(".profile_pic_rehabilitator").src =
+            //     rehabilitatorData[0]['Gender'] === "Vrouw" ? 'assets/img/patient2.png' : 'assets/img/patient1.png';
+            if (rehabilitatorData[0].foto != null) {
+                var foto = rehabilitatorData[0].foto;
+                $(".profile_pic_rehabilitator").attr("src", foto);
+            }
 
         } catch (e) {
             console.log("error while fetching rooms", e);
@@ -95,4 +98,8 @@ class ProfileController extends CategoryController {
         }
         return age;
     }
+    // loadFile = function(event) {
+    //     var image = document.getElementById('file_uploader');
+    //     image.src = URL.createObjectURL(event.target.files[0]);
+    // };
 }
