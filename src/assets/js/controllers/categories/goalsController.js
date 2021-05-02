@@ -66,13 +66,14 @@ class GoalsController extends CategoryController {
     }
 
     generateActivityCard(cardData) {
+        console.log(cardData)
         const pamText = cardData['earnable_pam'] === null ? "" : `<p class="goal-card-subheader">${cardData['earnable_pam']} verwachten PAM punten</p>`;
         return `
         <div class="goal-card-container mx-auto">
             <h5 class="goal-card-header">${cardData['header']}</h5>
             <div class="goal-card-content">
                 <div class="mx-auto">
-                    <img src="./assets/img/goal-activities/map.svg" alt="website logo" width="45%" class="mx-auto d-block">
+                    <img src="./assets/img/goal-activities/${cardData['icon_name']}.svg" onerror="if (this.src !== 'error.jpg') this.src = './assets/img/goal-activities/default.svg';" alt="website logo" width="45%" class="mx-auto d-block">
                 </div>
                 <p class="goal-card-subheader">${cardData['subheader']}</p>
                 <p>${cardData['content']}</p>
