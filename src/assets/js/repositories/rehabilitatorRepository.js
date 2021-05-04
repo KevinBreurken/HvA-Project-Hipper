@@ -16,7 +16,7 @@ class RehabilitatorRepository {
 
     async getPamActivities(id){
         return await networkManager
-            .doRequest(`${this.route}/activities`, {"id": id}, "POST");
+            .doRequest(`${this.route}/activities`, {"daily": id}, "POST");
     }
     async getAppointmentDate(id){
         return await networkManager

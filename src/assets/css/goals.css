@@ -154,6 +154,7 @@
 .goal-card-subheader {
     font-weight: bold;
     text-align: center;
+    color: var(--color-text);
 }
 
 .goal-card-container {

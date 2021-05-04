@@ -33,7 +33,7 @@ class GoalsController extends CategoryController {
         this.progressBar.setAppointmentText(pamdata['date']);
         //Empty the content-div and add the resulting view to the page
         $(".content").append(this.view);
-        this.loadActivities();
+        this.loadActivities(pamdata['daily']);
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
 
         $("#pam-dailygoal-text").html(`<b>Om het PAM totaal te bereiken moet u voor vandaag ${pamdata['daily']} PAM punten behalen.</b>`);
@@ -51,9 +51,9 @@ class GoalsController extends CategoryController {
         $('#appointment-expired-text').toggle(state);
     }
 
-    async loadActivities() {
+    async loadActivities(dailyPam) {
         try {
-            const activities = await this.rehabilitatorRepository.getPamActivities(sessionManager.get("userID"));
+            const activities = await this.rehabilitatorRepository.getPamActivities(dailyPam);
             const activityContainer = $('#activity-container');
             activityContainer.empty();
             for (let i = 0; i < activities.length; i++) {
@@ -66,13 +66,14 @@ class GoalsController extends CategoryController {
     }
 
     generateActivityCard(cardData) {
+        console.log(cardData)
         const pamText = cardData['earnable_pam'] === null ? "" : `<p class="goal-card-subheader">${cardData['earnable_pam']} verwachten PAM punten</p>`;
         return `
         <div class="goal-card-container mx-auto">
             <h5 class="goal-card-header">${cardData['header']}</h5>
             <div class="goal-card-content">
                 <div class="mx-auto">
-                    <img src="./assets/img/goal-activities/map.svg" alt="website logo" width="45%" class="mx-auto d-block">
+                    <img src="./assets/img/goal-activities/${cardData['icon_name']}.svg" onerror="if (this.src !== 'error.jpg') this.src = './assets/img/goal-activities/default.svg';" alt="website logo" width="45%" class="mx-auto d-block">
                 </div>
                 <p class="goal-card-subheader">${cardData['subheader']}</p>
                 <p>${cardData['content']}</p>
