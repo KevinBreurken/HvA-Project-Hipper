@@ -52,13 +52,46 @@ app.post("/user/login", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
+app.post("/user/update", (req, res) => {
+    let firstname = req.body.editValues[0]
+    let lastname = req.body.editValues[1];
+    let birthdate = req.body.editValues[2];
+    let gender = req.body.editValues[3];
+    let bloodtype = req.body.editValues[4];
+    let status = req.body.editValues[5];
+    let phone = req.body.editValues[6];
+    let email = req.body.editValues[7];
+    let description = req.body.editValues[8];
+
+    // Put all the values in a big array we can send back to update the site without reload!
+    let values = [];
+    values.push({"firstname": firstname, "lastname": lastname, "birthdate": birthdate, "gender": gender, "bloodtype": bloodtype,
+        "status": status, "phone": phone, "email": email, "description": description});
+
+    db.handleQuery(connectionPool, {
+        query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ? WHERE `id` = ?",
+        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, req.body.id]
+    }, (data) => {
+       res.status(httpOkCode).json({"values": values});
+    }, (err) => res.status(badRequestCode).json({"reason": err}));
+})
+
+app.post("/user/delete", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "DELETE FROM `rehabilitator` WHERE `id` = ?",
+        values: [req.body.id]
+    }, (data) => {
+        res.status(httpOkCode).json({"data": data});
+    }, (err) => res.status(badRequestCode).json({"reason": err}))
+});
+
 //retrieve rehabilitator info
 app.post("/user/rehabilitator", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender` from `rehabilitator` WHERE user_ID = ?",
         values: [req.body.id]
     }, (data) => {
-        console.log(data)
         res.send(data)
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
@@ -70,7 +103,6 @@ app.post("/user/caretaker", (req, res) => {
         query: "SELECT caretaker.caretaker_id, caretaker.first_name, caretaker.last_name, caretaker.email, caretaker.phone, caretaker.description, caretaker.experience_field1, caretaker.experience_field2, caretaker.experience_field3 FROM caretaker INNER JOIN rehabilitator ON rehabilitator.caretaker_id = caretaker.caretaker_id WHERE rehabilitator.user_id = ?",
         values: [req.body.id]
     }, (data) => {
-        console.log(data)
         res.send(data)
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
