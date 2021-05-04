@@ -104,7 +104,7 @@ app.post("/rehabilitator/goal/daily", (req, res) => {
 
 app.post("/rehabilitator/activities", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT * from `pam_activity` WHERE ? BETWEEN daily_pam_min AND daily_pam_max",
+        query: "SELECT * from `pam_activity` WHERE ? BETWEEN daily_pam_min AND daily_pam_max ORDER BY id ASC ",
         values: [req.body.daily]
     }, (activityData) => {
         res.send(activityData)
