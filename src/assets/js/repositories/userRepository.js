@@ -26,8 +26,9 @@ class UserRepository {
             .doRequest(`${this.route}/login`, {"username": username, "password": password}, "POST");
     }
 
-    async delete() {
-
+    async delete(id) {
+        return await networkManager
+            .doRequest(`${this.route}/delete`, {"id": id});
     }
 
 
@@ -35,8 +36,9 @@ class UserRepository {
 
     }
 
-    async update(id, values = {}) {
-
+    async update(id, editValues) {
+        return await networkManager
+            .doRequest(`${this.route}/update`, {"id": id, "editValues": editValues});
     }
 
     async getRehabilitatorInfo(id) {
