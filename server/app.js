@@ -53,6 +53,7 @@ app.post("/user/login", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
+// Update a rehabilsdjfsdjf
 app.post("/user/update", (req, res) => {
     let firstname = req.body.editValues[0]
     let lastname = req.body.editValues[1];
@@ -70,8 +71,10 @@ app.post("/user/update", (req, res) => {
         "status": status, "phone": phone, "email": email, "description": description});
 
     db.handleQuery(connectionPool, {
-        query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ? WHERE `id` = ?",
-        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, req.body.id]
+        query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ? WHERE `id` = ?;" +
+            "UPDATE `user` SET `username` = ?, `password` = ? WHERE `id` = ?",
+        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, req.body.id, req.body.userValues[0],
+            req.body.userValues[1], req.body.userValues[2]]
     }, (data) => {
        res.status(httpOkCode).json({"values": values});
     }, (err) => res.status(badRequestCode).json({"reason": err}));
@@ -101,8 +104,9 @@ app.post("/user/add", (req, res) => {
 
     db.handleQuery(connectionPool, {
         query: "INSERT INTO `rehabilitator` (`first_name`, `last_name`, `birthdate`, `gender`, `bloodtype`, `status`, `phonenumber`, `email`, `description`, `adress`)" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'test')",
-        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, req.body.id]
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'test'); INSERT INTO `user` (`username`, `password`, `role`) VALUES (?, ?, ?)",
+        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, "MOet nog gemaakt worden",
+            req.body.userValues[0],req.body.userValues[1],req.body.userValues[2]]
     })
 })
 
@@ -211,7 +215,7 @@ app.post("/caretaker/all", (req, res) => {
 // get all usernames and passwords of users for the rehab
 app.post("/caretaker/user", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `u`.`username`, `u`.`password` FROM `user` AS `u` WHERE `u`.`id` = ?",
+        query: "SELECT `u`.`username`, `u`.`password`, `u`.`id` FROM `user` AS `u` WHERE `u`.`id` = ?",
         values: [req.body.userID]
     }, (data) => {
         res.status(httpOkCode).json(data);

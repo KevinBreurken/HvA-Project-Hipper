@@ -6,6 +6,10 @@
 
 let birthdates = [];
 let editValues = [];
+let userValues = [];
+let userEditValues = [];
+let userIndexValue;
+let userId;
 let dataId;
 class PatientsController extends CategoryController {
 
@@ -48,9 +52,16 @@ class PatientsController extends CategoryController {
             this.deletePatient(dataId);
         })
 
+        // When you want to open the profile editor
         $(document).on("click", ".btn-add--profile", (e) => {
             this.openAddFields();
         })
+
+        //
+        $(document).on("click", ".add-btn--submit", (e) => {
+            this.addPatient();
+        })
+
 
         // When the form gets sent
         this.patientsView.find(".edit-form").on("submit", (e) => this.editPatient(e, dataId));
@@ -67,7 +78,7 @@ class PatientsController extends CategoryController {
             try {
                 // console.log(patients[i].user_id)
                 this.caretakerRepository.getUserInfo(patients[i].user_id).then(data => {
-                    console.log(data);
+                    userValues.push({"username": data[0].username, "password": data[0].password, "id": data[0].id});
                 });
             } catch (e) {
                 console.log("yikers");
@@ -120,6 +131,23 @@ class PatientsController extends CategoryController {
      * @param id
      */
     openProfileEditor(id) {
+        // Give the submit button the right class
+        if ($(".add-btn--submit")[0]) {
+            console.log("yeet");
+            $(".add-btn--submit").addClass("edit-btn--submit").removeClass("add-btn--submit");
+        }
+        // Put the right user values there
+        userValues.forEach((user, index) => {
+            // console.log(user.id, id);
+            if (user.id === parseInt(id)) {
+                console.log(user.username);
+                $("#userNameAdd").val(user.username);
+                $("#passwordAdd").val(user.password);
+                userId = user.id;
+                userIndexValue = index;
+            }
+        })
+        // $("#userNameAdd").val()
         // Clear the array with edit values
         $("#firstNameEdit").val($(".block-" + id + " .ct-name")[0].innerHTML);
         $(".modal-title").text("Bewerk " + $(".block-" + id + " .ct-name")[0].innerHTML);
@@ -170,6 +198,12 @@ class PatientsController extends CategoryController {
         $("#descriptionEdit").val($(".block-" + id + " .ct-description")[0].innerHTML);
     }
 
+    /**
+     * Edit patient function
+     * @param e, the event
+     * @param id, id of the patient
+     * @returns {Promise<boolean>}
+     */
     async editPatient(e, id) {
         // Prevent form from sending
         e.preventDefault();
@@ -178,6 +212,8 @@ class PatientsController extends CategoryController {
         $(".edit-succes").remove();
 
         // Set the lets
+        let username = $("#userNameAdd");
+        let password = $("#passwordAdd")
         let firstname = $("#firstNameEdit");
         let lastname = $("#lastNameEdit")
         let birthdate = $("#birthdateEdit")
@@ -200,13 +236,19 @@ class PatientsController extends CategoryController {
         editValues.push(email.val());
         editValues.push(description.val());
 
+        // Set user edit values
+        userEditValues = [];
+        userEditValues.push(username.val())
+        userEditValues.push(password.val())
+        userEditValues.push(userId);
+
         if (this.validateForm(firstname.val(), lastname.val(), birthdate.val(), bloodtype.val(), status.val(), phone.val(), email.val())) {
             return false;
         }
 
         // Once you have the values, set them.
         try {
-            let edited = await this.userRepository.update(id, editValues);
+            let edited = await this.userRepository.update(id, editValues, userEditValues);
             $(".edit-form").prepend("<div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">\n" +
                 ""+ edited.values[0].firstname + " is bewerkt!\n" +
                 "</div>")
@@ -222,11 +264,20 @@ class PatientsController extends CategoryController {
             $(".ct-phonenumber").text("Mobiel: " + edited.values[0].phone)
             $(".ct-mail").text("Email: " + edited.values[0].email)
             $(".ct-description").text(edited.values[0].description)
+
+            // Set the right user values in the array
+            userValues[userIndexValue].username = userEditValues[0];
+            userValues[userIndexValue].password = userEditValues[1];
         } catch (e) {
 
         }
     }
 
+    /**
+     * Delete a patient
+     * @param id
+     * @returns {Promise<void>}
+     */
     async deletePatient(id) {
         try {
             await this.userRepository.delete(id);
@@ -236,7 +287,20 @@ class PatientsController extends CategoryController {
         }
     }
 
-    validateForm(firstname, lastname, birthdate, bloodtype, status, phone, email) {
+    /**
+     * Checks for most values in the form if they're validated, otherwise return an error
+     * @param firstname
+     * @param lastname
+     * @param birthdate
+     * @param bloodtype
+     * @param status
+     * @param phone
+     * @param email
+     * @param username
+     * @param password
+     * @returns {boolean}
+     */
+    validateForm(firstname, lastname, birthdate, bloodtype, status, phone, email, username, password) {
         let errorcount = 0;
 
         // Check if firstname is empty
@@ -281,6 +345,16 @@ class PatientsController extends CategoryController {
             $("#emailError").text("Email kan niet leeg zijn!");
         }
 
+        if (username === "") {
+            errorcount++;
+            $("#usernameError").text("Username mag niet leeg zijn!");
+        }
+
+        if (password === "") {
+            errorcount++;
+            $("#passwordError").text("Wachtwoord kan niet leeg zijn!");
+        }
+
         if (errorcount > 0) {
             return true;
         } else {
@@ -291,6 +365,8 @@ class PatientsController extends CategoryController {
             $("#statusError").text("")
             $("#phoneError").text("");
             $("#emailError").text("");
+            $("#usernameError").text("");
+            $("#passwordError").text("");
         }
     }
 
@@ -304,6 +380,19 @@ class PatientsController extends CategoryController {
         $("#phoneEdit").val("");
         $("#emailEdit").val("");
         $("#descriptionEdit").val("");
-        console.log("oke")
+
+        // Username values
+        $("#userNameAdd").val("");
+        $("#passwordAdd").val("");
+
+        // Add the class to the button so that it knows we want to add
+        if ($(".edit-btn--submit")[0]) {
+            $(".edit-btn--submit").addClass("add-btn--submit").removeClass("edit-btn--submit");
+        }
     }
+
+    async addPatient() {
+        console.log("je had gewoon een tweede modal kunnen maken XD!")
+    }
+
 }
