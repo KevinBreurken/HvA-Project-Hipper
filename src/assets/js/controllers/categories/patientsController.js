@@ -43,8 +43,13 @@ class PatientsController extends CategoryController {
             dataId = e.target.attributes["data-id"].nodeValue
         });
 
+        // Confirm the delete
         $(document).on("click", ".btn-delete--confirm", (e) => {
             this.deletePatient(dataId);
+        })
+
+        $(document).on("click", ".btn-add--profile", (e) => {
+            this.openAddFields();
         })
 
         // When the form gets sent
@@ -56,8 +61,17 @@ class PatientsController extends CategoryController {
      * @param patients
      */
     createPatients(patients) {
+        console.log(patients);
         let blocky = $(".block-primary");
         for (let i = 0; i < patients.length; i++) {
+            try {
+                // console.log(patients[i].user_id)
+                this.caretakerRepository.getUserInfo(patients[i].user_id).then(data => {
+                    console.log(data);
+                });
+            } catch (e) {
+                console.log("yikers");
+            }
             let clone = blocky.clone().insertAfter(blocky);
             clone.attr('class', 'block-' + patients[i].id + ' row justify-content-md-center mt-5')
             //set the data in html
@@ -157,7 +171,6 @@ class PatientsController extends CategoryController {
     }
 
     async editPatient(e, id) {
-        console.log(wwwrootPath);
         // Prevent form from sending
         e.preventDefault();
 
@@ -279,5 +292,18 @@ class PatientsController extends CategoryController {
             $("#phoneError").text("");
             $("#emailError").text("");
         }
+    }
+
+    openAddFields() {
+        $("#firstNameEdit").val("");
+        $("#lastNameEdit").val("");
+        $("#birthdateEdit").val("");
+        $('input[name=genderRadio]:checked', '.edit-form').attr("checked", false);
+        $("#bloodEdit").val("");
+        $("#statusEdit").val("");
+        $("#phoneEdit").val("");
+        $("#emailEdit").val("");
+        $("#descriptionEdit").val("");
+        console.log("oke")
     }
 }

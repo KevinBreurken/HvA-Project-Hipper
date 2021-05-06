@@ -77,6 +77,7 @@ app.post("/user/update", (req, res) => {
     }, (err) => res.status(badRequestCode).json({"reason": err}));
 })
 
+// Delete a patient
 app.post("/user/delete", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "DELETE FROM `rehabilitator` WHERE `id` = ?",
@@ -85,6 +86,25 @@ app.post("/user/delete", (req, res) => {
         res.status(httpOkCode).json({"data": data});
     }, (err) => res.status(badRequestCode).json({"reason": err}))
 });
+
+// add a patient
+app.post("/user/add", (req, res) => {
+    let firstname = req.body.editValues[0]
+    let lastname = req.body.editValues[1];
+    let birthdate = req.body.editValues[2];
+    let gender = req.body.editValues[3];
+    let bloodtype = req.body.editValues[4];
+    let status = req.body.editValues[5];
+    let phone = req.body.editValues[6];
+    let email = req.body.editValues[7];
+    let description = req.body.editValues[8];
+
+    db.handleQuery(connectionPool, {
+        query: "INSERT INTO `rehabilitator` (`first_name`, `last_name`, `birthdate`, `gender`, `bloodtype`, `status`, `phonenumber`, `email`, `description`, `adress`)" +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'test')",
+        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, req.body.id]
+    })
+})
 
 //retrieve rehabilitator info
 app.post("/user/rehabilitator", (req, res) => {
@@ -179,20 +199,6 @@ app.post("/user/data", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}))
 });
 
-//dummy data example - rooms
-app.post("/room_example", (req, res) => {
-
-    db.handleQuery(connectionPool, {
-            query: "SELECT id, surface FROM room_example WHERE id = ?",
-            values: [req.body.id]
-        }, (data) => {
-            //just give all data back as json
-            res.status(httpOkCode).json(data);
-        }, (err) => res.status(badRequestCode).json({reason: err})
-    );
-
-});
-
 app.post("/caretaker/all", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `r`.* FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ?",
@@ -200,6 +206,16 @@ app.post("/caretaker/all", (req, res) => {
     }, (data) => {
         res.status(httpOkCode).json(data);
     }, (err) => res.status(badRequestCode).json({reason: err}))
+})
+
+// get all usernames and passwords of users for the rehab
+app.post("/caretaker/user", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `u`.`username`, `u`.`password` FROM `user` AS `u` WHERE `u`.`id` = ?",
+        values: [req.body.userID]
+    }, (data) => {
+        res.status(httpOkCode).json(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}));
 })
 
 app.post("/upload", function (req, res) {

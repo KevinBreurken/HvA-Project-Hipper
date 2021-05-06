@@ -41,6 +41,12 @@ class UserRepository {
             .doRequest(`${this.route}/update`, {"id": id, "editValues": editValues});
     }
 
+    // Adds a rehibalitant
+    async addPatient(insertValues) {
+        return await networkManager
+            .doRequest(`${this.route}/add`, {"insertValues": insertValues});
+    }
+
     async getRehabilitatorInfo(id) {
         return await networkManager
             .doRequest(`${this.route}/rehabilitator`, {"id": id}, "POST");
