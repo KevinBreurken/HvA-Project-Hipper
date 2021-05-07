@@ -11,6 +11,7 @@ let userEditValues = [];
 let userIndexValue;
 let userId;
 let dataId;
+let caretakerId;
 class PatientsController extends CategoryController {
 
     constructor() {
@@ -35,6 +36,11 @@ class PatientsController extends CategoryController {
         this.caretakerRepository.getAllRehab(sessionManager.get("userID")).then(data => {
             this.createPatients(data)
         });
+
+        // Get the caretaker id
+        this.caretakerRepository.getLoggedInCaretakerId(sessionManager.get("userID")).then(data => {
+            caretakerId = data[0].caretaker_id;
+        })
 
         // Open the profile editor
         $(document).on("click", ".btn-edit--profile", (e) => {
@@ -72,11 +78,9 @@ class PatientsController extends CategoryController {
      * @param patients
      */
     createPatients(patients) {
-        console.log(patients);
         let blocky = $(".block-primary");
         for (let i = 0; i < patients.length; i++) {
             try {
-                // console.log(patients[i].user_id)
                 this.caretakerRepository.getUserInfo(patients[i].user_id).then(data => {
                     userValues.push({"username": data[0].username, "password": data[0].password, "id": data[0].id});
                 });
@@ -212,37 +216,11 @@ class PatientsController extends CategoryController {
         $(".edit-succes").remove();
 
         // Set the lets
-        let username = $("#userNameAdd");
-        let password = $("#passwordAdd")
-        let firstname = $("#firstNameEdit");
-        let lastname = $("#lastNameEdit")
-        let birthdate = $("#birthdateEdit")
-        let gender = $('input[name=genderRadio]:checked', '.edit-form');
-        let bloodtype = $("#bloodEdit");
-        let status = $("#statusEdit");
-        let phone = $("#phoneEdit")
-        let email = $("#emailEdit")
-        let description = $("#descriptionEdit")
-
-        // Set editvalues;
-        editValues = [];
-        editValues.push(firstname.val())
-        editValues.push(lastname.val())
-        editValues.push(birthdate.val());
-        editValues.push(gender.val());
-        editValues.push(bloodtype.val());
-        editValues.push(status.val());
-        editValues.push(phone.val());
-        editValues.push(email.val());
-        editValues.push(description.val());
-
-        // Set user edit values
-        userEditValues = [];
-        userEditValues.push(username.val())
-        userEditValues.push(password.val())
+        editValues = this.setRehabValues()
+        userEditValues = this.setUserValues();
         userEditValues.push(userId);
 
-        if (this.validateForm(firstname.val(), lastname.val(), birthdate.val(), bloodtype.val(), status.val(), phone.val(), email.val())) {
+        if (this.validateForm(editValues[0], editValues[1], editValues[2], editValues[4], editValues[5], editValues[6], editValues[7], userEditValues[0], userEditValues[1])) {
             return false;
         }
 
@@ -370,6 +348,9 @@ class PatientsController extends CategoryController {
         }
     }
 
+    /**
+     * When clicking the add button, set all the modal values to nothing, so you can add something
+     */
     openAddFields() {
         $("#firstNameEdit").val("");
         $("#lastNameEdit").val("");
@@ -393,6 +374,62 @@ class PatientsController extends CategoryController {
 
     async addPatient() {
         console.log("je had gewoon een tweede modal kunnen maken XD!")
+        try {
+            let rehabValues = this.setRehabValues()
+            let userValues = this.setUserValues();
+
+            await this.userRepository.addUser(userValues).then(async (data) => {
+                await this.userRepository.addPatient(caretakerId, rehabValues, data.data.insertId);
+                console.log(data.data.insertId);
+            });
+        } catch (e) {
+            console.log(e);
+        }
     }
 
+    /**
+     * This function gets the values from the edit modal, but it's repeated multiple times in this class, so decided to make a function
+     * @returns {*[]}
+     */
+    setRehabValues() {
+        let firstname = $("#firstNameEdit");
+        let lastname = $("#lastNameEdit")
+        let birthdate = $("#birthdateEdit")
+        let gender = $('input[name=genderRadio]:checked', '.edit-form');
+        let bloodtype = $("#bloodEdit");
+        let status = $("#statusEdit");
+        let phone = $("#phoneEdit")
+        let email = $("#emailEdit")
+        let description = $("#descriptionEdit")
+
+        // Set editvalues;
+        editValues = [];
+        editValues.push(firstname.val())
+        editValues.push(lastname.val())
+        editValues.push(birthdate.val());
+        editValues.push(gender.val());
+        editValues.push(bloodtype.val());
+        editValues.push(status.val());
+        editValues.push(phone.val());
+        editValues.push(email.val());
+        editValues.push(description.val());
+
+        return editValues
+    }
+
+    /**
+     * This function gets the values from the user modal, but it's repeated multiple times in this class, so decided to make a function
+     * @returns {*[]}
+     */
+    setUserValues() {
+        let username = $("#userNameAdd");
+        let password = $("#passwordAdd")
+
+        // Set user edit values
+        userEditValues = [];
+        userEditValues.push(username.val())
+        userEditValues.push(password.val())
+
+        return userEditValues;
+    }
 }

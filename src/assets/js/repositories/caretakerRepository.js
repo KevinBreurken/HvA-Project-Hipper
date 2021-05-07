@@ -16,4 +16,9 @@ class CaretakerRepository {
         return await networkManager
             .doRequest(`${this.route}/user`, {"userID": userID});
     }
+
+    async getLoggedInCaretakerId(userID) {
+        return await networkManager
+            .doRequest(`${this.route}/getId`, {"userID": userID});
+    }
 }

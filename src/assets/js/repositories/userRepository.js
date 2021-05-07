@@ -42,9 +42,15 @@ class UserRepository {
     }
 
     // Adds a rehibalitant
-    async addPatient(id, insertValues, userValues) {
+    async addPatient(caretakerId, editValues, userID) {
         return await networkManager
-            .doRequest(`${this.route}/add`, {"insertValues": insertValues, "userValues": userValues});
+            .doRequest(`${this.route}/addRehab`, {"caretakerId": caretakerId, "editValues": editValues, "userID": userID});
+    }
+
+    // adds an user
+    async addUser(userValues) {
+        return await networkManager
+            .doRequest(`${this.route}/addUser`, {"userValues": userValues});
     }
 
     async getRehabilitatorInfo(id) {
