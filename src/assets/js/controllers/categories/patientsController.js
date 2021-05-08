@@ -68,9 +68,11 @@ class PatientsController extends CategoryController {
             this.addPatient();
         })
 
-
         // When the form gets sent
-        this.patientsView.find(".edit-form").on("submit", (e) => this.editPatient(e, dataId));
+        $(document).on("click", ".edit-btn--submit", (e) => {
+            this.editPatient(e, dataId);
+        })
+        // this.patientsView.find(".edit-form").on("submit", (e) => );
     }
 
     /**
@@ -82,7 +84,7 @@ class PatientsController extends CategoryController {
         for (let i = 0; i < patients.length; i++) {
             try {
                 this.caretakerRepository.getUserInfo(patients[i].user_id).then(data => {
-                    userValues.push({"username": data[0].username, "password": data[0].password, "id": data[0].id});
+                    userValues.push({"username": data[0].username, "password": data[0].password, "id": data[0].id, "userID": patients[i].id});
                 });
             } catch (e) {
                 console.log("yikers");
@@ -135,23 +137,22 @@ class PatientsController extends CategoryController {
      * @param id
      */
     openProfileEditor(id) {
+        console.log(userValues);
         // Give the submit button the right class
         if ($(".add-btn--submit")[0]) {
-            console.log("yeet");
             $(".add-btn--submit").addClass("edit-btn--submit").removeClass("add-btn--submit");
         }
         // Put the right user values there
         userValues.forEach((user, index) => {
-            // console.log(user.id, id);
-            if (user.id === parseInt(id)) {
-                console.log(user.username);
+            console.log(user, id);
+            if (user.userID === parseInt(id)) {
                 $("#userNameAdd").val(user.username);
                 $("#passwordAdd").val(user.password);
                 userId = user.id;
                 userIndexValue = index;
             }
         })
-        // $("#userNameAdd").val()
+
         // Clear the array with edit values
         $("#firstNameEdit").val($(".block-" + id + " .ct-name")[0].innerHTML);
         $(".modal-title").text("Bewerk " + $(".block-" + id + " .ct-name")[0].innerHTML);
@@ -373,14 +374,16 @@ class PatientsController extends CategoryController {
     }
 
     async addPatient() {
-        console.log("je had gewoon een tweede modal kunnen maken XD!")
         try {
             let rehabValues = this.setRehabValues()
             let userValues = this.setUserValues();
 
             await this.userRepository.addUser(userValues).then(async (data) => {
-                await this.userRepository.addPatient(caretakerId, rehabValues, data.data.insertId);
-                console.log(data.data.insertId);
+                let userMade = await this.userRepository.addPatient(caretakerId, rehabValues, data.data.insertId);
+                console.log(userMade);
+                $(".edit-form").prepend("<div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">\n" +
+                    ""+ userMade.values[0].firstname + " is gemaakt!\n" +
+                    "</div>")
             });
         } catch (e) {
             console.log(e);
