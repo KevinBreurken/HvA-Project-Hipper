@@ -42,7 +42,7 @@
                 <button class="btn-edit__green btn-edit--profile btn-secondary" data-toggle="modal"
                         data-target="#editModal">Profiel bewerken
                 </button>
-                <button class="btn-edit btn-edit--profile btn-delete--confirm btn-danger mt-2" data-toggle="modal"
+                <button class="btn-edit btn-edit--profile btn-delete--open btn-danger mt-2" data-toggle="modal"
                         data-target="#deleteModal">DELETE
                 </button>
             </div>
@@ -54,7 +54,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content modal-lg">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Bewerk</h5>
+                <h5 class="modal-title modal-title--edit" id="editModalLabel">Bewerk</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -160,7 +160,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-delete--confirm btn-danger" data-dismiss="modal">Verwijder</button>
             </div>
         </div>
     </div>

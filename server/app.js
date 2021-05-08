@@ -83,8 +83,8 @@ app.post("/user/update", (req, res) => {
 // Delete a patient
 app.post("/user/delete", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "DELETE FROM `rehabilitator` WHERE `id` = ?",
-        values: [req.body.id]
+        query: "DELETE FROM `rehabilitator` WHERE `id` = ?; DELETE FROM `user` WHERE `id` = ?",
+        values: [req.body.id, req.body.userID]
     }, (data) => {
         res.status(httpOkCode).json({"data": data});
     }, (err) => res.status(badRequestCode).json({"reason": err}))
@@ -92,7 +92,8 @@ app.post("/user/delete", (req, res) => {
 
 // add a patient
 app.post("/user/addRehab", (req, res) => {
-    let firstname = req.body.editValues[0]
+    console.log(req.body.editValues);
+    let firstname = req.body.editValues[0];
     let lastname = req.body.editValues[1];
     let birthdate = req.body.editValues[2];
     let gender = req.body.editValues[3];

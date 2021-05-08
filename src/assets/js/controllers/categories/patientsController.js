@@ -49,13 +49,18 @@ class PatientsController extends CategoryController {
         });
 
         //Open the delete
-        $(document).on("click", ".btn-delete--confirm", (e) => {
+        $(document).on("click", ".btn-delete--open", (e) => {
             dataId = e.target.attributes["data-id"].nodeValue
         });
 
         // Confirm the delete
         $(document).on("click", ".btn-delete--confirm", (e) => {
-            this.deletePatient(dataId);
+            userValues.forEach((user) => {
+                if (user.userID === parseInt(dataId)) {
+                    this.deletePatient(dataId, user.userID);
+                }
+            })
+
         })
 
         // When you want to open the profile editor
@@ -144,7 +149,6 @@ class PatientsController extends CategoryController {
         }
         // Put the right user values there
         userValues.forEach((user, index) => {
-            console.log(user, id);
             if (user.userID === parseInt(id)) {
                 $("#userNameAdd").val(user.username);
                 $("#passwordAdd").val(user.password);
@@ -155,7 +159,7 @@ class PatientsController extends CategoryController {
 
         // Clear the array with edit values
         $("#firstNameEdit").val($(".block-" + id + " .ct-name")[0].innerHTML);
-        $(".modal-title").text("Bewerk " + $(".block-" + id + " .ct-name")[0].innerHTML);
+        $(".modal-title--edit").text("Bewerk " + $(".block-" + id + " .ct-name")[0].innerHTML);
         $("#lastNameEdit").val($(".block-" + id + " .ct-lastname")[0].innerHTML);
 
         let momentBirthday;
@@ -257,9 +261,9 @@ class PatientsController extends CategoryController {
      * @param id
      * @returns {Promise<void>}
      */
-    async deletePatient(id) {
+    async deletePatient(id, userID) {
         try {
-            await this.userRepository.delete(id);
+            await this.userRepository.delete(id, userID);
             $(".block-" + id).remove();
         } catch (e) {
 
@@ -379,11 +383,14 @@ class PatientsController extends CategoryController {
             let userValues = this.setUserValues();
 
             await this.userRepository.addUser(userValues).then(async (data) => {
-                let userMade = await this.userRepository.addPatient(caretakerId, rehabValues, data.data.insertId);
-                console.log(userMade);
-                $(".edit-form").prepend("<div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">\n" +
-                    ""+ userMade.values[0].firstname + " is gemaakt!\n" +
-                    "</div>")
+                console.log(caretakerId, rehabValues, data.data.insertId);
+                await this.userRepository.addPatient(caretakerId, rehabValues, data.data.insertId).then((data) => {
+                    console.log(data);
+                });
+                // console.log(userMade);
+                // $(".edit-form").prepend("<div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">\n" +
+                //     ""+ userMade.values[0].firstname + " is gemaakt!\n" +
+                //     "</div>")
             });
         } catch (e) {
             console.log(e);
