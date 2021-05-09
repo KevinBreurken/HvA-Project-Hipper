@@ -7,14 +7,18 @@
             <div class="row pb-3">
                 <div class="col-lg-5 image-border1">
                     <img class="imgcaregiver profile_pic_caretaker" src=""
-                         onerror="if (this.src !== 'error.jpg') this.src = 'assets/img/default_image.png';" alt="verzorger">
+                         onerror="if (this.src !== 'error.jpg') this.src = 'assets/img/default_image.png';"
+                         alt="verzorger">
                 </div>
                 <div class="col-lg-5 rehabilitator-text">
-                    <p><small><ins>Contact:</ins><br>
+                    <p><small>
+                        <ins>Contact:</ins>
+                        <br>
                         Telefoon: <span class="phone_caretaker"></span><br>
                         E-Mail: <span class="email_caretaker"></span><br>
                         <br>
-                        <ins>Ervaring:</ins><br>
+                        <ins>Ervaring:</ins>
+                        <br>
                         <span class="experience1_caretaker"></span><br>
                         <span class="experience2_caretaker"></span><br>
                         <span class="experience3_caretaker"></span><br>
@@ -38,14 +42,15 @@
         <div class="w-100 pad-container-content">
             <h2 class="mb-2"><b>Beschrijving</b></h2>
             <p style="padding-bottom: 20px">
-                Wilt u wat delen met andere revalidanten? heeft u tips/suggesties of wilt u gewoon iets gezelligs plaatsen? Typ uw bericht hieronder en verstuur het om met andere te delen!
+                Wilt u wat delen met andere revalidanten? heeft u tips/suggesties of wilt u gewoon iets gezelligs
+                plaatsen? Typ uw bericht hieronder en verstuur het om met andere te delen!
             </p>
 
-            <form class="contact-form" method="POST" action="send">
+            <form id="message-form" class="contact-form" method="POST">
                 <!-- Message -->
                 <div class="form-group row">
                     <div class="col-lg-8">
-                        <textarea class="form-control form-control-sm" name="message" rows="15" required></textarea>
+                        <textarea id="message-content" class="form-control form-control-sm" name="message" rows="15" required></textarea>
                     </div>
 
                 </div>

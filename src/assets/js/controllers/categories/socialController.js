@@ -14,7 +14,7 @@ class SocialController extends CategoryController {
     }
 
     //Called when the login.html has been loaded.
-    setup(data) {
+    async setup(data) {
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-social");
         //Set the navigation to the correct state.
@@ -24,15 +24,20 @@ class SocialController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
-        this.retrieveCaretakerInfo()
+        this.retrieveCaretakerInfo();
         this.retrieveMessages()
+        document.getElementById("message-form").addEventListener("submit", async event => {
+            event.preventDefault();
+            const text = document.querySelector("#message-content").value
+            await this.sendMessage(text);
+            location.reload();
+        })
     }
 
     async retrieveCaretakerInfo() {
         try {
             const currentLoggedID = sessionManager.get("userID");
             const roomData = await this.userRepository.getCaretakerInfo(currentLoggedID);
-
             const caretakerID = roomData[0].caretaker_id;
             const fullname = roomData[0].first_name + " " + roomData[0].last_name
 
@@ -47,10 +52,10 @@ class SocialController extends CategoryController {
             document.querySelector(".description_caretaker").innerText = roomData[0].description
             //profile pic
             document.querySelector(".profile_pic_caretaker").src = `assets/img/caretaker/${caretakerID}_profile_pic.png`;
+            return caretakerID;
         } catch (e) {
             console.log("error while fetching rooms", e);
         }
-
     }
 
     async retrieveMessages() {
@@ -59,7 +64,7 @@ class SocialController extends CategoryController {
             const roomData = await this.messagesRepository.getAllMessages(currentLoggedID);
             for (let i = 0; i < roomData.length; i++) {
                 const age = this.getAge(roomData[i].birthdate)
-                const child = `<h2 class="mb-2"><b>${roomData[i].first_name} - ${age} jaar</b></h2>
+                const child = `<h2 class="mb-2"><b>${roomData[i].first_name}  ${age} jaar</b></h2>
                         <p style="padding-bottom: 20px; border-bottom:2px solid var(--color-category-current);">
                          ${roomData[i].content}
                         </p>  
@@ -70,6 +75,13 @@ class SocialController extends CategoryController {
             console.log("error while fetching rooms", e);
         }
 
+    }
+    async sendMessage(message) {
+        const caretakerID = await this.retrieveCaretakerInfo()
+        const currentLoggedUserID = sessionManager.get("userID");
+        const roomdata = await this.userRepository.getRehabilitatorInfo(currentLoggedUserID)
+        const userID = roomdata[0].id;
+        await this.messagesRepository.insetMessage(caretakerID, userID, message);
     }
 
     getAge(dateString) {

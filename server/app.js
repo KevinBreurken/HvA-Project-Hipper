@@ -55,7 +55,7 @@ app.post("/user/login", (req, res) => {
 //retrieve rehabilitator info
 app.post("/user/rehabilitator", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender` from `rehabilitator` WHERE user_ID = ?",
+        query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender`, `id` from `rehabilitator` WHERE user_ID = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data)
@@ -76,11 +76,23 @@ app.post("/user/caretaker", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
-//messages
+//retrieve messages
 app.post("/messages", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT message.content, rehabilitator.first_name, rehabilitator.birthdate FROM message INNER JOIN rehabilitator ON message.rehabilitator_id = rehabilitator.id",
         values: [req.body.id]
+    }, (data) => {
+        console.log(data)
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+//insert messages
+app.post("/messages/insert", (req, res) => {
+    console.log("body = " , req.body)
+    db.handleQuery(connectionPool, {
+        query: "INSERT INTO message(caretaker_id, rehabilitator_id, content) VALUES (?, ?, ?);",
+        values: [req.body.caretakerID, req.body.userID, req.body.message]
     }, (data) => {
         console.log(data)
         res.send(data)
