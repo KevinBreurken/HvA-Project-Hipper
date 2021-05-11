@@ -25,7 +25,15 @@ class ProfileController extends CategoryController {
         $(".content").empty().append(this.view);
         this.retrieveRehabilitatorInfo();
         this.retrieveCaretakerInfo();
+        this.view.find("#upload").on("click", function() {
+            //Set the proper action url
+            $(this).closest("form").attr("action", `${baseUrl}/upload`);
 
+            //Submit the form
+            $(this).submit();
+
+        });
+        // this.view.find(".upload-form").on("submit", (e) => this.uploadPicture(e));
     }
 
     async retrieveRehabilitatorInfo() {
@@ -98,8 +106,14 @@ class ProfileController extends CategoryController {
         }
         return age;
     }
-    // loadFile = function(event) {
-    //     var image = document.getElementById('file_uploader');
-    //     image.src = URL.createObjectURL(event.target.files[0]);
-    // };
+
+    // async uploadPicture(event) {
+    //     event.preventDefault();
+    //     try {
+    //         let nogwat = await this.userRepository.upload();
+    //         // console.log($('.input-file').val())
+    //     }catch (e){
+    //         console.log(e)
+    //     }
+    // }
 }

@@ -17,8 +17,13 @@
                         Postcode: <span class="postalcode_rehabilitator">3218JK</span><br>
                         Bloedtype: <span class="bloodtype_rehabilitator">O</span><br>
                         Foto uploaden:
-                        <input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" >
                     </small></p>
+                    <form class="upload-form" method="post" encType="multipart/form-data">
+                        <div>
+                            <input class="input-file" type="file" name="sampleFile" />
+                        </div>
+                        <input type="submit" value="Upload!" id="upload" />
+                    </form>
                 </div>
             </div>
 

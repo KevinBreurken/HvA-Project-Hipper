@@ -176,14 +176,25 @@ app.post("/upload", function (req, res) {
     }
 
     let sampleFile = req.files.sampleFile;
+    let rest = sampleFile.name.substring(sampleFile.name.indexOf("."));
+    let randomString = Math.random().toString(36).substring(7)
+    let fileNameString = randomString + rest;
 
-    sampleFile.mv(wwwrootPath + "/uploads/test.jpg", function (err) {
+    sampleFile.mv(wwwrootPath + "/" + fileNameString , function (err) {
         if (err) {
-            return res.status(badRequestCode).json({reason: err});
+            // return res.status(badRequestCode).json({reason: err});
+            return err.message;
         }
-
-        return res.status(httpOkCode).json("OK");
+        // return res.status(httpOkCode).json("OK");
     });
+
+    db.handleQuery(connectionPool, {
+        query: "UPDATE `rehabilitator` SET `foto` = ? WHERE `id` = ?",
+        values: [fileNameString,3]
+    }, (data) => {
+        res.status(httpOkCode).json(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}))
+
 });
 
 //------- END ROUTES -------
