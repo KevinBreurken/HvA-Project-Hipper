@@ -19,8 +19,11 @@ class PatientsController extends CategoryController {
         nav.setNavigationState(navState.Caretaker)
         //Load the login-content into memory.
         this.view = $(data);
-        this.caretakerRepository.getAllRehab(sessionManager.get("userID")).then(data => {
+        this.caretakerRepository.getAllRehab(sessionManager.get("userID"),1).then(data => {
             this.createPatients(data)
+        });
+        this.caretakerRepository.getRehabCount(sessionManager.get("userID")).then(data => {
+            console.log(data)
         });
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);

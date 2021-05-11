@@ -7,8 +7,13 @@ class CaretakerRepository {
         this.route = "/caretaker"
     }
 
-    async getAllRehab(userID) {
+    async getAllRehab(userID, paginationPosition) {
         return await networkManager
-            .doRequest(`${this.route}/all`, {"userID": userID}, "POST");
+            .doRequest(`${this.route}/all`, {"userID": userID, "paginationPosition": paginationPosition}, "POST");
+    }
+
+    async getRehabCount(userID) {
+        return await networkManager
+            .doRequest(`${this.route}/all/count`, {"userID": userID}, "POST");
     }
 }
