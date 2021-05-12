@@ -115,9 +115,10 @@ app.post("/user/addRehab", (req, res) => {
 
 // add an user
 app.post("/user/addUser", (req, res) => {
+    let crypted = cryptoHelper.getHashedPassword(req.body.userValues[1]);
     db.handleQuery(connectionPool, {
         query: "INSERT INTO `user` (`username`, `password`, `role`) VALUES (?, ?, ?)",
-        values: [req.body.userValues[0],req.body.userValues[1],0]
+        values: [req.body.userValues[0],crypted,0]
     }, (result) => {
         res.status(httpOkCode).json({"data": result});
     }, (err) => res.status(badRequestCode).json({"reason": err}));
@@ -133,6 +134,7 @@ app.post("/user/rehabilitator", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
 //retrieve caretaker info
 app.post("/user/caretaker", (req, res) => {
     console.log(req.body.id)

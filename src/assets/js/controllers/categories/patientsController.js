@@ -150,6 +150,7 @@ class PatientsController extends CategoryController {
         if ($(".add-btn--submit")[0]) {
             $(".add-btn--submit").addClass("edit-btn--submit").removeClass("add-btn--submit");
         }
+
         // Put the right user values there
         userValues.forEach((user, index) => {
             if (user.userID === parseInt(id)) {
@@ -158,7 +159,7 @@ class PatientsController extends CategoryController {
                 userId = user.id;
                 userIndexValue = index;
             }
-        })
+        });
 
         // Clear the array with edit values
         $("#firstNameEdit").val($(".block-" + id + " .ct-name")[0].innerHTML);
