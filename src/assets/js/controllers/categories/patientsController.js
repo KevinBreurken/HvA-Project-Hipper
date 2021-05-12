@@ -12,6 +12,7 @@ let userIndexValue;
 let userId;
 let dataId;
 let caretakerId;
+let blocky;
 class PatientsController extends CategoryController {
 
     constructor() {
@@ -33,6 +34,10 @@ class PatientsController extends CategoryController {
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.patientsView);
 
+        // Set the blocky content
+        blocky = $(".block-primary");
+
+        // Get all patients
         this.caretakerRepository.getAllRehab(sessionManager.get("userID")).then(data => {
             this.createPatients(data)
         });
@@ -60,7 +65,6 @@ class PatientsController extends CategoryController {
                     this.deletePatient(dataId, user.userID);
                 }
             })
-
         })
 
         // When you want to open the profile editor
@@ -85,7 +89,6 @@ class PatientsController extends CategoryController {
      * @param patients
      */
     createPatients(patients) {
-        let blocky = $(".block-primary");
         for (let i = 0; i < patients.length; i++) {
             try {
                 this.caretakerRepository.getUserInfo(patients[i].user_id).then(data => {
@@ -237,16 +240,17 @@ class PatientsController extends CategoryController {
                 "</div>")
             $("html, .modal").animate({ scrollTop: 0 }, "slow");
 
+            console.log(edited.values[0].id);
             // Set the values In the person self
-            $(".ct-name").text(edited.values[0].firstname)
-            $(".ct-lastname").text(edited.values[0].lastname)
-            $(".ct-year").text("Leeftijd: " + this.getAge(edited.values[0].birthdate));
-            $(".ct-gender").text("Geslacht: " + edited.values[0].gender);
-            $(".ct-bloodtype").text("Bloedtype: " + edited.values[0].bloodtype)
-            $(".ct-status").text("Status: " + edited.values[0].status)
-            $(".ct-phonenumber").text("Mobiel: " + edited.values[0].phone)
-            $(".ct-mail").text("Email: " + edited.values[0].email)
-            $(".ct-description").text(edited.values[0].description)
+            $(".block-" + edited.values[0].id + " .ct-name").text(edited.values[0].firstname)
+            $(".block-" + edited.values[0].id + " .ct-lastname").text(edited.values[0].lastname)
+            $(".block-" + edited.values[0].id + " .ct-year").text("Leeftijd: " + this.getAge(edited.values[0].birthdate));
+            $(".block-" + edited.values[0].id + " .ct-gender").text("Geslacht: " + edited.values[0].gender);
+            $(".block-" + edited.values[0].id + " .ct-bloodtype").text("Bloedtype: " + edited.values[0].bloodtype)
+            $(".block-" + edited.values[0].id + " .ct-status").text("Status: " + edited.values[0].status)
+            $(".block-" + edited.values[0].id + " .ct-phonenumber").text("Mobiel: " + edited.values[0].phone)
+            $(".block-" + edited.values[0].id + " .ct-mail").text("Email: " + edited.values[0].email)
+            $(".block-" + edited.values[0].id + " .ct-description").text(edited.values[0].description)
 
             // Set the right user values in the array
             userValues[userIndexValue].username = userEditValues[0];
@@ -383,14 +387,9 @@ class PatientsController extends CategoryController {
             let userValues = this.setUserValues();
 
             await this.userRepository.addUser(userValues).then(async (data) => {
-                console.log(caretakerId, rehabValues, data.data.insertId);
                 await this.userRepository.addPatient(caretakerId, rehabValues, data.data.insertId).then((data) => {
-                    console.log(data);
+                    location.reload();
                 });
-                // console.log(userMade);
-                // $(".edit-form").prepend("<div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">\n" +
-                //     ""+ userMade.values[0].firstname + " is gemaakt!\n" +
-                //     "</div>")
             });
         } catch (e) {
             console.log(e);

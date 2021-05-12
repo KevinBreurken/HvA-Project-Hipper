@@ -68,7 +68,7 @@ app.post("/user/update", (req, res) => {
     // Put all the values in a big array we can send back to update the site without reload!
     let values = [];
     values.push({"firstname": firstname, "lastname": lastname, "birthdate": birthdate, "gender": gender, "bloodtype": bloodtype,
-        "status": status, "phone": phone, "email": email, "description": description});
+        "status": status, "phone": phone, "email": email, "description": description, "id": req.body.id});
 
     db.handleQuery(connectionPool, {
         query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ? WHERE `id` = ?;" +
@@ -76,6 +76,7 @@ app.post("/user/update", (req, res) => {
         values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, req.body.id, req.body.userValues[0],
             req.body.userValues[1], req.body.userValues[2]]
     }, (data) => {
+
        res.status(httpOkCode).json({"values": values});
     }, (err) => res.status(badRequestCode).json({"reason": err}));
 })
