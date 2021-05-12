@@ -11,7 +11,8 @@ const cryptoHelper = require("./utils/cryptoHelper");
 const corsConfig = require("./utils/corsConfigHelper");
 const app = express();
 const fileUpload = require("express-fileupload");
-
+const fs = require("fs");
+app.use(bodyParser.json({limit: '10000mb', extended: true}))
 //logger lib  - 'short' is basic logging info
 app.use(morgan("short"));
 
@@ -170,32 +171,22 @@ app.post("/caretaker/all", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}))
 })
 
-app.post("/upload", function (req, res) {
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(badRequestCode).json({reason: "No files were uploaded."});
-    }
-
-    let sampleFile = req.files.sampleFile;
-    let rest = sampleFile.name.substring(sampleFile.name.indexOf("."));
+app.post("/user/uploader", function (req, res) {
     let randomString = Math.random().toString(36).substring(7)
-    let fileNameString = randomString + rest;
 
-    sampleFile.mv(wwwrootPath + "/" + fileNameString , function (err) {
-        if (err) {
-            // return res.status(badRequestCode).json({reason: err});
-            return err.message;
-        }
-        // return res.status(httpOkCode).json("OK");
-    });
+    var data = req.body.data.replace(/^data:image\/\w+;base64,/, '');
+    const fileImage = randomString + ".png";
+    fs.writeFile(wwwrootPath + "/" + fileImage, data, {encoding: 'base64'}, function(err){});
 
     db.handleQuery(connectionPool, {
         query: "UPDATE `rehabilitator` SET `foto` = ? WHERE `user_id` = ?",
-        values: [fileNameString,1]
+        values: [fileImage,1]
     }, (data) => {
         res.status(httpOkCode).json(data);
     }, (err) => res.status(badRequestCode).json({reason: err}))
 
 });
+
 
 //------- END ROUTES -------
 

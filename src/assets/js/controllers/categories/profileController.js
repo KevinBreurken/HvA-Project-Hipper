@@ -25,15 +25,11 @@ class ProfileController extends CategoryController {
         $(".content").empty().append(this.view);
         this.retrieveRehabilitatorInfo();
         this.retrieveCaretakerInfo();
-        this.view.find("#upload").on("click", function() {
-            //Set the proper action url
-            $(this).closest("form").attr("action", `${baseUrl}/upload`);
 
-            //Submit the form
-            $(this).submit();
-
+        this.view.find("#fileUpload").on("change", function () {
+            saveImageUpload(this,'#file_uploader')
         });
-        // this.view.find(".upload-form").on("submit", (e) => this.uploadPicture(e));
+
     }
 
     async retrieveRehabilitatorInfo() {
@@ -60,7 +56,7 @@ class ProfileController extends CategoryController {
             //     rehabilitatorData[0]['Gender'] === "Vrouw" ? 'assets/img/patient2.png' : 'assets/img/patient1.png';
             if (rehabilitatorData[0].foto != null) {
                 var foto = rehabilitatorData[0].foto;
-                $(".profile_pic_rehabilitator").attr("src", foto);
+                $(".profile_pic_rehabilitator").attr("src", "uploads/" + foto);
             }
 
         } catch (e) {
@@ -107,13 +103,4 @@ class ProfileController extends CategoryController {
         return age;
     }
 
-    // async uploadPicture(event) {
-    //     event.preventDefault();
-    //     try {
-    //         let nogwat = await this.userRepository.upload();
-    //         // console.log($('.input-file').val())
-    //     }catch (e){
-    //         console.log(e)
-    //     }
-    // }
 }
