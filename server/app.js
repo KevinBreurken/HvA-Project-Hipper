@@ -189,8 +189,8 @@ app.post("/upload", function (req, res) {
     });
 
     db.handleQuery(connectionPool, {
-        query: "UPDATE `rehabilitator` SET `foto` = ? WHERE `id` = ?",
-        values: [fileNameString,3]
+        query: "UPDATE `rehabilitator` SET `foto` = ? WHERE `user_id` = ?",
+        values: [fileNameString,1]
     }, (data) => {
         res.status(httpOkCode).json(data);
     }, (err) => res.status(badRequestCode).json({reason: err}))
