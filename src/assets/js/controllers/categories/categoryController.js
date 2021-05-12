@@ -37,7 +37,7 @@ class CategoryController {
     }
 }
 
-async function saveImageUpload(input, htmlHook) {
+async function saveImageUpload(input, htmlHook, UserID) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
@@ -45,7 +45,7 @@ async function saveImageUpload(input, htmlHook) {
                 .attr('src', e.target.result)
 
             return networkManager
-                .doRequest(`/user/uploader`, {"data": e.target.result}, "POST");
+                .doRequest(`/user/uploader`, {"data": e.target.result, "id": UserID}, "POST");
         };
         return reader.readAsDataURL(input.files[0]);
     }

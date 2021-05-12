@@ -56,7 +56,8 @@ app.post("/user/login", (req, res) => {
 //retrieve rehabilitator info
 app.post("/user/rehabilitator", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender`, `foto` from `rehabilitator` WHERE user_ID = ?",
+        // query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender`, `foto` from `rehabilitator` WHERE user_ID = ?",
+        query: "SELECT `r`.* , `u`.`photo` from `rehabilitator` `r` INNER JOIN `user` `u` on `u`.`id` = `r`.`user_id` WHERE `u`.`id` = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data)
@@ -179,8 +180,8 @@ app.post("/user/uploader", function (req, res) {
     fs.writeFile(wwwrootPath + "/" + fileImage, data, {encoding: 'base64'}, function(err){});
 
     db.handleQuery(connectionPool, {
-        query: "UPDATE `rehabilitator` SET `foto` = ? WHERE `user_id` = ?",
-        values: [fileImage,1]
+        query: "UPDATE `user` SET `foto` = ? WHERE `id` = ?",
+        values: [fileImage,req.body.id]
     }, (data) => {
         res.status(httpOkCode).json(data);
     }, (err) => res.status(badRequestCode).json({reason: err}))
