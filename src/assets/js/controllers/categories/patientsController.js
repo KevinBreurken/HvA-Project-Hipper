@@ -388,7 +388,8 @@ class PatientsController extends CategoryController {
 
             await this.userRepository.addUser(userValues).then(async (data) => {
                 await this.userRepository.addPatient(caretakerId, rehabValues, data.data.insertId).then((data) => {
-                    location.reload();
+                    console.log(data);
+                    // location.reload();
                 });
             });
         } catch (e) {
