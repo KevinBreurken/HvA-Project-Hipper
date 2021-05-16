@@ -155,7 +155,6 @@ class PatientsController extends CategoryController {
         userValues.forEach((user, index) => {
             if (user.userID === parseInt(id)) {
                 $("#userNameAdd").val(user.username);
-                $("#passwordAdd").val(user.password);
                 userId = user.id;
                 userIndexValue = index;
             }

@@ -37,10 +37,12 @@ app.post("/user/login", (req, res) => {
 
     //TODO: We shouldn't save a password unencrypted!! Improve this by using cryptoHelper :)
     const password = req.body.password;
+    const hashed_password = cryptoHelper.getHashedPassword(password);
+    console.log(hashed_password);
 
     db.handleQuery(connectionPool, {
         query: "SELECT `username`, `password`, `id`, `role` FROM user WHERE username = ? AND password = ?",
-        values: [username, password]
+        values: [username, hashed_password]
     }, (data) => {
         if (data.length === 1) {
             //return just the username for now, never send password back!
@@ -74,7 +76,7 @@ app.post("/user/update", (req, res) => {
         query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ? WHERE `id` = ?;" +
             "UPDATE `user` SET `username` = ?, `password` = ? WHERE `id` = ?",
         values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, req.body.id, req.body.userValues[0],
-            req.body.userValues[1], req.body.userValues[2]]
+            cryptoHelper.getHashedPassword(req.body.userValues[1]), req.body.userValues[2]]
     }, (data) => {
 
        res.status(httpOkCode).json({"values": values});
