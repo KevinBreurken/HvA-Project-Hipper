@@ -92,16 +92,6 @@ app.post("/pam", (req, res) => {
 
 });
 
-app.post("/rehabilitator/goal/daily", (req, res) => {
-    db.handleQuery(connectionPool, {
-        query: "SELECT `pam_goal_daily` from `rehabilitator` WHERE user_id = ?",
-        values: [req.body.id]
-    }, (data) => {
-        res.send(data)
-
-    }, (err) => res.status(badRequestCode).json({reason: err}));
-});
-
 app.post("/rehabilitator/activities", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT * from `pam_activity` WHERE ? BETWEEN daily_pam_min AND daily_pam_max ORDER BY id ASC ",
