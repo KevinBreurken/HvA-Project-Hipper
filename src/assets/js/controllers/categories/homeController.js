@@ -9,6 +9,8 @@ class HomeController extends CategoryController {
         super();
         this.loadView("views/home.html");
         this.userRepository = new UserRepository();
+        this.caretakerRepository = new caretakerRepository();
+        this.pamRepository = new pamRepository();
     }
 
     //Called when the login.html has been loaded.
