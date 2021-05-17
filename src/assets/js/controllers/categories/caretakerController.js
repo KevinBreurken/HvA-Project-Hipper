@@ -9,10 +9,13 @@ class CaretakerController extends CategoryController {
     constructor() {
         super();
         this.loadView("views/caretaker/home.html");
+        this.caretakerRepository = new CaretakerRepository();
+        this.rehabilitatorRepository = new RehabilitatorRepository();
+        this.pamRepository = new PamRepository();
     }
 
     //Called when the home.html has been loaded
-    setup(data) {
+    async setup(data) {
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-default");
         //Set the navigation to the correct state.
@@ -25,5 +28,25 @@ class CaretakerController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.caretakerView);
+
+        //add the patient overview
+        await this.initializeTable()
     }
+
+    //create the table
+    async initializeTable(){
+        const data = await this.caretakerRepository.getAllRehab(sessionManager.get("userID"));
+        console.log(data);
+        await this.createPatients(data);
+    }
+
+    async createPatients(data){
+        for (let i = 0; i < data.length; i++) {
+            console.log("naam:  " + data[i].first_name + data[i].last_name);
+            console.log("datum: " + data[i].appointment_date);
+            console.log("id:    " + data[i].id);
+        }
+    }
+
+
 }
