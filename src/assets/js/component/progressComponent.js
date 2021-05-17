@@ -10,10 +10,16 @@ class ProgressComponent {
     }
 
     setProgressBarData(totalPamGoal, currentlyEarnedPam, dailyPamGoal) {
+        if(totalPamGoal == null)
+            this.htmlRoot.find(".pad-progress-container").hide();
+
         //Legend
         this.htmlRoot.find(".legend-earned").html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
         this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM punten doel voor vandaag`);
-        this.htmlRoot.find(".legend-total").html(`${totalPamGoal} PAM punten als totaal doel`);
+        if(totalPamGoal != null)
+            this.htmlRoot.find(".legend-total").html(`${totalPamGoal} PAM punten als totaal doel`);
+        else
+            this.htmlRoot.find(".total-li").hide();
         //Bar
         this.htmlRoot.find('.pam-value').html(totalPamGoal);
         this.setProgress('#goal-previous', 0, 0, true)
@@ -56,8 +62,8 @@ class ProgressComponent {
         const totalPamGoal = await this.retrieveTotalPamGoal(userId);
         const currentlyEarnedPam = await this.retrieveEarnedPam(userId);
         const appointmentDate = await this.retrieveAppointmentDate(userId);
-        const dailyPamGoal = await this.calculateDailyPamGoal(totalPamGoal - currentlyEarnedPam,appointmentDate);
-
+        let dailyPamGoal = await this.calculateDailyPamGoal(totalPamGoal - currentlyEarnedPam,appointmentDate);
+        dailyPamGoal = dailyPamGoal.toFixed(1);
         return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal, "date": appointmentDate};
     }
 
