@@ -156,12 +156,14 @@ app.post("/room_example", (req, res) => {
 });
 
 app.get("/caretaker/all", (req, res) => {
-    const maxPerPagination = 2;
+    const maxPerPagination = req.query.amountPerPage;
     const currentPaginationOffset = (req.query.paginationPosition - 1) * maxPerPagination;
+
     db.handleQuery(connectionPool, {
         query: "SELECT `r`.* FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ? LIMIT ? OFFSET ?",
-        values: [req.query.userID, maxPerPagination, currentPaginationOffset]
+        values: [req.query.userID, parseInt(maxPerPagination), currentPaginationOffset]
     }, (data) => {
+        console.log(data)
         res.status(httpOkCode).json(data);
     }, (err) => res.status(badRequestCode).json({reason: err}))
 })
@@ -169,7 +171,7 @@ app.get("/caretaker/all", (req, res) => {
 app.get("/caretaker/all/count", (req, res) => {
     console.log(req.query.userID)
     db.handleQuery(connectionPool, {
-        query: "SELECT Count(*) FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ?",
+        query: "SELECT Count(*) as `count` FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ?",
         values: [req.query.userID]
     }, (data) => {
         res.status(httpOkCode).json(data);
