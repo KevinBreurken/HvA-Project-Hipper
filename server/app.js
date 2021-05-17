@@ -177,14 +177,31 @@ app.post("/user/uploader", function (req, res) {
 
     var data = req.body.data.replace(/^data:image\/\w+;base64,/, '');
     const fileImage = randomString + ".png";
-    fs.writeFile(wwwrootPath + "/" + fileImage, data, {encoding: 'base64'}, function(err){});
+    fs.writeFile(wwwrootPath + "/" + fileImage, data, {encoding: 'base64'}, function (err) {
+    });
 
+    //check if stored photo exist in database
     db.handleQuery(connectionPool, {
-        query: "UPDATE `user` SET `foto` = ? WHERE `id` = ?",
-        values: [fileImage,req.body.id]
+        query: "SELECT `user`.`photo` FROM `user` WHERE `id` = ?",
+        values: [req.body.id]
     }, (data) => {
-        res.status(httpOkCode).json(data);
+        if (data[0]['photo'] != null) {
+            try {
+                fs.unlinkSync(wwwrootPath + "/" + data[0]['photo'])
+                //file removed
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        //change the photo name to the photo random name
+        db.handleQuery(connectionPool, {
+            query: "UPDATE `user` SET `photo` = ? WHERE `id` = ?",
+            values: [fileImage, req.body.id]
+        }, (data) => {
+            res.status(httpOkCode).json(data);
+        }, (err) => res.status(badRequestCode).json({reason: err}))
     }, (err) => res.status(badRequestCode).json({reason: err}))
+
 
 });
 
