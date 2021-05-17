@@ -9,11 +9,6 @@ class RehabilitatorRepository {
         this.route = "/rehabilitator"
     }
 
-    async getPamDailyGoal(id) {
-        return await networkManager
-            .doRequest(`${this.route}/goal/daily`, {"id": id}, "POST");
-    }
-
     async getTotalGoal(id) {
         return await networkManager
             .doRequest(`${this.route}/goal/total`, {"id": id}, "POST");
@@ -21,7 +16,7 @@ class RehabilitatorRepository {
 
     async getPamActivities(id){
         return await networkManager
-            .doRequest(`${this.route}/activities`, {"id": id}, "POST");
+            .doRequest(`${this.route}/activities`, {"daily": id}, "POST");
     }
     async getAppointmentDate(id){
         return await networkManager

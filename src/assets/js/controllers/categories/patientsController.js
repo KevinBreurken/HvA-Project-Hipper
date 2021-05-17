@@ -74,7 +74,9 @@ class PatientsController extends CategoryController {
 
         //
         $(document).on("click", ".add-btn--submit", (e) => {
-            this.addPatient();
+            this.addPatient(e).then((e) => {
+                console.log(e);
+            });
         })
 
         // When the form gets sent
@@ -88,14 +90,14 @@ class PatientsController extends CategoryController {
      * here you set all data from the database in html
      * @param patients
      */
-    createPatients(patients) {
+    async createPatients(patients) {
+        let blocky = $(".block-primary");
         for (let i = 0; i < patients.length; i++) {
             try {
                 this.caretakerRepository.getUserInfo(patients[i].user_id).then(data => {
                     userValues.push({"username": data[0].username, "password": data[0].password, "id": data[0].id, "userID": patients[i].id});
                 });
             } catch (e) {
-                console.log("yikers");
             }
             let clone = blocky.clone().insertAfter(blocky);
             clone.attr('class', 'block-' + patients[i].id + ' row justify-content-md-center mt-5')
@@ -120,6 +122,15 @@ class PatientsController extends CategoryController {
             } else {
                 clone.find(".imgpatient").attr('src','assets/img/patient1.png')
             }
+
+            //Load progress bar.
+            const progressBar = await new ProgressComponent(clone.find(".progress-anchor"));
+            const pamdata = await progressBar.retrieveProgressData(patients[i]['user_id']);
+            progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['daily']);
+            progressBar.setAppointmentText(pamdata['date']);
+
+            clone.insertAfter(blocky);
+            clone.show()
         }
         $(".block-primary").remove();
     }
@@ -145,7 +156,6 @@ class PatientsController extends CategoryController {
      * @param id
      */
     openProfileEditor(id) {
-        console.log(userValues);
         // Give the submit button the right class
         if ($(".add-btn--submit")[0]) {
             $(".add-btn--submit").addClass("edit-btn--submit").removeClass("add-btn--submit");
@@ -381,7 +391,8 @@ class PatientsController extends CategoryController {
         }
     }
 
-    async addPatient() {
+    async addPatient(e) {
+        e.preventDefault();
         try {
             let rehabValues = this.setRehabValues()
             let userValues = this.setUserValues();
@@ -389,7 +400,6 @@ class PatientsController extends CategoryController {
             await this.userRepository.addUser(userValues).then(async (data) => {
                 await this.userRepository.addPatient(caretakerId, rehabValues, data.data.insertId).then((data) => {
                     console.log(data);
-                    // location.reload();
                 });
             });
         } catch (e) {
