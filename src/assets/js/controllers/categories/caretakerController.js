@@ -45,8 +45,18 @@ class CaretakerController extends CategoryController {
             console.log("naam:  " + data[i].first_name + data[i].last_name);
             console.log("datum: " + data[i].appointment_date);
             console.log("id:    " + data[i].id);
+            var score = await this.getPam(data[i].id);
+            console.log("score: " + score);
         }
     }
 
-
+    async getPam(id){
+        const score = await this.pamRepository.getScore(id);
+        if(score.length === 1){
+            return score[0].pam_score
+        } else if (score.length > 1) {
+            console.error("Something went wrong");
+        }
+        return 0;
+    }
 }

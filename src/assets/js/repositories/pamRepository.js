@@ -22,6 +22,11 @@ class PamRepository {
             .doRequest(`${this.route}`, {"id": id}, "POST");
     }
 
+    async getScore(id) {
+        return await networkManager
+            .doRequest(`${this.route}/score`, {"id": id}, "POST");
+    }
+
     async register(username, password) {
 
     }

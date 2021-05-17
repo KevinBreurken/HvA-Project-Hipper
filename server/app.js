@@ -138,6 +138,17 @@ app.post("/user/data", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}))
 });
 
+// Get pam score from user
+app.post("/pam/score", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `pam_score` FROM `pam_score` WHERE `rehabilitator_id` = ? ORDER BY `date` DESC LIMIT 1;",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data);
+        res.send(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}))
+});
+
 //dummy data example - rooms
 app.post("/room_example", (req, res) => {
 
