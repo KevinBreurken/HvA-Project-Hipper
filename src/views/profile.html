@@ -16,9 +16,10 @@
                         Adres: <span class="adress_rehabilitator">Doornbloemstraat 56</span><br>
                         Postcode: <span class="postalcode_rehabilitator">3218JK</span><br>
                         Bloedtype: <span class="bloodtype_rehabilitator">O</span><br>
-                        Foto uploaden:
                     </small></p>
-                    <input type="file" id="fileUpload" name="profile_picture" accept="image/*">
+                    <button id="file_uploader_open" type="button" class="btn default-button mr-2" data-toggle="modal" data-target="#exampleModal">
+                        Profielfoto aanpassen
+                    </button>
                 </div>
             </div>
 
@@ -67,6 +68,25 @@
             <p>
                 <span class="description_caretaker"></span>
             </p>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="pad-container-header">
+            <div id="exampleModalLabel">PROFIEL FOTO AANPASSEN</div>
+        </div>
+        <div class="modal-content pad-container-content">
+            <div class="modal-body upload-center">
+            <img class="upload-center upload-preview" id="file_uploader_popup" src="https://qph.fs.quoracdn.net/main-qimg-2b21b9dd05c757fe30231fac65b504dd"
+                 onerror="if (this.src !== 'error.jpg') this.src = 'assets/img/default_image.png';" alt="Revalidant">
+                <input class="upload-center" type="file" id="fileUpload" name="profile_picture" accept="image/*">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+                <button type="button" class="btn default-button mr-2" id="file_uploader_save" data-dismiss="modal" disabled>Bevestigen</button>
+            </div>
         </div>
     </div>
 </div>

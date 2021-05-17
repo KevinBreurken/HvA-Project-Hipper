@@ -37,16 +37,21 @@ class CategoryController {
     }
 }
 
-async function saveImageUpload(input, htmlHook, UserID) {
+var selectedImage;
+
+async function changeImageUploadPreview(input, htmlHook, UserID) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
             $(htmlHook)
                 .attr('src', e.target.result)
-
-            return networkManager
-                .doRequest(`/user/uploader`, {"data": e.target.result, "id": UserID}, "POST");
+            selectedImage = e.target.result;
         };
         return reader.readAsDataURL(input.files[0]);
     }
+}
+
+async function uploadImage(userID,imageResult){
+    return networkManager
+        .doRequest(`/user/uploader`, {"data": imageResult, "id": userID}, "POST");
 }

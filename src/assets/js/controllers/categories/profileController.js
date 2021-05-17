@@ -27,9 +27,19 @@ class ProfileController extends CategoryController {
         this.retrieveCaretakerInfo();
 
         this.view.find("#fileUpload").on("change", function () {
-            saveImageUpload(this,'#file_uploader', sessionManager.get("userID"))
+            changeImageUploadPreview(this, '#file_uploader_popup', sessionManager.get("userID"))
+            $('#file_uploader_save').removeAttr("disabled");
         });
 
+        this.view.find('#file_uploader_save').on("click", function () {
+            uploadImage(sessionManager.get("userID"), selectedImage);
+            $('#file_uploader').attr('src', selectedImage);
+        });
+
+        this.view.find('#file_uploader_open').on("click", function () {
+            console.log("ASFNKANJGJ")
+
+        });
     }
 
     async retrieveRehabilitatorInfo() {
