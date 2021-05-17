@@ -149,6 +149,17 @@ app.post("/pam/score", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}))
 });
 
+// Get all pam score from user
+app.post("/pam/allscore", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT SUM(`pam_score`) AS `total_score` FROM `pam_score` WHERE `rehabilitator_id` = ?",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data);
+        res.send(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}))
+});
+
 //dummy data example - rooms
 app.post("/room_example", (req, res) => {
 
