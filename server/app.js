@@ -57,25 +57,27 @@ app.post("/user/login", (req, res) => {
 
 // Update a rehabilsdjfsdjf
 app.post("/user/update", (req, res) => {
-    let firstname = req.body.editValues[0]
-    let lastname = req.body.editValues[1];
-    let birthdate = req.body.editValues[2];
-    let gender = req.body.editValues[3];
-    let bloodtype = req.body.editValues[4];
-    let status = req.body.editValues[5];
-    let phone = req.body.editValues[6];
-    let email = req.body.editValues[7];
-    let description = req.body.editValues[8];
+    let firstname = req.body.editValues[0].firstname;
+    let lastname = req.body.editValues[0].lastname;
+    let birthdate = req.body.editValues[0].birthdate;
+    let gender = req.body.editValues[0].gender;
+    let bloodtype = req.body.editValues[0].bloodtype;
+    let status = req.body.editValues[0].status;
+    let phone = req.body.editValues[0].phone;
+    let email = req.body.editValues[0].email;
+    let description = req.body.editValues[0].description;
+    let adres = req.body.editValues[0].adres;
+    let postcode = req.body.editValues[0].postcode;
 
     // Put all the values in a big array we can send back to update the site without reload!
     let values = [];
     values.push({"firstname": firstname, "lastname": lastname, "birthdate": birthdate, "gender": gender, "bloodtype": bloodtype,
-        "status": status, "phone": phone, "email": email, "description": description, "id": req.body.id});
+        "status": status, "phone": phone, "email": email, "description": description, "adres": adres, "postcode": postcode, "id": req.body.id});
 
     db.handleQuery(connectionPool, {
-        query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ? WHERE `id` = ?;" +
+        query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ?, `adress` = ?, `postcode` = ? WHERE `id` = ?;" +
             "UPDATE `user` SET `username` = ?, `password` = ? WHERE `id` = ?",
-        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, req.body.id, req.body.userValues[0],
+        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.id, req.body.userValues[0],
             cryptoHelper.getHashedPassword(req.body.userValues[1]), req.body.userValues[2]]
     }, (data) => {
 
@@ -95,21 +97,22 @@ app.post("/user/delete", (req, res) => {
 
 // add a patient
 app.post("/user/addRehab", (req, res) => {
-    console.log(req.body.editValues);
-    let firstname = req.body.editValues[0];
-    let lastname = req.body.editValues[1];
-    let birthdate = req.body.editValues[2];
-    let gender = req.body.editValues[3];
-    let bloodtype = req.body.editValues[4];
-    let status = req.body.editValues[5];
-    let phone = req.body.editValues[6];
-    let email = req.body.editValues[7];
-    let description = req.body.editValues[8];
+    let firstname = req.body.editValues[0].firstname;
+    let lastname = req.body.editValues[0].lastname;
+    let birthdate = req.body.editValues[0].birthdate;
+    let gender = req.body.editValues[0].gender;
+    let bloodtype = req.body.editValues[0].bloodtype;
+    let status = req.body.editValues[0].status;
+    let phone = req.body.editValues[0].phone;
+    let email = req.body.editValues[0].email;
+    let description = req.body.editValues[0].description;
+    let adres = req.body.editValues[0].adres;
+    let postcode = req.body.editValues[0].postcode;
 
     db.handleQuery(connectionPool, {
         query: "INSERT INTO `rehabilitator` (`first_name`, `last_name`, `birthdate`, `gender`, `bloodtype`, `status`, `phonenumber`, `email`, `description`, `adress`, `postalcode`, `caretaker_id`, `user_id`)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, "MOet nog gemaakt worden", "1073RE", req.body.caretakerId, req.body.userID]
+        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.caretakerId, req.body.userID]
     }, (data) => {
         res.status(httpOkCode).json({"data": data});
     }, (err) => res.status(badRequestCode).json({"reason" : err}))

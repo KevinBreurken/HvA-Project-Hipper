@@ -238,7 +238,9 @@ class PatientsController extends CategoryController {
         userEditValues = this.setUserValues();
         userEditValues.push(userId);
 
-        if (this.validateForm(editValues[0], editValues[1], editValues[2], editValues[4], editValues[5], editValues[6], editValues[7], userEditValues[0], userEditValues[1])) {
+        console.log(editValues[0].adres);
+        if (this.validateForm(editValues[0].firstname, editValues[0].lastname, editValues[0].birthdate, editValues[0].bloodtype, editValues[0].status,
+            editValues[0].phone, editValues[0].email, userEditValues[0], userEditValues[1])) {
             return false;
         }
 
@@ -416,6 +418,8 @@ class PatientsController extends CategoryController {
         let lastname = $("#lastNameEdit")
         let birthdate = $("#birthdateEdit")
         let gender = $('input[name=genderRadio]:checked', '.edit-form');
+        let adres = $("#adresEdit");
+        let post = $("#postcodeEdit");
         let bloodtype = $("#bloodEdit");
         let status = $("#statusEdit");
         let phone = $("#phoneEdit")
@@ -424,15 +428,8 @@ class PatientsController extends CategoryController {
 
         // Set editvalues;
         editValues = [];
-        editValues.push(firstname.val())
-        editValues.push(lastname.val())
-        editValues.push(birthdate.val());
-        editValues.push(gender.val());
-        editValues.push(bloodtype.val());
-        editValues.push(status.val());
-        editValues.push(phone.val());
-        editValues.push(email.val());
-        editValues.push(description.val());
+        editValues.push({"firstname": firstname.val(), "lastname": lastname.val(), "birthdate": birthdate.val(), "gender": gender.val(), "bloodtype": bloodtype.val(),
+            "adres": adres.val(), "postcode": post.val(), "status": status.val(), "phone": phone.val(), "email": email.val(), "description": description.val()})
 
         return editValues
     }
