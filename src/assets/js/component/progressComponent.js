@@ -2,8 +2,8 @@ class ProgressComponent {
     constructor(htmlRoot) {
         this.pamRepository = new PamRepository();
         this.rehabilitatorRepository = new RehabilitatorRepository();
-        console.log(window.location.pathname)
-        $.get("./views/component/progressComponent.html").done((data) => {
+
+        $.get("views/component/progressComponent.html").done((data) => {
             this.htmlRoot = htmlRoot;
             htmlRoot.append(data);
         })
