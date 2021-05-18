@@ -65,7 +65,7 @@ class SocialController extends CategoryController {
             document.querySelector(".profile_pic_caretaker").src = `assets/img/caretaker/${caretakerID}_profile_pic.png`;
             return careTakerInfo;
         } catch (e) {
-            console.log("error while fetching rooms", e);
+            console.log("error while retrieving caretaker info.", e);
         }
     }
 
@@ -82,7 +82,6 @@ class SocialController extends CategoryController {
                     <b>OP ${message.date.split("T")[0]}</b> <br>
                          
                          ${message.content}
-                         ${message.message_id}
                          <button class="btn-delete" data-message-id="${message.message_id}">Verwijder</button>
                     </p>
                 </div>  
@@ -90,7 +89,7 @@ class SocialController extends CategoryController {
 
             $("#my-messages").html(messagesHtml)
         } catch (e) {
-            console.log("error while fetching rooms", e);
+            console.log("error while fetching social messages.", e);
         }
     }
 
@@ -119,7 +118,7 @@ class SocialController extends CategoryController {
             $("#social-messages").html(messagesHtml);
 
         } catch (e) {
-            console.log("error while fetching rooms", e);
+            console.log("error while social 'other' messages.", e);
         }
 
     }
