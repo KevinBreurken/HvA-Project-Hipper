@@ -134,9 +134,9 @@
         margin-top: -16px;
         margin-left: -16px;
     }
-    .btn-edit{
-        margin-bottom: 5%;
-    }
+    /*.btn-edit{*/
+    /*    margin-bottom: 5%;*/
+    /*}*/
 }
 
 .pagination > li > a
