@@ -17,4 +17,14 @@ class CaretakerRepository {
             .doRequest(`${this.route}/all/count`, {"userID": userID}, "GET", false);
         return data[0]['count'];
     }
+
+    async getUserInfo(userID) {
+        return await networkManager
+            .doRequest(`${this.route}/user`, {"userID": userID});
+    }
+
+    async getLoggedInCaretakerId(userID) {
+        return await networkManager
+            .doRequest(`${this.route}/getId`, {"userID": userID});
+    }
 }

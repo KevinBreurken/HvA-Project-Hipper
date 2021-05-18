@@ -60,7 +60,7 @@ class ProfileController extends CategoryController {
             // //profile pic
             if (rehabilitatorData[0].photo != null) {
                 var photo = rehabilitatorData[0].photo;
-                $(".profile_pic_rehabilitator").attr("src", "uploads/" + photo);
+                $(".profile_pic_rehabilitator").attr("src", "./uploads/" + photo);
             }
 
         } catch (e) {

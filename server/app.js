@@ -38,10 +38,12 @@ app.post("/user/login", (req, res) => {
 
     //TODO: We shouldn't save a password unencrypted!! Improve this by using cryptoHelper :)
     const password = req.body.password;
+    const hashed_password = cryptoHelper.getHashedPassword(password);
+    console.log(hashed_password);
 
     db.handleQuery(connectionPool, {
         query: "SELECT `username`, `password`, `id`, `role` FROM user WHERE username = ? AND password = ?",
-        values: [username, password]
+        values: [username, hashed_password]
     }, (data) => {
         if (data.length === 1) {
             //return just the username for now, never send password back!
@@ -53,6 +55,86 @@ app.post("/user/login", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
+// Update a rehabilsdjfsdjf
+app.post("/user/update", (req, res) => {
+    let firstname = req.body.editValues[0].firstname;
+    let lastname = req.body.editValues[0].lastname;
+    let birthdate = req.body.editValues[0].birthdate;
+    let gender = req.body.editValues[0].gender;
+    let bloodtype = req.body.editValues[0].bloodtype;
+    let status = req.body.editValues[0].status;
+    let phone = req.body.editValues[0].phone;
+    let email = req.body.editValues[0].email;
+    let description = req.body.editValues[0].description;
+    let adres = req.body.editValues[0].adres;
+    let postcode = req.body.editValues[0].postcode;
+
+    // Put all the values in a big array we can send back to update the site without reload!
+    let values = [];
+    values.push({"firstname": firstname, "lastname": lastname, "birthdate": birthdate, "gender": gender, "bloodtype": bloodtype,
+        "status": status, "phone": phone, "email": email, "description": description, "adres": adres, "postcode": postcode, "id": req.body.id});
+
+    db.handleQuery(connectionPool, {
+        query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ?, `adress` = ?, `postalcode` = ? WHERE `id` = ?;" +
+            "UPDATE `user` SET `username` = ?, `password` = ? WHERE `id` = ?",
+        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.id, req.body.userValues[0],
+            cryptoHelper.getHashedPassword(req.body.userValues[1]), req.body.userValues[2]]
+    }, (data) => {
+
+       res.status(httpOkCode).json({"values": values});
+    }, (err) => res.status(badRequestCode).json({"reason": err}));
+})
+
+// Delete a patient
+app.post("/user/delete", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "DELETE FROM `rehabilitator` WHERE `id` = ?; DELETE FROM `user` WHERE `id` = ?",
+        values: [req.body.id, req.body.userID]
+    }, (data) => {
+        res.status(httpOkCode).json({"data": data});
+    }, (err) => res.status(badRequestCode).json({"reason": err}))
+});
+
+// add a patient
+app.post("/user/addRehab", (req, res) => {
+    let firstname = req.body.editValues[0].firstname;
+    let lastname = req.body.editValues[0].lastname;
+    let birthdate = req.body.editValues[0].birthdate;
+    let gender = req.body.editValues[0].gender;
+    let bloodtype = req.body.editValues[0].bloodtype;
+    let status = req.body.editValues[0].status;
+    let phone = req.body.editValues[0].phone;
+    let email = req.body.editValues[0].email;
+    let description = req.body.editValues[0].description;
+    let adres = req.body.editValues[0].adres;
+    let postcode = req.body.editValues[0].postcode;
+
+    let values = [];
+    values.push({"firstname": firstname, "lastname": lastname, "birthdate": birthdate, "gender": gender, "bloodtype": bloodtype,
+        "status": status, "phone": phone, "email": email, "description": description, "adres": adres, "postcode": postcode})
+
+    db.handleQuery(connectionPool, {
+        query: "INSERT INTO `rehabilitator` (`first_name`, `last_name`, `birthdate`, `gender`, `bloodtype`, `status`, `phonenumber`, `email`, `description`, `adress`, `postalcode`, `caretaker_id`, `user_id`)" +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.caretakerId, req.body.userID]
+    }, (data) => {
+        res.status(httpOkCode).json({"data": data, "values": values});
+    }, (err) => res.status(badRequestCode).json({"reason" : err}))
+})
+
+// add an user
+app.post("/user/addUser", (req, res) => {
+    let crypted = cryptoHelper.getHashedPassword(req.body.userValues[1]);
+    console.log(crypted);
+    db.handleQuery(connectionPool, {
+        query: "INSERT INTO `user` (`username`, `password`, `role`) VALUES (?, ?, ?)",
+        values: [req.body.userValues[0],crypted,0]
+    }, (result) => {
+        res.status(httpOkCode).json({"data": result});
+    }, (err) => res.status(badRequestCode).json({"reason": err}));
+})
+
 //retrieve rehabilitator info
 app.post("/user/rehabilitator", (req, res) => {
     db.handleQuery(connectionPool, {
@@ -60,11 +142,11 @@ app.post("/user/rehabilitator", (req, res) => {
         query: "SELECT `r`.* , `u`.`photo` from `rehabilitator` `r` INNER JOIN `user` `u` on `u`.`id` = `r`.`user_id` WHERE `u`.`id` = ?",
         values: [req.body.id]
     }, (data) => {
-        console.log(data)
         res.send(data)
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
 //retrieve caretaker info
 app.post("/user/caretaker", (req, res) => {
     console.log(req.body.id)
@@ -72,7 +154,6 @@ app.post("/user/caretaker", (req, res) => {
         query: "SELECT caretaker.caretaker_id, caretaker.first_name, caretaker.last_name, caretaker.email, caretaker.phone, caretaker.description, caretaker.experience_field1, caretaker.experience_field2, caretaker.experience_field3 FROM caretaker INNER JOIN rehabilitator ON rehabilitator.caretaker_id = caretaker.caretaker_id WHERE rehabilitator.user_id = ?",
         values: [req.body.id]
     }, (data) => {
-        console.log(data)
         res.send(data)
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
@@ -182,18 +263,33 @@ app.post("/user/data", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}))
 });
 
-//dummy data example - rooms
-app.post("/room_example", (req, res) => {
-
+app.post("/caretaker/all", (req, res) => {
     db.handleQuery(connectionPool, {
-            query: "SELECT id, surface FROM room_example WHERE id = ?",
-            values: [req.body.id]
-        }, (data) => {
-            //just give all data back as json
-            res.status(httpOkCode).json(data);
-        }, (err) => res.status(badRequestCode).json({reason: err})
-    );
+        query: "SELECT `r`.* FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ?",
+        values: [req.body.userID]
+    }, (data) => {
+        res.status(httpOkCode).json(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}))
+})
 
+// get caretaker id
+app.post("/caretaker/getId", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `caretaker`.`caretaker_id` FROM `caretaker` INNER JOIN `user` ON `user`.id = `caretaker`.`user_id` WHERE `user`.id = ?",
+        values: [req.body.userID]
+    }, (data) => {
+        res.status(httpOkCode).json(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+})
+
+// get all usernames and passwords of users for the rehab
+app.post("/caretaker/user", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `u`.`username`, `u`.`password`, `u`.`id` FROM `user` AS `u` WHERE `u`.`id` = ?",
+        values: [req.body.userID]
+    }, (data) => {
+        res.status(httpOkCode).json(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
 app.get("/caretaker/all", (req, res) => {
@@ -216,7 +312,7 @@ app.get("/caretaker/all/count", (req, res) => {
         values: [req.query.userID]
     }, (data) => {
         res.status(httpOkCode).json(data);
-    }, (err) => res.status(badRequestCode).json({reason: err}))
+    }, (err) => res.status(badRequestCode).json({reason: err}));
 })
 
 app.post("/user/uploader", function (req, res) {
@@ -224,6 +320,7 @@ app.post("/user/uploader", function (req, res) {
 
     var data = req.body.data.replace(/^data:image\/\w+;base64,/, '');
     const fileImage = randomString + ".png";
+
     fs.writeFile(wwwrootPath + "/" + fileImage, data, {encoding: 'base64'}, function (err) {
     });
 

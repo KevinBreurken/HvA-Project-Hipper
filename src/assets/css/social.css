@@ -7,9 +7,9 @@
 /*    font-family: 'Raleway', sans-serif;*/
 /*}*/
 
-.form-control {
-    width: 150% !important;
-}
+/*.form-control{*/
+/*    width: 150%!important;*/
+/*}*/
 
 
 a:hover {
@@ -59,9 +59,9 @@ a:hover {
     padding: 0 10px;
 }
 
-.form-control-sm {
-    border-radius: 0;
-}
+/*.form-control-sm {*/
+/*    border-radius: 0;*/
+/*}*/
 
 /* Button */
 .btn-submit, .btn-delete {
