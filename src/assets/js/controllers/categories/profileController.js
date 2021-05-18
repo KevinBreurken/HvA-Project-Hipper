@@ -35,11 +35,7 @@ class ProfileController extends CategoryController {
             uploadImage(sessionManager.get("userID"), selectedImage);
             $('#file_uploader').attr('src', selectedImage);
         });
-
-        this.view.find('#file_uploader_open').on("click", function () {
-            console.log("ASFNKANJGJ")
-
-        });
+        
     }
 
     async retrieveRehabilitatorInfo() {
