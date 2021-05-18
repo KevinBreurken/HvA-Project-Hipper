@@ -36,7 +36,6 @@ class CaretakerController extends CategoryController {
     //create the table
     async initializeTable(){
         const data = await this.caretakerRepository.getAllRehab(sessionManager.get("userID"));
-        console.log(data);
         await this.createPatients(data);
     }
 
@@ -44,12 +43,11 @@ class CaretakerController extends CategoryController {
         for (let i = 0; i < data.length; i++) {
             var id = data[i].id
             var obtained = await this.getAllPam(id);
-            console.log("naam:  " + data[i].first_name + data[i].last_name);
-            console.log("datum: " + data[i].appointment_date);
-            console.log("id:    " + id);
-            console.log("score: " + await this.getPam(id));
-            console.log("total: " + obtained)
-            console.log("calc:  " + await this.calculateGoal(data[i].appointment_date, data[i].pam_goal_total, obtained))
+            var name = data[i].first_name + " " + data[i].last_name;
+            var date = this.improveDate(data[i].appointment_date);
+            var score = await this.getPam(id);
+            var calc = await this.calculateGoal(data[i].appointment_date, data[i].pam_goal_total, obtained);
+            await this.addData(name, date, score, calc, obtained);
         }
     }
 
@@ -78,9 +76,10 @@ class CaretakerController extends CategoryController {
         //copied from: https://www.codegrepper.com/code-examples/javascript/javascript+find+out+distance+between+dates
         const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const daysToGo = diffDays(new Date(datum), new Date(this.getToday()));
-        console.log(daysToGo);
         const toDo = totalgoal - obtained;
-        console.log(toDo);
+        if (toDo/daysToGo < 1 && toDo/daysToGo !== 0){
+            return "<1"
+        }
         return toDo/daysToGo;
 
     }
@@ -92,5 +91,25 @@ class CaretakerController extends CategoryController {
         var yyyy = today.getFullYear();
 
         return yyyy + '/' + mm + '/' + dd;
+    }
+
+    improveDate(date){
+        if (typeof date === typeof " "){
+            return (date.substring(0, 10))
+        }
+        return "Geen datum"
+    }
+
+    async addData(name, date, score, calc, total){
+        let row;
+        if (calc > score){
+            row = "table-warning";
+        }
+        $("#table-data").append("<tr class='" + row + "'>" +
+            "    <td>" + name + "</td>\n" +
+            "    <td>" + date + "</td>\n" +
+            "    <td>" + calc + "</td>\n" +
+            "    <td>" + score + "</td>\n" +
+            "    <td>" + total + "</td>\n" + "</tr>");
     }
 }
