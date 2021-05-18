@@ -31,25 +31,39 @@ class SocialController extends CategoryController {
 
     }
 
+    addEventListeners() {
+        $("#message-form-other").on("submit", async event => {
+            event.preventDefault();
+            const text = document.querySelector("#message-content").value
+            await this.sendMessage(text);
+            location.reload();
+        })
+
+        $('.message button').on('click', async (event) => {
+            const messageId = event.target.dataset.messageId
+            await this.deleteMessage(messageId)
+        })
+    }
+
     async retrieveCaretakerInfo() {
         try {
             const currentLoggedID = sessionManager.get("userID");
-            const roomData = await this.userRepository.getCaretakerInfo(currentLoggedID);
-            const caretakerID = roomData[0].caretaker_id;
-            const fullname = roomData[0].first_name + " " + roomData[0].last_name
+            const careTakerInfo = (await this.userRepository.getCaretakerInfo(currentLoggedID))[0];
+            const caretakerID = careTakerInfo.caretaker_id;
+            const fullName = `${careTakerInfo.first_name} ${careTakerInfo.last_name}`
 
             document.querySelectorAll(".name_caretaker").forEach((element) => {
-                element.innerText = fullname
+                element.innerText = fullName
             })
-            document.querySelector(".phone_caretaker").innerText = roomData[0].phone
-            document.querySelector(".email_caretaker").innerText = roomData[0].email
-            document.querySelector(".experience1_caretaker").innerText = roomData[0].experience_field1
-            document.querySelector(".experience2_caretaker").innerText = roomData[0].experience_field2
-            document.querySelector(".experience3_caretaker").innerText = roomData[0].experience_field3
-            document.querySelector(".description_caretaker").innerText = roomData[0].description
+            document.querySelector(".phone_caretaker").innerText = careTakerInfo.phone
+            document.querySelector(".email_caretaker").innerText = careTakerInfo.email
+            document.querySelector(".experience1_caretaker").innerText = careTakerInfo.experience_field1
+            document.querySelector(".experience2_caretaker").innerText = careTakerInfo.experience_field2
+            document.querySelector(".experience3_caretaker").innerText = careTakerInfo.experience_field3
+            document.querySelector(".description_caretaker").innerText = careTakerInfo.description
             //profile pic
             document.querySelector(".profile_pic_caretaker").src = `assets/img/caretaker/${caretakerID}_profile_pic.png`;
-            return caretakerID;
+            return careTakerInfo;
         } catch (e) {
             console.log("error while fetching rooms", e);
         }
@@ -111,7 +125,7 @@ class SocialController extends CategoryController {
     }
 
     async sendMessage(message) {
-        const caretakerID = await this.retrieveCaretakerInfo()
+        const caretakerID = (await this.retrieveCaretakerInfo()).caretaker_id
         const currentLoggedUserID = sessionManager.get("userID");
         const roomdata = await this.userRepository.getRehabilitatorInfo(currentLoggedUserID)
         const userID = roomdata[0].id;
@@ -123,16 +137,5 @@ class SocialController extends CategoryController {
 
         today = yyyy + '/' + mm + '/' + dd;
         await this.messagesRepository.insertMessage(caretakerID, userID, message, today);
-    }
-
-    getAge(dateString) {
-        var today = new Date();
-        var birthDate = new Date(dateString);
-        var age = today.getFullYear() - birthDate.getFullYear();
-        var m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        return age;
     }
 }
