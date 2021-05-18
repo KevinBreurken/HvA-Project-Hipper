@@ -120,7 +120,7 @@ class PatientsController extends CategoryController {
     }
 
     paginatePatient(paginationPosition) {
-        this.caretakerRepository.getAllRehab(sessionManager.get("userID"), paginationPosition, 2).then(data => {
+        this.caretakerRepository.getRehabByPageID(sessionManager.get("userID"), paginationPosition, 2).then(data => {
             this.createPatients(data)
         });
 

@@ -7,9 +7,14 @@ class CaretakerRepository {
         this.route = "/caretaker"
     }
 
-    async getAllRehab(userID, paginationPosition,amountPerPage) {
+    async getAllRehab(userID) {
         return await networkManager
-            .doRequest(`${this.route}/all/`, {"userID": userID, "paginationPosition": paginationPosition, "amountPerPage": amountPerPage}, "GET");
+            .doRequest(`${this.route}/all`, {"userID": userID}, "POST");
+    }
+
+    async getRehabByPageID(userID, paginationPosition,amountPerPage) {
+        return await networkManager
+            .doRequest(`${this.route}/all/pagination`, {"userID": userID, "paginationPosition": paginationPosition, "amountPerPage": amountPerPage}, "GET");
     }
 
     async getRehabCount(userID) {
