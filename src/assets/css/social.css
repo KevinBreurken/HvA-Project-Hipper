@@ -7,8 +7,8 @@
 /*    font-family: 'Raleway', sans-serif;*/
 /*}*/
 
-.form-control{
-    width: 150%!important;
+.form-control {
+    width: 150% !important;
 }
 
 
@@ -64,7 +64,7 @@ a:hover {
 }
 
 /* Button */
-.btn-submit {
+.btn-submit, .btn-delete {
     text-align: center;
     background-color: var(--color-category-current);
     color: #ffffff;
@@ -74,7 +74,7 @@ a:hover {
     border-radius: 25px;
 }
 
-.btn-submit:hover {
+.btn-submit:hover, .btn-delete:hover {
     background-color: #8f4559;
     -webkit-transition: background-color .8s;
     -moz-transition: background-color .8s;
@@ -101,7 +101,7 @@ a:hover {
     padding-left: 30px;
 }
 
-.contact-info h3{
+.contact-info h3 {
     font-family: 'Raleway', sans-serif;
     text-align: center;
     margin: 50px auto 30px auto;
@@ -116,6 +116,12 @@ a:hover {
     color: #ffffff;
     margin: auto 10px;
 }
+
+.social-messages {
+    overflow-y: auto;
+    max-height: 500px;
+}
+
 
 /* ==================================
     Responsive
