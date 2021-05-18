@@ -24,14 +24,11 @@ class SocialController extends CategoryController {
 
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
-        this.retrieveCaretakerInfo();
-        this.retrieveMessages()
-        document.getElementById("message-form").addEventListener("submit", async event => {
-            event.preventDefault();
-            const text = document.querySelector("#message-content").value
-            await this.sendMessage(text);
-            location.reload();
-        })
+        await this.retrieveCaretakerInfo();
+        await this.retrieveOtherMessages();
+        await this.getMyMessages();
+        this.addEventListeners()
+
     }
 
     async retrieveCaretakerInfo() {
@@ -58,30 +55,74 @@ class SocialController extends CategoryController {
         }
     }
 
-    async retrieveMessages() {
+
+    async getMyMessages() {
+        try {
+            const currentLoggedUserID = sessionManager.get("userID");
+            const userData = await this.userRepository.getRehabilitatorInfo(currentLoggedUserID)
+            const rehabilitatorID = userData[0].id;
+            const messages = await this.messagesRepository.getAllMyMessages(rehabilitatorID);
+            const messagesHtml = messages.map(message => (
+                `<div class="message mb-2" >
+                    <p style="padding-bottom: 20px; border-bottom:2px solid var(--color-category-current);">
+                    <b>OP ${message.date.split("T")[0]}</b> <br>
+                         
+                         ${message.content}
+                         ${message.message_id}
+                         <button class="btn-delete" data-message-id="${message.message_id}">Verwijder</button>
+                    </p>
+                </div>  
+               `))
+
+            $("#my-messages").html(messagesHtml)
+        } catch (e) {
+            console.log("error while fetching rooms", e);
+        }
+    }
+
+    async deleteMessage(messageID) {
+        const result = confirm("weet je zeker dat je bericht wilt verwijderen")
+        if (result) {
+            await this.messagesRepository.deleteMessage(messageID);
+            location.reload();
+        }
+    }
+
+    async retrieveOtherMessages() {
         try {
             const currentLoggedID = sessionManager.get("userID");
-            const roomData = await this.messagesRepository.getAllMessages(currentLoggedID);
-            for (let i = 0; i < roomData.length; i++) {
-                const age = this.getAge(roomData[i].birthdate)
-                const child = `<h2 class="mb-2"><b>${roomData[i].first_name}  ${age} jaar</b></h2>
+            const messages = await this.messagesRepository.getAllMessages(currentLoggedID);
+            const messagesHtml = messages.map(message => {
+                const age = Utils.getAge(message.birthdate)
+                return (`
+                    <b>OP ${message.date.split("T")[0]}</b> <br>
+                    <h2 class="mb-2"><b>${message.first_name}  ${age} jaar</b></h2>
                         <p style="padding-bottom: 20px; border-bottom:2px solid var(--color-category-current);">
-                         ${roomData[i].content}
+                            ${message.content}
                         </p>  
-               `;
-                $("#social-messages").append(child);
-            }
+                    `)
+            });
+            $("#social-messages").html(messagesHtml);
+
         } catch (e) {
             console.log("error while fetching rooms", e);
         }
 
     }
+
     async sendMessage(message) {
         const caretakerID = await this.retrieveCaretakerInfo()
         const currentLoggedUserID = sessionManager.get("userID");
         const roomdata = await this.userRepository.getRehabilitatorInfo(currentLoggedUserID)
         const userID = roomdata[0].id;
-        await this.messagesRepository.insetMessage(caretakerID, userID, message);
+
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '/' + mm + '/' + dd;
+        await this.messagesRepository.insertMessage(caretakerID, userID, message, today);
     }
 
     getAge(dateString) {

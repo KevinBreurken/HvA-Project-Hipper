@@ -79,7 +79,7 @@ app.post("/user/caretaker", (req, res) => {
 //retrieve messages
 app.post("/messages", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT message.content, rehabilitator.first_name, rehabilitator.birthdate FROM message INNER JOIN rehabilitator ON message.rehabilitator_id = rehabilitator.id",
+        query: "SELECT message.content, message.date, rehabilitator.first_name, rehabilitator.birthdate FROM message INNER JOIN rehabilitator ON message.rehabilitator_id = rehabilitator.id",
         values: [req.body.id]
     }, (data) => {
         console.log(data)
@@ -87,12 +87,37 @@ app.post("/messages", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
+//retrieve my messages
+app.post("/messages/me", (req, res) => {
+    console.log(req.body)
+    db.handleQuery(connectionPool, {
+        query: "SELECT message.content, message.message_id, message.date FROM message INNER JOIN rehabilitator ON message.rehabilitator_id = rehabilitator.id where rehabilitator_id = ?",
+        values: [req.body.userID]
+    }, (data) => {
+        console.log(data)
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+//delete message
+app.post("/messages/delete", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "DELETE FROM message WHERE message_id = ?;",
+        values: [req.body.messageID]
+    }, (data) => {
+        console.log(data)
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
 //insert messages
 app.post("/messages/insert", (req, res) => {
     console.log("body = " , req.body)
     db.handleQuery(connectionPool, {
-        query: "INSERT INTO message(caretaker_id, rehabilitator_id, content) VALUES (?, ?, ?);",
-        values: [req.body.caretakerID, req.body.userID, req.body.message]
+        query: "INSERT INTO message(caretaker_id, rehabilitator_id, content, date) VALUES (?, ?, ?, ?);",
+        values: [req.body.caretakerID, req.body.userID, req.body.message, req.body.date]
     }, (data) => {
         console.log(data)
         res.send(data)
