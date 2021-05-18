@@ -282,7 +282,7 @@ class PatientsController extends CategoryController {
             await this.userRepository.delete(id, userID);
             $(".block-" + id).remove();
         } catch (e) {
-
+            console.log(e);
         }
     }
 
@@ -401,7 +401,9 @@ class PatientsController extends CategoryController {
 
             await this.userRepository.addUser(userValues).then(async (data) => {
                 await this.userRepository.addPatient(caretakerId, rehabValues, data.data.insertId).then((data) => {
-                    console.log(data);
+                    setInterval(() => {
+                        location.reload();
+                    }, 2000);
                 });
             });
         } catch (e) {
