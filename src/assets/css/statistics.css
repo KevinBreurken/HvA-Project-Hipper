@@ -24,17 +24,6 @@
     color: var(--color-category-current);
 }
 
-/* Set backgroud color for stats button */
-.stats-button {
-    color: white;
-    background-color: var(--color-category-current);
-}
-
-.stats-button:hover {
-    color: white;
-    filter: brightness(110%);
-}
-
 /* Give the arrows on advanced statistics click mouse */
 .fa-arrow-left {
     cursor: pointer;
