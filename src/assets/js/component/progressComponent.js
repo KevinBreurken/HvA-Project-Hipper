@@ -3,7 +3,7 @@ class ProgressComponent {
         this.pamRepository = new PamRepository();
         this.rehabilitatorRepository = new RehabilitatorRepository();
 
-        $.get("src/views/component/progressComponent.html").done((data) => {
+        $.get("views/component/progressComponent.html").done((data) => {
             this.htmlRoot = htmlRoot;
             htmlRoot.append(data);
         })
