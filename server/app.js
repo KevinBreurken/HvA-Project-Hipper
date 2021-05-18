@@ -11,7 +11,8 @@ const cryptoHelper = require("./utils/cryptoHelper");
 const corsConfig = require("./utils/corsConfigHelper");
 const app = express();
 const fileUpload = require("express-fileupload");
-
+const fs = require("fs");
+app.use(bodyParser.json({limit: '10000mb', extended: true}))
 //logger lib  - 'short' is basic logging info
 app.use(morgan("short"));
 
@@ -55,7 +56,8 @@ app.post("/user/login", (req, res) => {
 //retrieve rehabilitator info
 app.post("/user/rehabilitator", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender` from `rehabilitator` WHERE user_ID = ?",
+        // query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender`, `foto` from `rehabilitator` WHERE user_ID = ?",
+        query: "SELECT `r`.* , `u`.`photo` from `rehabilitator` `r` INNER JOIN `user` `u` on `u`.`id` = `r`.`user_id` WHERE `u`.`id` = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data)
@@ -154,21 +156,39 @@ app.post("/caretaker/all", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}))
 })
 
-app.post("/upload", function (req, res) {
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(badRequestCode).json({reason: "No files were uploaded."});
-    }
+app.post("/user/uploader", function (req, res) {
+    let randomString = Math.random().toString(36).substring(7)
 
-    let sampleFile = req.files.sampleFile;
-
-    sampleFile.mv(wwwrootPath + "/uploads/test.jpg", function (err) {
-        if (err) {
-            return res.status(badRequestCode).json({reason: err});
-        }
-
-        return res.status(httpOkCode).json("OK");
+    var data = req.body.data.replace(/^data:image\/\w+;base64,/, '');
+    const fileImage = randomString + ".png";
+    fs.writeFile(wwwrootPath + "/" + fileImage, data, {encoding: 'base64'}, function (err) {
     });
+
+    //check if stored photo exist in database
+    db.handleQuery(connectionPool, {
+        query: "SELECT `user`.`photo` FROM `user` WHERE `id` = ?",
+        values: [req.body.id]
+    }, (data) => {
+        if (data[0]['photo'] != null) {
+            try {
+                fs.unlinkSync(wwwrootPath + "/" + data[0]['photo'])
+                //file removed
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        //change the photo name to the photo random name
+        db.handleQuery(connectionPool, {
+            query: "UPDATE `user` SET `photo` = ? WHERE `id` = ?",
+            values: [fileImage, req.body.id]
+        }, (data) => {
+            res.status(httpOkCode).json(data);
+        }, (err) => res.status(badRequestCode).json({reason: err}))
+    }, (err) => res.status(badRequestCode).json({reason: err}))
+
+
 });
+
 
 //------- END ROUTES -------
 
