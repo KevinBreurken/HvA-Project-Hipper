@@ -75,7 +75,7 @@ class PatientsController extends CategoryController {
         //
         $(document).on("click", ".add-btn--submit", (e) => {
             this.addPatient(e).then((e) => {
-                console.log(e);
+
             });
         })
 

@@ -109,12 +109,16 @@ app.post("/user/addRehab", (req, res) => {
     let adres = req.body.editValues[0].adres;
     let postcode = req.body.editValues[0].postcode;
 
+    let values = [];
+    values.push({"firstname": firstname, "lastname": lastname, "birthdate": birthdate, "gender": gender, "bloodtype": bloodtype,
+        "status": status, "phone": phone, "email": email, "description": description, "adres": adres, "postcode": postcode})
+
     db.handleQuery(connectionPool, {
         query: "INSERT INTO `rehabilitator` (`first_name`, `last_name`, `birthdate`, `gender`, `bloodtype`, `status`, `phonenumber`, `email`, `description`, `adress`, `postalcode`, `caretaker_id`, `user_id`)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.caretakerId, req.body.userID]
     }, (data) => {
-        res.status(httpOkCode).json({"data": data});
+        res.status(httpOkCode).json({"data": data, "values": values});
     }, (err) => res.status(badRequestCode).json({"reason" : err}))
 })
 
