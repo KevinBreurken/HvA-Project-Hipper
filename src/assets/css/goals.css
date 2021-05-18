@@ -1,6 +1,6 @@
 .pad-progress-container {
-    margin-top: 64px;
-    margin-bottom: 64px;
+    margin-top: 32px;
+    margin-bottom: 32px;
     background-color: var(--color-category-current);
     border-radius: 10px;
 }
@@ -74,7 +74,7 @@
 }
 
 #pin-end-text {
-    left: -56px;
+    left: -100px;
 }
 
 #pin-end-pam {
@@ -91,6 +91,10 @@
 
 .bar-color-goal {
     background-color: var(--color-progress-goal);
+}
+
+.bar-color-total {
+    background-color: var(--color-hover-element);
 }
 
 /* basic positioning */
@@ -150,6 +154,7 @@
 .goal-card-subheader {
     font-weight: bold;
     text-align: center;
+    color: var(--color-text);
 }
 
 .goal-card-container {

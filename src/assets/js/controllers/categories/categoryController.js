@@ -36,3 +36,22 @@ class CategoryController {
         $(".content").html(`Failed to load ${this.constructor.name} view!`);
     }
 }
+
+var selectedImage;
+
+async function changeImageUploadPreview(input, htmlHook, UserID) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $(htmlHook)
+                .attr('src', e.target.result)
+            selectedImage = e.target.result;
+        };
+        return reader.readAsDataURL(input.files[0]);
+    }
+}
+
+async function uploadImage(userID,imageResult){
+    return networkManager
+        .doRequest(`/user/uploader`, {"data": imageResult, "id": userID}, "POST");
+}

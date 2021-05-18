@@ -26,6 +26,9 @@
     color: #ffffff;
     text-align: center;
 }
+.pad-caretaker-header1 > h3 {
+    margin: 5px;
+}
 .pad-caretaker-content {
     border: 4px solid var(--color-category-current);
     border-top: none;
@@ -50,6 +53,8 @@
     margin-top: -65px;
     border: 4px solid var(--color-category-current);
 }
+
+/* Po fix */
 .ct-year{
     margin-bottom: 0;
 }
@@ -75,8 +80,22 @@
 .ct-name{
     font-weight: bold;
     margin-bottom: 0;
+    color: #ffffff;
 }
-.btn1{
+
+/* Make gender label smaller */
+.gender-edit--title {
+    font-size: 1rem;
+    margin-bottom: .5rem;
+}
+
+/* Danger button */
+.buttongroup .btn-danger {
+    background-color: red;
+    border: 4px solid red;
+}
+
+.btn-edit{
     background-color: var(--color-category-current);
     border: 4px solid var(--color-category-current);
     font-family: 'Red Hat Display', sans-serif;
@@ -87,29 +106,7 @@
     border-radius: 0;
 }
 
-.btn2{
-    background-color: var(--color-category-current);
-    border: 4px solid var(--color-category-current);
-    font-family: 'Red Hat Display', sans-serif;
-    font-weight: bold;
-    line-height: 40px;
-    font-size: 25px;
-    color: #ffffff;
-    border-radius: 0;
-}
-
-.btn3{
-    background-color: var(--color-category-current);
-    border: 4px solid var(--color-category-current);
-    font-family: 'Red Hat Display', sans-serif;
-    font-weight: bold;
-    line-height: 40px;
-    font-size: 25px;
-    color: #ffffff;
-    border-radius: 0;
-}
-
-.btn4{
+.btn-edit__green{
     background-color: #709963;
     border: 4px solid #709963;
     font-family: 'Red Hat Display', sans-serif;
@@ -119,6 +116,7 @@
     color: #ffffff;
     border-radius: 0;
 }
+
 @media (max-width: 1919px){
     .pad-caretaker-header1{
         text-align: center;
@@ -136,13 +134,35 @@
         margin-top: -16px;
         margin-left: -16px;
     }
-    .btn1{
+    .btn-edit{
         margin-bottom: 5%;
     }
-    .btn2{
-        margin-bottom: 5%;
-    }
-    .btn3{
-        margin-bottom: 5%;
-    }
+}
+
+.pagination > li > a
+{
+    background-color: white;
+    color: #5A4181;
+}
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover
+{
+    color: #5a5a5a;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.pagination > .active > a
+{
+    color: white;
+    background-color: var(--color-category-current) !Important;
+    border: solid 1px  var(--color-category-current) !Important;
+}
+
+.pagination > .active > a:hover
+{
+    background-color: var(--color-category-current);
 }
