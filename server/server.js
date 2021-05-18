@@ -19,7 +19,7 @@ const SERVER_CONFIG = require(SERVER_CONFIG_FILE);
 global.serverConfigFile = SERVER_CONFIG_FILE;
 global.serverConfig = SERVER_CONFIG;
 global.appPath = process.env.APP || "./";
-global.wwwrootPath = process.env.WWWROOT || "../src/";
+global.wwwrootPath = process.env.WWWROOT || (process.cwd() + "/src/uploads/");
 
 const app = require('./app');
 

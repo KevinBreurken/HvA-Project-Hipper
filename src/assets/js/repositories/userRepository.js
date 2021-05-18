@@ -52,6 +52,10 @@ class UserRepository {
         return await networkManager
             .doRequest(`${this.route}/addUser`, {"userValues": userValues});
     }
+    async upload(){
+        return await networkManager
+            .doRequest(`${this.route}/upload`, {}, "POST");
+    }
 
     async getRehabilitatorInfo(id) {
         return await networkManager

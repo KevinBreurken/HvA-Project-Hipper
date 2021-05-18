@@ -11,7 +11,8 @@ const cryptoHelper = require("./utils/cryptoHelper");
 const corsConfig = require("./utils/corsConfigHelper");
 const app = express();
 const fileUpload = require("express-fileupload");
-
+const fs = require("fs");
+app.use(bodyParser.json({limit: '10000mb', extended: true}))
 //logger lib  - 'short' is basic logging info
 app.use(morgan("short"));
 
@@ -75,7 +76,7 @@ app.post("/user/update", (req, res) => {
         "status": status, "phone": phone, "email": email, "description": description, "adres": adres, "postcode": postcode, "id": req.body.id});
 
     db.handleQuery(connectionPool, {
-        query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ?, `adress` = ?, `postcode` = ? WHERE `id` = ?;" +
+        query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ?, `adress` = ?, `postalcode` = ? WHERE `id` = ?;" +
             "UPDATE `user` SET `username` = ?, `password` = ? WHERE `id` = ?",
         values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.id, req.body.userValues[0],
             cryptoHelper.getHashedPassword(req.body.userValues[1]), req.body.userValues[2]]
@@ -125,6 +126,7 @@ app.post("/user/addRehab", (req, res) => {
 // add an user
 app.post("/user/addUser", (req, res) => {
     let crypted = cryptoHelper.getHashedPassword(req.body.userValues[1]);
+    console.log(crypted);
     db.handleQuery(connectionPool, {
         query: "INSERT INTO `user` (`username`, `password`, `role`) VALUES (?, ?, ?)",
         values: [req.body.userValues[0],crypted,0]
@@ -136,7 +138,8 @@ app.post("/user/addUser", (req, res) => {
 //retrieve rehabilitator info
 app.post("/user/rehabilitator", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender` from `rehabilitator` WHERE user_ID = ?",
+        // query: "SELECT `first_name`,`last_name`,`Birthdate`,`Description`,`Adress`,`Postalcode`, `Bloodtype`, `Gender`, `foto` from `rehabilitator` WHERE user_ID = ?",
+        query: "SELECT `r`.* , `u`.`photo` from `rehabilitator` `r` INNER JOIN `user` `u` on `u`.`id` = `r`.`user_id` WHERE `u`.`id` = ?",
         values: [req.body.id]
     }, (data) => {
         res.send(data)
@@ -170,16 +173,6 @@ app.post("/pam", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 
-});
-
-app.post("/rehabilitator/goal/daily", (req, res) => {
-    db.handleQuery(connectionPool, {
-        query: "SELECT `pam_goal_daily` from `rehabilitator` WHERE user_id = ?",
-        values: [req.body.id]
-    }, (data) => {
-        res.send(data)
-
-    }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
 app.post("/rehabilitator/activities", (req, res) => {
@@ -248,23 +241,65 @@ app.post("/caretaker/user", (req, res) => {
     }, (data) => {
         res.status(httpOkCode).json(data);
     }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
+app.get("/caretaker/all", (req, res) => {
+    const maxPerPagination = req.query.amountPerPage;
+    const currentPaginationOffset = (req.query.paginationPosition - 1) * maxPerPagination;
+
+    db.handleQuery(connectionPool, {
+        query: "SELECT `r`.* FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ? LIMIT ? OFFSET ?",
+        values: [req.query.userID, parseInt(maxPerPagination), currentPaginationOffset]
+    }, (data) => {
+        console.log(data)
+        res.status(httpOkCode).json(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}))
 })
 
-app.post("/upload", function (req, res) {
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(badRequestCode).json({reason: "No files were uploaded."});
-    }
+app.get("/caretaker/all/count", (req, res) => {
+    console.log(req.query.userID)
+    db.handleQuery(connectionPool, {
+        query: "SELECT Count(*) as `count` FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ?",
+        values: [req.query.userID]
+    }, (data) => {
+        res.status(httpOkCode).json(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+})
 
-    let sampleFile = req.files.sampleFile;
+app.post("/user/uploader", function (req, res) {
+    let randomString = Math.random().toString(36).substring(7)
 
-    sampleFile.mv(wwwrootPath + "/uploads/test.jpg", function (err) {
-        if (err) {
-            return res.status(badRequestCode).json({reason: err});
-        }
+    var data = req.body.data.replace(/^data:image\/\w+;base64,/, '');
+    const fileImage = randomString + ".png";
 
-        return res.status(httpOkCode).json("OK");
+    fs.writeFile(wwwrootPath + "/" + fileImage, data, {encoding: 'base64'}, function (err) {
     });
+
+    //check if stored photo exist in database
+    db.handleQuery(connectionPool, {
+        query: "SELECT `user`.`photo` FROM `user` WHERE `id` = ?",
+        values: [req.body.id]
+    }, (data) => {
+        if (data[0]['photo'] != null) {
+            try {
+                fs.unlinkSync(wwwrootPath + "/" + data[0]['photo'])
+                //file removed
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        //change the photo name to the photo random name
+        db.handleQuery(connectionPool, {
+            query: "UPDATE `user` SET `photo` = ? WHERE `id` = ?",
+            values: [fileImage, req.body.id]
+        }, (data) => {
+            res.status(httpOkCode).json(data);
+        }, (err) => res.status(badRequestCode).json({reason: err}))
+    }, (err) => res.status(badRequestCode).json({reason: err}))
+
+
 });
+
 
 //------- END ROUTES -------
 

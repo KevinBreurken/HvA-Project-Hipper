@@ -13,6 +13,7 @@ let userId;
 let dataId;
 let caretakerId;
 let blocky;
+
 class PatientsController extends CategoryController {
 
     constructor() {
@@ -38,9 +39,11 @@ class PatientsController extends CategoryController {
         blocky = $(".block-primary");
 
         // Get all patients
-        this.caretakerRepository.getAllRehab(sessionManager.get("userID")).then(data => {
-            this.createPatients(data)
-        });
+        // this.caretakerRepository.getAllRehab(sessionManager.get("userID"), 1, 2).then(data => {
+        //     this.createPatients(data).then((e) => {
+        //         console.log(e)
+        //     })
+        // });
 
         // Get the caretaker id
         this.caretakerRepository.getLoggedInCaretakerId(sessionManager.get("userID")).then(data => {
@@ -75,7 +78,7 @@ class PatientsController extends CategoryController {
         //
         $(document).on("click", ".add-btn--submit", (e) => {
             this.addPatient(e).then((e) => {
-
+                console.log("pixels")
             });
         })
 
@@ -84,6 +87,49 @@ class PatientsController extends CategoryController {
             this.editPatient(e, dataId);
         })
         // this.patientsView.find(".edit-form").on("submit", (e) => );
+        this.view = $(data);
+        //Empty the content-div and add the resulting view to the page.
+        $(".content").empty().append(this.view);
+        $(".block-primary").hide();
+
+
+        this.setupPagination();
+    }
+
+    async setupPagination() {
+        const amountPerPage = 2;
+        //Get count of rehabilitator of caretaker.
+        const rehabilitatorCount = await this.caretakerRepository.getRehabCount(sessionManager.get("userID"));
+        const totalPages = Math.ceil(rehabilitatorCount / amountPerPage)
+
+        //Generate pagination elements
+        const paginationRoot = $('#patient-pagination');
+        for (let i = 0; i < totalPages; i++) {
+            paginationRoot.append(`<li class="page-item" data-page="${i + 1}"><a class="page-link" href="#">${i + 1}</a></li>`);
+        }
+
+        //Add click events
+        const items = $(".page-item");
+        for (let i = 0; i < items.length; i++) {
+            $(items[i]).click({pageId: i + 1, controller: this}, (event) => {
+                event.data.controller.paginatePatient(event.data.pageId);
+            });
+        }
+
+        this.paginatePatient(1);
+    }
+
+    paginatePatient(paginationPosition) {
+        this.caretakerRepository.getAllRehab(sessionManager.get("userID"), paginationPosition, 2).then(data => {
+            this.createPatients(data)
+        });
+
+        $(".page-item").each(function () {
+            $(this).removeClass('active');
+            if ($(this).data('page') == paginationPosition) {
+                $(this).addClass('active');
+            }
+        })
     }
 
     /**
@@ -91,6 +137,9 @@ class PatientsController extends CategoryController {
      * @param patients
      */
     async createPatients(patients) {
+        let holder = $('#patient-holder');
+        $('#patient-holder').empty();
+
         let blocky = $(".block-primary");
         for (let i = 0; i < patients.length; i++) {
             try {
@@ -129,10 +178,9 @@ class PatientsController extends CategoryController {
             progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['daily']);
             progressBar.setAppointmentText(pamdata['date']);
 
-            clone.insertAfter(blocky);
-            clone.show()
+            holder.append(clone);
+            clone.show();
         }
-        $(".block-primary").remove();
     }
 
     /**
