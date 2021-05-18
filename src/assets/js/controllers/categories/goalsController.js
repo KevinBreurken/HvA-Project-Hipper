@@ -4,6 +4,13 @@
  * @author Pim Meijer
  */
 class GoalsController extends CategoryController {
+    username = sessionManager.get("username");
+
+
+    virtualContent = [ "Welkom " + this.username + " Je bent begonnen" ,
+         "Hi " + this.username + " Je bent goed op weg",
+                        "hey " + this.username + " Je bent er bijna",
+        "hey " + this.username + " Je zet de laatste puntje op de i"];
     titlesMotivational = ["De eerste stap", "Een goed begin", "Einde is in zicht", "De nieuwe jij"];
     motvivationalContent = ["Het kan misschien wat intimiderend zijn, maar de eerste stappen zijn altijd het lastigst. Hoewel er nog genoeg te doen staat komt de voortgang vanzelf. Probeer jezelf te focussen op de eerste stappen, het zullen er vanzelf meer worden.",
         "Je hebt al een hele goede start gemaakt naar een gezonde heup. Probeer dit vol te houden, vind vrienden en familie om je te helpen. Je staat er niet alleen voor. Uiteidelijk komt deze balk helemaal naar het einde.",
@@ -13,6 +20,7 @@ class GoalsController extends CategoryController {
     constructor() {
         super();
         this.loadView("views/goals.html");
+
     }
 
     //Called when the login.html has been loaded.
@@ -62,6 +70,7 @@ class GoalsController extends CategoryController {
 
     fillMotivationalContent(total, current){
         const progresionIndex = this.calculateProgress(total, current);
+        $('#progressie-tekst').empty().append(this.virtualContent[progresionIndex]);
         $('#motivational-title').empty().append(this.titlesMotivational[progresionIndex]);
         $('#motivational-description').empty().append(this.motvivationalContent[progresionIndex]);
     }

@@ -4,6 +4,12 @@
  * @author Pim Meijer
  */
 class HomeController extends CategoryController {
+    username = sessionManager.get("username");
+
+    virtualContent = [ "Welkom " + this.username + " Je bent begonnen" ,
+        "Hi " + this.username + " Je bent goed op weg",
+        "hey " + this.username + " Je bent er bijna",
+        "hey " + this.username + " Je zet de laatste puntje op de i"];
 
     constructor() {
         super();
@@ -30,7 +36,59 @@ class HomeController extends CategoryController {
         this.fitText();
 
         $(".cards").click(nav.handleClickMenuItem)
+        this.fillMotivationalContent(totalPAMGoal, yesterdayDoneProgress);
     }
+
+    exampleProgress() {
+
+        const totalPAMGoal = Math.round(Math.random() * 1000);
+        const previousDoneProgress = Math.round(Math.random() * totalPAMGoal);
+        const yesterdayDoneProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress))
+        const goalProgress = Math.round(Math.random() * (totalPAMGoal - previousDoneProgress - yesterdayDoneProgress))
+        this.setTotalGoal(totalPAMGoal)
+
+        this.setProgress('#goal-previous', previousDoneProgress / totalPAMGoal * 100, previousDoneProgress, true)
+        this.setProgress('#goal-now', yesterdayDoneProgress / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress, true)
+        this.setProgress('#goal-goal', goalProgress / totalPAMGoal * 100, previousDoneProgress + yesterdayDoneProgress + goalProgress, false)
+
+        this.fillMotivationalContent(totalPAMGoal, yesterdayDoneProgress);
+    }
+
+    setProgress(element, percentage, displayValue, hideOnLowPercent) {
+        const barElement = $(element);
+        barElement.css("width", percentage + '%');
+        barElement.find('.pam-value').html(displayValue);
+        if (hideOnLowPercent)
+            barElement.find('.progress-pin-element').toggle(percentage > 5);
+    }
+
+    setTotalGoal(value) {
+        $('#progress-bar-end').find('.pam-value').html(value);
+    }
+
+    fillMotivationalContent(total, current){
+        console.log("hey ik ben cool")
+        const progresionIndex = this.calculateProgress(total, current);
+        $('#progressie-tekst').empty().append(this.virtualContent[progresionIndex]);
+    }
+
+    calculateProgress(total, current){
+        const progression = Math.floor((current / total)*100);
+        if (progression < 10){
+            return 0;
+        } else if (progression < 50){
+            return 1;
+        } else if (progression < 80){
+            return 2;
+        } else if (progression < 100){
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
+
+
 
     pickRandomGreeting() {
         const zinnen = ["Goed je weer te zien", "Goedemiddag", "Hallo"];
@@ -45,4 +103,5 @@ class HomeController extends CategoryController {
             element.style.fontSize = "29px";
         }
     }
+
 }
