@@ -151,8 +151,7 @@ class PatientsController extends CategoryController {
             let clone = blocky.clone().insertAfter(blocky);
             clone.attr('class', 'block-' + patients[i].id + ' row justify-content-md-center mt-5')
             //set the data in html
-            $(".ct-name", clone).text(`${patients[i]['first_name']}`);
-            $(".ct-lastname", clone).text(`${patients[i]['last_name']}`);
+            $(".ct-name", clone).text(`${patients[i]['first_name']} ${patients[i]['last_name']}`);
             $(".ct-year", clone).text("Leeftijd: " + this.getAge(patients[i].birthdate));
             // Set the birthdate in the birthdate array
             birthdates.push({id: patients[i].id, birthdate: patients[i].birthdate})
