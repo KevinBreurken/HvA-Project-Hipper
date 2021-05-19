@@ -155,11 +155,11 @@ class StatisticsController extends CategoryController {
             }
         }
 
+        let startOfWeek;
         if (momentArray.length > 0) {
             let weekday = momentArray[start]["date"].isoWeekday();
-            let startOfWeek = moment().subtract((weekday - 1), "days").isoWeek();
+            startOfWeek = moment().subtract((weekday - 1), "days").isoWeek();
         }
-
 
         // Check if they are from this week, and if they are, replace them in the
         momentArray.forEach((date) => {
