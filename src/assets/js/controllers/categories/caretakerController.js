@@ -47,6 +47,9 @@ class CaretakerController extends CategoryController {
             var date = this.improveDate(data[i].appointment_date);
             var score = await this.getPam(id);
             var calc = await this.calculateGoal(data[i].appointment_date, data[i].pam_goal_total, obtained);
+            if(calc !== "<1"){
+                calc = (Math.floor(calc * 100))/100;
+            }
             await this.addData(name, date, score, calc, obtained);
         }
     }
