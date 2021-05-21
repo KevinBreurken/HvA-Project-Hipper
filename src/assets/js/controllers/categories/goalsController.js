@@ -4,8 +4,7 @@
  * @author Pim Meijer
  */
 class GoalsController extends CategoryController {
-    username;
-    username = this.username;
+    username = sessionManager.get("username");
     assistant_Feedback = [ "Welkom " + this.username + " Je bent begonnen" ,
     "Hi " + this.username + " Je bent goed op weg",
     "hey " + this.username + " Je bent er bijna",
@@ -40,6 +39,7 @@ class GoalsController extends CategoryController {
         //Empty the content-div and add the resulting view to the page
         $(".content").append(this.view);
         this.loadActivities(pamdata['daily']);
+        console.log("hey")
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
 
         $("#pam-dailygoal-text").html(`<b>Om het PAM totaal te bereiken moet u voor vandaag ${pamdata['daily']} PAM punten behalen.</b>`);
@@ -90,10 +90,12 @@ class GoalsController extends CategoryController {
     }
 
     fillMotivationalContent(total, current) {
+
         const progresionIndex = this.calculateProgress(total, current);
         $('#assistant_title').empty().append(this.assistant_Feedback[progresionIndex]);
         $('#motivational-title').empty().append(this.titlesMotivational[progresionIndex]);
         $('#motivational-description').empty().append(this.motvivationalContent[progresionIndex]);
+        console.log("het werkt")
     }
 
     calculateProgress(total, current) {
