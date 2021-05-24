@@ -159,6 +159,16 @@ app.post("/user/caretaker", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
+// retrieve caretaker info WITH caretaker logged in
+app.post("/caretaker/getInfo", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT * FROM `caretaker` WHERE `caretaker`.`user_id` = ?",
+        values: [req.body.userID]
+    }, (data) => {
+        res.send(data)
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+})
+
 //retrieve messages
 app.post("/messages", (req, res) => {
     db.handleQuery(connectionPool, {
@@ -183,6 +193,7 @@ app.post("/messages/me", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
 //delete message
 app.post("/messages/delete", (req, res) => {
     db.handleQuery(connectionPool, {

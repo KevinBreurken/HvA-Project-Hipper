@@ -73,8 +73,6 @@ class ProfileController extends CategoryController {
         try {
             const currentLoggedID = sessionManager.get("userID");
             const caretakerData = await this.userRepository.getCaretakerInfo(currentLoggedID);
-            console.log(currentLoggedID)
-            console.log(caretakerData)
             const caretakerID = caretakerData[0].caretaker_id;
             const fullname = caretakerData[0].first_name + " " + caretakerData[0].last_name
 
