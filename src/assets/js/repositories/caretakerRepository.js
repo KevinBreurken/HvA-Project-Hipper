@@ -38,8 +38,8 @@ class CaretakerRepository {
             .doRequest(`${this.route}/getInfo`, {"userID": userID});
     }
 
-    async SaveCaretaker(userID, values) {
+    async saveCaretaker(userID, values) {
         return await networkManager
-            .doRequest(`${this.route}/saveProfile`, {"userID": userID, "values": values});
+            .doRequest(`${this.route}/saveInfo`, {"userID": userID, "values": values});
     }
 }

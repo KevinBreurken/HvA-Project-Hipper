@@ -73,6 +73,7 @@ class CaretakerProfileController extends CategoryController {
         $("#lastNameEdit").val(caretakerData[0].last_name);
         $("#emailEdit").val(caretakerData[0].email);
         $("#descriptionEdit").val(caretakerData[0].description);
+        $("#phoneEdit").val(caretakerData[0].phone);
         $("#experienceOneEdit").val(caretakerData[0].experience_field1)
         $("#experienceTwoEdit").val(caretakerData[0].experience_field2)
         $("#experienceThreeEdit").val(caretakerData[0].experience_field3)
@@ -83,6 +84,31 @@ class CaretakerProfileController extends CategoryController {
      */
     saveProfile(data) {
         data.preventDefault();
+        let editValues = this.getEditValues();
 
+        try {
+            this.caretakerRepository.saveCaretaker(sessionManager.get("userID"), editValues).then((r) => {
+                console.log(r);
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    getEditValues() {
+        let firstname = $("#firstNameEdit").val();
+        let lastname = $("#lastNameEdit").val();
+        let email = $("#emailEdit").val();
+        let description = $("#descriptionEdit").val();
+        let phone = $("#phoneEdit").val();
+        let experience_one = $("#experienceOneEdit").val();
+        let experience_two = $("#experienceTwoEdit").val();
+        let experience_three = $("#experienceThreeEdit").val();
+
+        let valuesToGive = [];
+        valuesToGive.push({"firstname": firstname, "lastname": lastname, "email": email, "description": description, "phone": phone, "experience_one": experience_one,
+        "experience_two": experience_two, "experience_three": experience_three});
+
+        return valuesToGive;
     }
 }
