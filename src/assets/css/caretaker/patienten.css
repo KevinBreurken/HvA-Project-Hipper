@@ -1,4 +1,4 @@
-.pad-caretaker-header-title{
+.pad-caretaker-header-title {
     background-color: var(--color-category-current);
     border: 4px solid var(--color-category-current);
     height: auto;
@@ -12,7 +12,7 @@
     color: #ffffff;
 }
 
-.pad-caretaker-header1{
+.pad-caretaker-header1 {
     background-color: var(--color-category-current);
     border: 4px solid var(--color-category-current);
     height: auto;
@@ -26,9 +26,11 @@
     color: #ffffff;
     text-align: center;
 }
+
 .pad-caretaker-header1 > h3 {
     margin: 5px;
 }
+
 .pad-caretaker-content {
     border: 4px solid var(--color-category-current);
     border-top: none;
@@ -38,15 +40,15 @@
     color: #666666;
 }
 
-.imgpatient1{
-     width: 324px;
-     height: 300px;
-     margin-left: -18px;
-     margin-top: -65px;
-     border: 4px solid var(--color-category-current);
- }
+.imgpatient1 {
+    width: 324px;
+    height: 300px;
+    margin-left: -18px;
+    margin-top: -65px;
+    border: 4px solid var(--color-category-current);
+}
 
-.imgpatient2{
+.imgpatient2 {
     width: 324px;
     height: 300px;
     margin-left: -18px;
@@ -55,25 +57,31 @@
 }
 
 /* Po fix */
-.ct-year{
+.ct-year {
     margin-bottom: 0;
 }
-.ct-gender{
+
+.ct-gender {
     margin-bottom: 0;
 }
-.ct-bloodtype{
+
+.ct-bloodtype {
     margin-bottom: 0;
 }
-.ct-status{
+
+.ct-status {
     margin-bottom: 0;
 }
-.ct-contacttitle{
+
+.ct-contacttitle {
     margin-bottom: 0;
 }
-.ct-phonenumber{
+
+.ct-phonenumber {
     margin-bottom: 0;
 }
-.ct-mail{
+
+.ct-mail {
     margin-bottom: 0;
 }
 
@@ -95,7 +103,16 @@
     border: 4px solid red;
 }
 
-.btn-edit{
+.buttongroup button {
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+#patient-holder {
+    padding-top: 32px;
+}
+
+.btn-edit {
     background-color: var(--color-category-current);
     border: 4px solid var(--color-category-current);
     font-family: 'Red Hat Display', sans-serif;
@@ -117,30 +134,33 @@
     border-radius: 0;
 }
 
-@media (max-width: 1919px){
-    .pad-caretaker-header1{
+@media (max-width: 1919px) {
+    .pad-caretaker-header1 {
         text-align: center;
         padding-right: 0;
     }
-    .pad-caretaker-header2{
+
+    .pad-caretaker-header2 {
         text-align: center;
         padding-right: 0;
     }
-    .imgpatient1{
+
+    .imgpatient1 {
         margin-top: -16px;
         margin-left: -16px;
     }
-    .imgpatient2{
+
+    .imgpatient2 {
         margin-top: -16px;
         margin-left: -16px;
     }
+
     /*.btn-edit{*/
     /*    margin-bottom: 5%;*/
     /*}*/
 }
 
-.pagination > li > a
-{
+.pagination > li > a {
     background-color: white;
     color: #5A4181;
 }
@@ -148,21 +168,18 @@
 .pagination > li > a:focus,
 .pagination > li > a:hover,
 .pagination > li > span:focus,
-.pagination > li > span:hover
-{
+.pagination > li > span:hover {
     color: #5a5a5a;
     background-color: #eee;
     border-color: #ddd;
 }
 
-.pagination > .active > a
-{
+.pagination > .active > a {
     color: white;
     background-color: var(--color-category-current) !Important;
-    border: solid 1px  var(--color-category-current) !Important;
+    border: solid 1px var(--color-category-current) !Important;
 }
 
-.pagination > .active > a:hover
-{
+.pagination > .active > a:hover {
     background-color: var(--color-category-current);
 }

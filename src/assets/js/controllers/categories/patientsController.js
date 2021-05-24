@@ -183,7 +183,7 @@ class PatientsController extends CategoryController {
             } catch (e) {
             }
             let clone = blocky.clone().insertAfter(blocky);
-            clone.attr('class', 'block-' + patients[i].id + ' row justify-content-md-center mt-5')
+            clone.attr('class', 'block-' + patients[i].id + ' category-container row justify-content-md-center')
             $(".buttongroup", clone).attr("data-id", patients[i].id);
             $(".buttongroup", clone).attr("data-userid", patients[i].user_id);
             //set the data in html
