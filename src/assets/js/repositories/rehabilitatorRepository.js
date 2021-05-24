@@ -29,4 +29,9 @@ class RehabilitatorRepository {
             .doRequest(`${this.route}/appointment`, {"id": id}, "POST");
         return data[0];
     }
+
+    async updateAppointmentData(id, data) {
+        return await networkManager
+            .doRequest(`${this.route}/appointment/update`, {"id": id,"appointment_date" : data["appointment_date"], "pam_goal_total" : data["pam_goal_total"]}, "POST");
+    }
 }

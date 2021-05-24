@@ -295,6 +295,16 @@ app.post("/rehabilitator/appointment", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
+app.post("/rehabilitator/appointment/update", (req, res) => {
+    console.log(req.body)
+    db.handleQuery(connectionPool, {
+        query: "UPDATE `rehabilitator` SET `appointment_date` = ?, `pam_goal_total` = ? WHERE `id` = ?;",
+        values: [req.body.appointment_date,req.body.pam_goal_total,req.body.id]
+    }, (data) => {
+        res.status(httpOkCode);
+    }, (err) => res.status(badRequestCode).json({"reason": err}));
+});
+
 // Get data from user
 app.post("/user/data", (req, res) => {
     db.handleQuery(connectionPool, {

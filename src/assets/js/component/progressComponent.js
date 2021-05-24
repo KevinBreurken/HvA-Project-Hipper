@@ -3,28 +3,34 @@ class ProgressComponent {
         this.pamRepository = new PamRepository();
         this.rehabilitatorRepository = new RehabilitatorRepository();
 
+        this.totalPamGoal = 0;
+        this.currentlyEarnedPam = 0;
+
         $.get("views/component/progressComponent.html").done((data) => {
             this.htmlRoot = htmlRoot;
             htmlRoot.append(data);
         })
     }
 
-    setProgressBarData(totalPamGoal, currentlyEarnedPam, dailyPamGoal) {
-        if(totalPamGoal == null)
-            this.htmlRoot.find(".pad-progress-container").hide();
+    async repaintProgressBar() {
+
+        let dailyPamGoal = await this.calculateDailyPamGoal(this.totalPamGoal - this.currentlyEarnedPam, this.appointmentDate);
+        dailyPamGoal = dailyPamGoal.toFixed(1);
+
+        this.htmlRoot.find(".pad-progress-container").toggle(this.totalPamGoal !== null);
 
         //Legend
-        this.htmlRoot.find(".legend-earned").html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
+        this.htmlRoot.find(".legend-earned").html(`${this.currentlyEarnedPam} Eerder behaalde PAM punten`);
         this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM punten doel voor vandaag`);
-        if(totalPamGoal != null)
-            this.htmlRoot.find(".legend-total").html(`${totalPamGoal} PAM punten als totaal doel`);
-        else
-            this.htmlRoot.find(".total-li").hide();
+
+        this.htmlRoot.find(".total-li").toggle(this.totalPamGoal != null);
+        this.htmlRoot.find(".legend-total").html(`${this.totalPamGoal} PAM punten als totaal doel`);
         //Bar
-        this.htmlRoot.find('.pam-value').html(totalPamGoal);
+        this.htmlRoot.find('.pam-value').html(this.totalPamGoal);
         this.setProgress('#goal-previous', 0, 0, true)
-        this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
-        this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
+        this.setProgress('#goal-now', this.currentlyEarnedPam / this.totalPamGoal * 100, this.currentlyEarnedPam, true)
+        this.setProgress('#goal-goal', dailyPamGoal / this.totalPamGoal * 100, this.currentlyEarnedPam + dailyPamGoal, false)
+        this.setAppointmentText();
     }
 
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
@@ -34,12 +40,11 @@ class ProgressComponent {
             barElement.find('.progress-pin-element').toggle(percentage > 5);
     }
 
-    setAppointmentText(appointmentDate) {
-        const dateDisplayText = appointmentDate.getDate() + '/' + (appointmentDate.getMonth() + 1) + '/' + appointmentDate.getFullYear();
-        const dateExpired = (appointmentDate < new Date());
+    setAppointmentText() {
+        const dateDisplayText = this.appointmentDate.getDate() + '/' + (this.appointmentDate.getMonth() + 1) + '/' + this.appointmentDate.getFullYear();
+        const dateExpired = (this.appointmentDate < new Date());
         const preText = dateExpired ? "Laatste afspraak was op: " : "Volgende afspraak is op: ";
-        if(dateExpired)
-            this.htmlRoot.find(".goal-li").hide();
+        this.htmlRoot.find(".goal-li").toggle(!dateExpired)
         this.htmlRoot.find(".appointment-text").html(`<b>${preText}${dateDisplayText}</b>`);
     }
 
@@ -59,12 +64,9 @@ class ProgressComponent {
      * @returns {Promise<void>}
      */
     async retrieveProgressData(userId) {
-        const totalPamGoal = await this.retrieveTotalPamGoal(userId);
-        const currentlyEarnedPam = await this.retrieveEarnedPam(userId);
-        const appointmentDate = await this.retrieveAppointmentDate(userId);
-        let dailyPamGoal = await this.calculateDailyPamGoal(totalPamGoal - currentlyEarnedPam,appointmentDate);
-        dailyPamGoal = dailyPamGoal.toFixed(1);
-        return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal, "date": appointmentDate};
+        this.totalPamGoal = await this.retrieveTotalPamGoal(userId);
+        this.currentlyEarnedPam = await this.retrieveEarnedPam(userId);
+        this.appointmentDate = await this.retrieveAppointmentDate(userId);
     }
 
     async retrievePam(userId) {
@@ -108,5 +110,21 @@ class ProgressComponent {
             console.log("error while fetching appointment date.", e);
             return 0;
         }
+    }
+
+    setTotalGoal(value) {
+        this.totalPamGoal = value;
+    }
+
+    setAppointmentDate(value) {
+        this.appointmentDate = value;
+    }
+
+    assignID(id) {
+        this.assignedID = id;
+    }
+
+    getAssignedID() {
+        return this.assignedID;
     }
 }

@@ -202,17 +202,18 @@
 
             <div class="modal-body edit-modal-body">
                 <!--    Form for editing  -->
-                <form class="edit-form">
+                <form class="edit-form" id="edit-form-appointment">
                     <div class="form-group">
                         <label for="descriptionEdit">Afspraak datum:</label>
                         <input type="date" class="form-control" id="appointment-date-edit" placeholder="Geboortedatum:">
-                        <small id="appointment-error" class="form-text text-danger"></small>
+                        <small id="appointment-date-error" class="form-text text-danger"></small>
                     </div>
                     <div class="form-group">
                         <label for="descriptionEdit">Totaaldoel:</label>
-                        <input type="number" class="form-control" id="appointment_totalgoal" name="totalgoal">
+                        <input type="number" class="form-control" id="appointment-totalgoal" name="totalgoal">
+                        <small id="appointment-totalgoal-error" class="form-text text-danger"></small>
                     </div>
-                    <button type="submit" class="btn btn-primary edit-btn-submit">Toepassen</button>
+                    <button type="submit" class="btn btn-primary submit-btn--appointment">Toepassen</button>
                 </form>
             </div>
         </div>

@@ -14,6 +14,8 @@ let dataId;
 let caretakerId;
 let blocky;
 
+let progressbars = [];
+
 class PatientsController extends CategoryController {
 
     constructor() {
@@ -93,6 +95,10 @@ class PatientsController extends CategoryController {
             dataId = e.target.parentNode.attributes["data-id"].nodeValue
             this.openAppointmentEditor(dataId)
         });
+        // When the form gets sent
+        $(document).on("click", ".submit-btn--appointment", (e) => {
+            this.editAppointment(e, dataId);
+        })
 
         this.view = $(data);
         //Empty the content-div and add the resulting view to the page.
@@ -146,12 +152,18 @@ class PatientsController extends CategoryController {
     async createPatients(patients) {
         let holder = $('#patient-holder');
         $('#patient-holder').empty();
+        // progressbars = [];
 
         let blocky = $(".block-primary");
         for (let i = 0; i < patients.length; i++) {
             try {
                 this.caretakerRepository.getUserInfo(patients[i].user_id).then(data => {
-                    userValues.push({"username": data[0].username, "password": data[0].password, "id": data[0].id, "userID": patients[i].id});
+                    userValues.push({
+                        "username": data[0].username,
+                        "password": data[0].password,
+                        "id": data[0].id,
+                        "userID": patients[i].id
+                    });
                 });
             } catch (e) {
             }
@@ -173,17 +185,19 @@ class PatientsController extends CategoryController {
             $(".ct-mail", clone).text("Email: " + patients[i].email);
             $(".ct-description", clone).text(patients[i].description);
             //img changing to men
-            if (patients[i].gender === "Vrouw"){
-                clone.find(".imgpatient").attr('src','assets/img/patient2.png')
+            if (patients[i].gender === "Vrouw") {
+                clone.find(".imgpatient").attr('src', 'assets/img/patient2.png')
             } else {
-                clone.find(".imgpatient").attr('src','assets/img/patient1.png')
+                clone.find(".imgpatient").attr('src', 'assets/img/patient1.png')
             }
 
             //Load progress bar.
             const progressBar = await new ProgressComponent(clone.find(".progress-anchor"));
-            const pamdata = await progressBar.retrieveProgressData(patients[i]['user_id']);
-            progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['daily']);
-            progressBar.setAppointmentText(pamdata['date']);
+            progressBar.assignID(patients[i].id);
+            progressbars.push(progressBar);
+            await progressBar.retrieveProgressData(patients[i]['user_id']);
+            progressBar.repaintProgressBar();
+            // progressBar.setAppointmentText(pamdata['date']);
 
             holder.append(clone);
             clone.show();
@@ -275,28 +289,65 @@ class PatientsController extends CategoryController {
         $("#descriptionEdit").val($(".block-" + id + " .ct-description")[0].innerHTML);
     }
 
-
     /**
-     * This function sets the modal with info from the patients appointment info.
+     * This function sets the appointment modal with info from the patients appointment.
      * @param id
      */
     async openAppointmentEditor(id) {
-
         try {
             const rehabilitatorAppointment = await this.rehabilitatorRepository.getAppointmentData(id);
-            console.log(rehabilitatorAppointment)
             //Set date
             let appointmentDate = rehabilitatorAppointment['appointment_date'];
             appointmentDate = appointmentDate.split("T")[0];
             appointmentDate = new moment(appointmentDate);
             $("#appointment-date-edit").val(appointmentDate.format("YYYY-MM-DD"));
             //Set total goal
-            $("#appointment_totalgoal").val(rehabilitatorAppointment['pam_goal_total']);
-        }catch (e){
+            $("#appointment-totalgoal").val(rehabilitatorAppointment['pam_goal_total']);
+        } catch (e) {
             $("#appointment-date-edit").val('');
-            $("#appointment_totalgoal").val('1');
+            $("#appointment-totalgoal").val('1');
         }
-        
+    }
+
+    /**
+     * Edit patient function
+     * @param e, the event
+     * @param id, id of the patient
+     * @returns {Promise<boolean>}
+     */
+    async editAppointment(e, id) {
+        // Prevent form from sending
+        e.preventDefault();
+
+        //Remove alert
+        $(".edit-succes").remove();
+
+        //get the values set in the front-end.
+        const appointmentDate = $('#appointment-date-edit').val();
+        const totalgoal = $('#appointment-totalgoal').val();
+
+        //check if the values are set correct.
+        if (this.validateAppointmentForm(appointmentDate, totalgoal)) {
+            return false;
+        }
+
+        this.rehabilitatorRepository.updateAppointmentData(id, {
+            "appointment_date": appointmentDate,
+            "pam_goal_total": totalgoal
+        });
+
+        //Find the correct progress bar and update.
+        for (let i = 0; i < progressbars.length; i++) {
+            if(progressbars[i].getAssignedID() == id){
+                progressbars[i].setTotalGoal(totalgoal);
+                progressbars[i].setAppointmentDate(new Date(appointmentDate))
+                progressbars[i].repaintProgressBar();
+            }
+        }
+
+        $("#edit-form-appointment").prepend(`
+            <div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">Afspraak is bewerkt!</div>`);
+
     }
 
     /**
@@ -318,7 +369,7 @@ class PatientsController extends CategoryController {
         userEditValues.push(userId);
 
         console.log(editValues[0].adres);
-        if (this.validateForm(editValues[0].firstname, editValues[0].lastname, editValues[0].birthdate, editValues[0].bloodtype, editValues[0].status,
+        if (this.validatePatientForm(editValues[0].firstname, editValues[0].lastname, editValues[0].birthdate, editValues[0].bloodtype, editValues[0].status,
             editValues[0].phone, editValues[0].email, userEditValues[0], userEditValues[1])) {
             return false;
         }
@@ -327,9 +378,9 @@ class PatientsController extends CategoryController {
         try {
             let edited = await this.userRepository.update(id, editValues, userEditValues);
             $(".edit-form").prepend("<div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">\n" +
-                ""+ edited.values[0].firstname + " is bewerkt!\n" +
+                "" + edited.values[0].firstname + " is bewerkt!\n" +
                 "</div>")
-            $("html, .modal").animate({ scrollTop: 0 }, "slow");
+            $("html, .modal").animate({scrollTop: 0}, "slow");
 
             console.log(edited.values[0].id);
             // Set the values In the person self
@@ -367,18 +418,46 @@ class PatientsController extends CategoryController {
 
     /**
      * Checks for most values in the form if they're validated, otherwise return an error
-     * @param firstname
-     * @param lastname
-     * @param birthdate
-     * @param bloodtype
-     * @param status
-     * @param phone
-     * @param email
-     * @param username
-     * @param password
      * @returns {boolean}
      */
-    validateForm(firstname, lastname, birthdate, bloodtype, status, phone, email, username, password) {
+    validateAppointmentForm(appointment, totalGoal) {
+        let errorcount = 0;
+
+        console.log(appointment)
+        console.log(totalGoal)
+
+        if (appointment === "") {
+            errorcount++;
+            $("#appointment-date-error").text("Geboortedatum kan niet leeg zijn!")
+        } else if (!moment(appointment).isValid()) {
+            errorcount++;
+            $("#appointment-date-error").text("Datum is niet goed ingevuld!");
+        }
+
+
+        if (totalGoal === "") {
+            errorcount++;
+            $("#appointment-totalgoal-error").text("Mobiel kan niet leeg zijn!");
+        } else if (!/^\d+$/.test(totalGoal)) {
+            errorcount++;
+            $("#appointment-totalgoal-error").text("Totaaldoel moet alleen nummers zijn!");
+
+        } else if (totalGoal < 0) {
+            errorcount++;
+            $("#appointment-totalgoal-error").text("Totaaldoel kan geen mingetal zijn!");
+        }
+
+        if (errorcount > 0) {
+            return true;
+        } else {
+        }
+    }
+
+    /**
+     * Checks for most values in the form if they're validated, otherwise return an error
+     * @returns {boolean}
+     */
+    validatePatientForm(firstname, lastname, birthdate, bloodtype, status, phone, email, username, password) {
         let errorcount = 0;
 
         // Check if firstname is empty
@@ -509,8 +588,19 @@ class PatientsController extends CategoryController {
 
         // Set editvalues;
         editValues = [];
-        editValues.push({"firstname": firstname.val(), "lastname": lastname.val(), "birthdate": birthdate.val(), "gender": gender.val(), "bloodtype": bloodtype.val(),
-            "adres": adres.val(), "postcode": post.val(), "status": status.val(), "phone": phone.val(), "email": email.val(), "description": description.val()})
+        editValues.push({
+            "firstname": firstname.val(),
+            "lastname": lastname.val(),
+            "birthdate": birthdate.val(),
+            "gender": gender.val(),
+            "bloodtype": bloodtype.val(),
+            "adres": adres.val(),
+            "postcode": post.val(),
+            "status": status.val(),
+            "phone": phone.val(),
+            "email": email.val(),
+            "description": description.val()
+        })
 
         return editValues
     }
