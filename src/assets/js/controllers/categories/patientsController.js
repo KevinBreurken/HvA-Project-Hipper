@@ -308,7 +308,7 @@ class PatientsController extends CategoryController {
      * @param id
      */
     async openAppointmentEditor(id) {
-        console.log(id)
+        $('#modal-progress-anchor').find('.appointment-text').hide();
         await modalProgressbar.retrieveProgressData(id);
         modalProgressbar.repaintProgressBar();
         try {
@@ -440,12 +440,9 @@ class PatientsController extends CategoryController {
     validateAppointmentForm(appointment, totalGoal) {
         let errorcount = 0;
 
-        console.log(appointment)
-        console.log(totalGoal)
-
         if (appointment === "") {
             errorcount++;
-            $("#appointment-date-error").text("Geboortedatum kan niet leeg zijn!")
+            $("#appointment-date-error").text("Afspraak kan niet leeg zijn!")
         } else if (!moment(appointment).isValid()) {
             errorcount++;
             $("#appointment-date-error").text("Datum is niet goed ingevuld!");
