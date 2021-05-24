@@ -285,9 +285,8 @@ app.post("/rehabilitator/goal/date", (req, res) => {
 });
 
 app.post("/rehabilitator/appointment", (req, res) => {
-    console.log(req.body.id)
     db.handleQuery(connectionPool, {
-        query: "SELECT `appointment_date`, `pam_goal_total` from `rehabilitator` WHERE id = ?",
+        query: "SELECT `appointment_date`, `pam_goal_total` from `rehabilitator` WHERE `id` = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data)
@@ -296,7 +295,6 @@ app.post("/rehabilitator/appointment", (req, res) => {
 });
 
 app.post("/rehabilitator/appointment/update", (req, res) => {
-    console.log(req.body)
     db.handleQuery(connectionPool, {
         query: "UPDATE `rehabilitator` SET `appointment_date` = ?, `pam_goal_total` = ? WHERE `id` = ?;",
         values: [req.body.appointment_date,req.body.pam_goal_total,req.body.id]

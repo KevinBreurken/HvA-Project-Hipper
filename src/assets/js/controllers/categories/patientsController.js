@@ -127,8 +127,9 @@ class PatientsController extends CategoryController {
     async setupAppointmentModal() {
         // Open the appointment editor
         $(document).on("click", ".btn-edit--appointment", (e) => {
-            dataId = e.target.parentNode.attributes["data-userid"].nodeValue
-            this.openAppointmentEditor(dataId)
+            const userId = e.target.parentNode.attributes["data-userid"].nodeValue
+            const revalidantId = e.target.parentNode.attributes["data-id"].nodeValue
+            this.openAppointmentEditor(userId,revalidantId)
         });
         // When the form gets sent
         $(document).on("click", ".submit-btn--appointment", (e) => {
@@ -167,7 +168,6 @@ class PatientsController extends CategoryController {
     async createPatients(patients) {
         let holder = $('#patient-holder');
         $('#patient-holder').empty();
-        // progressbars = [];
 
         let blocky = $(".block-primary");
         for (let i = 0; i < patients.length; i++) {
@@ -307,16 +307,17 @@ class PatientsController extends CategoryController {
      * This function sets the appointment modal with info from the patients appointment.
      * @param id
      */
-    async openAppointmentEditor(id) {
+    async openAppointmentEditor(userID,revalidantid) {
         $('#modal-progress-anchor').find('.appointment-text').hide();
-        await modalProgressbar.retrieveProgressData(id);
+        await modalProgressbar.retrieveProgressData(userID);
         modalProgressbar.repaintProgressBar();
         try {
-            const rehabilitatorAppointment = await this.rehabilitatorRepository.getAppointmentData(id);
+            const rehabilitatorAppointment = await this.rehabilitatorRepository.getAppointmentData(revalidantid);
             //Set date
             let appointmentDate = rehabilitatorAppointment['appointment_date'];
             appointmentDate = appointmentDate.split("T")[0];
             appointmentDate = new moment(appointmentDate);
+
             $("#appointment-date-edit").val(appointmentDate.format("YYYY-MM-DD"));
             //Set total goal
             $("#appointment-totalgoal").val(rehabilitatorAppointment['pam_goal_total']);
