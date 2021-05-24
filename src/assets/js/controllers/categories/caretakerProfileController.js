@@ -39,6 +39,10 @@ class CaretakerProfileController extends CategoryController {
         this.caretakerView.find(".edit-form").on("submit", (data) => this.saveProfile(data));
     }
 
+    /**
+     * Function from profile but edited a little bit, sets the caretaker info on the profile page
+     * @returns {Promise<void>}
+     */
     async getCaretakerInfo() {
         try {
             const currentLoggedID = sessionManager.get("userID");
@@ -68,6 +72,9 @@ class CaretakerProfileController extends CategoryController {
      * Fill the profile editor
      */
     fillProfileEdit() {
+        // Remove the previous success message
+        $(".alert-success").remove();
+
         // Set the values
         $("#firstNameEdit").val(caretakerData[0].first_name);
         $("#lastNameEdit").val(caretakerData[0].last_name);
@@ -88,13 +95,29 @@ class CaretakerProfileController extends CategoryController {
 
         try {
             this.caretakerRepository.saveCaretaker(sessionManager.get("userID"), editValues).then((r) => {
-                console.log(r);
+                // Give an succes message
+                $(".edit-form").prepend("<div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">\n" +
+                    ""+ editValues[0].firstname + " is bewerkt!\n" +
+                    "</div>")
+
+                // Set the values in the html
+                document.querySelector(".name_caretaker").innerText = editValues[0].firstname + " " + editValues[0].lastname;
+                document.querySelector(".phone_caretaker").innerText = editValues[0].phone;
+                document.querySelector(".email_caretaker").innerText = editValues[0].email;
+                document.querySelector(".experience1_caretaker").innerText = editValues[0].experience_field1;
+                document.querySelector(".experience2_caretaker").innerText = editValues[0].experience_field2;
+                document.querySelector(".experience3_caretaker").innerText = editValues[0].experience_field3;
+                document.querySelector(".description_caretaker").innerText = editValues[0].description;
             })
         } catch (e) {
             console.log(e)
         }
     }
 
+    /**
+     * Set the edit values, and return an array with them
+     * @returns {[]} array with values
+     */
     getEditValues() {
         let firstname = $("#firstNameEdit").val();
         let lastname = $("#lastNameEdit").val();
