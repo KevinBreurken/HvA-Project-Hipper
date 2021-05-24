@@ -15,6 +15,7 @@ let caretakerId;
 let blocky;
 
 let progressbars = [];
+let modalProgressbar;
 
 class PatientsController extends CategoryController {
 
@@ -90,22 +91,13 @@ class PatientsController extends CategoryController {
             this.editPatient(e, dataId);
         })
 
-        // Open the profile editor
-        $(document).on("click", ".btn-edit--appointment", (e) => {
-            dataId = e.target.parentNode.attributes["data-id"].nodeValue
-            this.openAppointmentEditor(dataId)
-        });
-        // When the form gets sent
-        $(document).on("click", ".submit-btn--appointment", (e) => {
-            this.editAppointment(e, dataId);
-        })
 
         this.view = $(data);
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
         $(".block-primary").hide();
 
-
+        this.setupAppointmentModal()
         this.setupPagination();
     }
 
@@ -130,6 +122,29 @@ class PatientsController extends CategoryController {
         }
 
         this.paginatePatient(1);
+    }
+
+    async setupAppointmentModal() {
+        // Open the appointment editor
+        $(document).on("click", ".btn-edit--appointment", (e) => {
+            dataId = e.target.parentNode.attributes["data-userid"].nodeValue
+            this.openAppointmentEditor(dataId)
+        });
+        // When the form gets sent
+        $(document).on("click", ".submit-btn--appointment", (e) => {
+            this.editAppointment(e, dataId);
+        })
+
+        //Load progress bar.
+        modalProgressbar = await new ProgressComponent($('#modal-progress-anchor'));
+        $("#appointment-totalgoal").change(function () {
+            modalProgressbar.setTotalGoal($(this).val())
+            modalProgressbar.repaintProgressBar()
+        });
+        $("#appointment-date-edit").change(function () {
+            modalProgressbar.setAppointmentDate(new Date($(this).val()))
+            modalProgressbar.repaintProgressBar()
+        });
     }
 
     paginatePatient(paginationPosition) {
@@ -170,7 +185,7 @@ class PatientsController extends CategoryController {
             let clone = blocky.clone().insertAfter(blocky);
             clone.attr('class', 'block-' + patients[i].id + ' row justify-content-md-center mt-5')
             $(".buttongroup", clone).attr("data-id", patients[i].id);
-
+            $(".buttongroup", clone).attr("data-userid", patients[i].user_id);
             //set the data in html
             $(".ct-name", clone).text(`${patients[i]['first_name']}`);
             $(".ct-lastname", clone).text(`${patients[i]['last_name']}`);
@@ -293,6 +308,9 @@ class PatientsController extends CategoryController {
      * @param id
      */
     async openAppointmentEditor(id) {
+        console.log(id)
+        await modalProgressbar.retrieveProgressData(id);
+        modalProgressbar.repaintProgressBar();
         try {
             const rehabilitatorAppointment = await this.rehabilitatorRepository.getAppointmentData(id);
             //Set date
@@ -337,7 +355,7 @@ class PatientsController extends CategoryController {
 
         //Find the correct progress bar and update.
         for (let i = 0; i < progressbars.length; i++) {
-            if(progressbars[i].getAssignedID() == id){
+            if (progressbars[i].getAssignedID() == id) {
                 progressbars[i].setTotalGoal(totalgoal);
                 progressbars[i].setAppointmentDate(new Date(appointmentDate))
                 progressbars[i].repaintProgressBar();
