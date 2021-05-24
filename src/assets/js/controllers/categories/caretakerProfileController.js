@@ -1,12 +1,6 @@
-/**
- * Responsible for handling the actions happening on welcome view
- * For now it uses the roomExampleRepository to get some example data from server
- *
- * @author Lennard Fonteijn & Pim Meijer
- */
-
 // Set the caretaker info
 let caretakerData;
+
 class CaretakerProfileController extends CategoryController {
 
     constructor() {
