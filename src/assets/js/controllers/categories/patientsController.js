@@ -197,7 +197,6 @@ class PatientsController extends CategoryController {
             progressbars.push(progressBar);
             await progressBar.retrieveProgressData(patients[i]['user_id']);
             progressBar.repaintProgressBar();
-            // progressBar.setAppointmentText(pamdata['date']);
 
             holder.append(clone);
             clone.show();

@@ -67,6 +67,9 @@ class ProgressComponent {
         this.totalPamGoal = await this.retrieveTotalPamGoal(userId);
         this.currentlyEarnedPam = await this.retrieveEarnedPam(userId);
         this.appointmentDate = await this.retrieveAppointmentDate(userId);
+        let dailyPamGoal = await this.calculateDailyPamGoal(this.totalPamGoal - this.currentlyEarnedPam,this.appointmentDate);
+        dailyPamGoal = dailyPamGoal.toFixed(1);
+        return {"total": this.totalPamGoal, "current": this.currentlyEarnedPam, "daily": dailyPamGoal, "date": this.appointmentDate};
     }
 
     async retrievePam(userId) {
