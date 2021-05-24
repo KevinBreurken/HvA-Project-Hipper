@@ -273,6 +273,7 @@ app.post("/rehabilitator/goal/total", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
 app.post("/rehabilitator/goal/date", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `appointment_date` from `rehabilitator` WHERE user_id = ?",
@@ -280,6 +281,17 @@ app.post("/rehabilitator/goal/date", (req, res) => {
     }, (data) => {
         res.send(data)
 
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
+app.post("/rehabilitator/appointment", (req, res) => {
+    console.log(req.body.id)
+    db.handleQuery(connectionPool, {
+        query: "SELECT `appointment_date`, `pam_goal_total` from `rehabilitator` WHERE id = ?",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data)
+        res.send(data)
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 

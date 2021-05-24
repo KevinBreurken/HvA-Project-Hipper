@@ -20,6 +20,7 @@ class PatientsController extends CategoryController {
         super();
         this.loadView("views/caretaker/patients.html");
         this.caretakerRepository = new CaretakerRepository();
+        this.rehabilitatorRepository = new RehabilitatorRepository()
         this.userRepository = new UserRepository();
     }
 
@@ -52,13 +53,13 @@ class PatientsController extends CategoryController {
 
         // Open the profile editor
         $(document).on("click", ".btn-edit--profile", (e) => {
-            dataId = e.target.attributes["data-id"].nodeValue
+            dataId = e.target.parentNode.attributes["data-id"].nodeValue
             this.openProfileEditor(dataId)
         });
 
         //Open the delete
         $(document).on("click", ".btn-delete--open", (e) => {
-            dataId = e.target.attributes["data-id"].nodeValue
+            dataId = e.target.parentNode.attributes["data-id"].nodeValue
         });
 
         // Confirm the delete
@@ -86,7 +87,13 @@ class PatientsController extends CategoryController {
         $(document).on("click", ".edit-btn--submit", (e) => {
             this.editPatient(e, dataId);
         })
-        // this.patientsView.find(".edit-form").on("submit", (e) => );
+
+        // Open the profile editor
+        $(document).on("click", ".btn-edit--appointment", (e) => {
+            dataId = e.target.parentNode.attributes["data-id"].nodeValue
+            this.openAppointmentEditor(dataId)
+        });
+
         this.view = $(data);
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
@@ -150,6 +157,8 @@ class PatientsController extends CategoryController {
             }
             let clone = blocky.clone().insertAfter(blocky);
             clone.attr('class', 'block-' + patients[i].id + ' row justify-content-md-center mt-5')
+            $(".buttongroup", clone).attr("data-id", patients[i].id);
+
             //set the data in html
             $(".ct-name", clone).text(`${patients[i]['first_name']}`);
             $(".ct-lastname", clone).text(`${patients[i]['last_name']}`);
@@ -163,8 +172,6 @@ class PatientsController extends CategoryController {
             $(".ct-phonenumber", clone).text("Mobiel: " + patients[i].phonenumber);
             $(".ct-mail", clone).text("Email: " + patients[i].email);
             $(".ct-description", clone).text(patients[i].description);
-            $(".btn-edit--profile", clone).attr("data-id", patients[i].id);
-            $(".btn-delete--confirm", clone).attr("data-id", patients[i].id);
             //img changing to men
             if (patients[i].gender === "Vrouw"){
                 clone.find(".imgpatient").attr('src','assets/img/patient2.png')
@@ -266,6 +273,30 @@ class PatientsController extends CategoryController {
         $("#emailEdit").val(editEmail)
 
         $("#descriptionEdit").val($(".block-" + id + " .ct-description")[0].innerHTML);
+    }
+
+
+    /**
+     * This function sets the modal with info from the patients appointment info.
+     * @param id
+     */
+    async openAppointmentEditor(id) {
+
+        try {
+            const rehabilitatorAppointment = await this.rehabilitatorRepository.getAppointmentData(id);
+            console.log(rehabilitatorAppointment)
+            //Set date
+            let appointmentDate = rehabilitatorAppointment['appointment_date'];
+            appointmentDate = appointmentDate.split("T")[0];
+            appointmentDate = new moment(appointmentDate);
+            $("#appointment-date-edit").val(appointmentDate.format("YYYY-MM-DD"));
+            //Set total goal
+            $("#appointment_totalgoal").val(rehabilitatorAppointment['pam_goal_total']);
+        }catch (e){
+            $("#appointment-date-edit").val('');
+            $("#appointment_totalgoal").val('1');
+        }
+        
     }
 
     /**

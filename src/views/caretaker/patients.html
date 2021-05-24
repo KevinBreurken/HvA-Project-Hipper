@@ -2,7 +2,7 @@
     <div class="col-lg-6 ">
         <div class="w-100 pad-caretaker-header-title text-center d-flex flex-column">
             PATIËNTEN
-            <button class="btn-edit__green btn-add--profile mt-2 btn-secondary" data-toggle="modal"
+            <button class="btn-edit-green btn-add--profile mt-2 btn-secondary" data-toggle="modal"
                     data-target="#editModal">Voeg patient toe
             </button>
         </div>
@@ -40,7 +40,10 @@
       <h3 class="mb-2"><b>Beschrijving</b></h3>
             <p class="ct-description"></p>
             <div class="d-flex justify-content-around buttongroup col-lg-5">
-                <button class="btn-edit__green btn-edit--profile btn-secondary" data-toggle="modal"
+                <button class="btn-edit-green btn-edit--appointment btn-secondary" data-toggle="modal"
+                        data-target="#editAppointment">Afspraak aanpassen
+                </button>
+                <button class="btn-edit-green btn-edit--profile btn-secondary" data-toggle="modal"
                         data-target="#editModal">Profiel bewerken
                 </button>
                 <button class="btn-edit btn-edit--profile btn-delete--open btn-danger" data-toggle="modal"
@@ -181,6 +184,36 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-delete--confirm btn-danger" data-dismiss="modal">Verwijder</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal for appointments-->
+<div class="modal fade" id="editAppointment" tabindex="-2" role="dialog" aria-labelledby="editAppointment" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h5 class="modal-title" id="d">Bewerk Afspraak</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body edit-modal-body">
+                <!--    Form for editing  -->
+                <form class="edit-form">
+                    <div class="form-group">
+                        <label for="descriptionEdit">Afspraak datum:</label>
+                        <input type="date" class="form-control" id="appointment-date-edit" placeholder="Geboortedatum:">
+                        <small id="appointment-error" class="form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="descriptionEdit">Totaaldoel:</label>
+                        <input type="number" class="form-control" id="appointment_totalgoal" name="totalgoal">
+                    </div>
+                    <button type="submit" class="btn btn-primary edit-btn-submit">Toepassen</button>
+                </form>
             </div>
         </div>
     </div>

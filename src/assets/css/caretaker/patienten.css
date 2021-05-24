@@ -106,7 +106,7 @@
     border-radius: 0;
 }
 
-.btn-edit__green{
+.btn-edit-green {
     background-color: var(--color-progress-yesterday);
     border: 4px solid #8dd775;
     font-family: 'Red Hat Display', sans-serif;
