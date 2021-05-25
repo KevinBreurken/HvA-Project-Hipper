@@ -98,10 +98,20 @@ class CaretakerProfileController extends CategoryController {
                 document.querySelector(".name_caretaker").innerText = editValues[0].firstname + " " + editValues[0].lastname;
                 document.querySelector(".phone_caretaker").innerText = editValues[0].phone;
                 document.querySelector(".email_caretaker").innerText = editValues[0].email;
-                document.querySelector(".experience1_caretaker").innerText = editValues[0].experience_field1;
-                document.querySelector(".experience2_caretaker").innerText = editValues[0].experience_field2;
-                document.querySelector(".experience3_caretaker").innerText = editValues[0].experience_field3;
+                document.querySelector(".experience1_caretaker").innerText = editValues[0].experience_one;
+                document.querySelector(".experience2_caretaker").innerText = editValues[0].experience_two;
+                document.querySelector(".experience3_caretaker").innerText = editValues[0].experience_three;
                 document.querySelector(".description_caretaker").innerText = editValues[0].description;
+
+                // Set the caretaker values as the same as the editValues;
+                caretakerData[0].first_name = editValues[0].firstname;
+                caretakerData[0].last_name = editValues[0].lastname;
+                caretakerData[0].email = editValues[0].email;
+                caretakerData[0].description = editValues[0].description;
+                caretakerData[0].phone = editValues[0].phone;
+                caretakerData[0].experience_field1 = editValues[0].experience_one;
+                caretakerData[0].experience_field2 = editValues[0].experience_two;
+                caretakerData[0].experience_field3 = editValues[0].experience_three;
             })
         } catch (e) {
             console.log(e)
