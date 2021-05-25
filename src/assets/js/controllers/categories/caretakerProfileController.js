@@ -26,7 +26,7 @@ class CaretakerProfileController extends CategoryController {
         this.getCaretakerInfo();
 
         // once the modal is opened, set up the modal
-        $(document).on("click", ".btn-edit--profile", (e) => {
+        $(document).on("click", ".btn-edit--caretaker", (e) => {
             this.fillProfileEdit();
         });
 
@@ -41,7 +41,7 @@ class CaretakerProfileController extends CategoryController {
         try {
             const currentLoggedID = sessionManager.get("userID");
             caretakerData = await this.caretakerRepository.getLoggedInCaretakerInfo(currentLoggedID);
-            console.log(caretakerData);
+
             const caretakerID = caretakerData[0].caretaker_id;
             const fullname = caretakerData[0].first_name + " " + caretakerData[0].last_name
 
@@ -87,9 +87,14 @@ class CaretakerProfileController extends CategoryController {
         data.preventDefault();
         let editValues = this.getEditValues();
 
+        if (this.validateForm(editValues[0].firstname, editValues[0].lastname, editValues[0].email, editValues[0].phone)) {
+            return false;
+        }
+
         try {
             this.caretakerRepository.saveCaretaker(sessionManager.get("userID"), editValues).then((r) => {
                 // Give an succes message
+                $(".alert").remove(); //remove if one already exists
                 $(".edit-form").prepend("<div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">\n" +
                     ""+ editValues[0].firstname + " is bewerkt!\n" +
                     "</div>")
@@ -137,5 +142,46 @@ class CaretakerProfileController extends CategoryController {
         "experience_two": experience_two, "experience_three": experience_three});
 
         return valuesToGive;
+    }
+
+    /**
+     * Checks for most values in the form if they're validated, otherwise return an error
+     * @returns {boolean}
+     */
+    validateForm(firstname, lastname, email, phone) {
+        let errorcount = 0;
+
+        // Check if firstname is empty
+        if (firstname === "") {
+            errorcount++;
+            $("#firstnameError").text("Voornaam kan niet leeg zijn!");
+        }
+
+        if (lastname === "") {
+            errorcount++;
+            $("#lastnameError").text("Achternaam kan niet leeg zijn!");
+        }
+
+        if (phone === "") {
+            errorcount++;
+            $("#phoneEditError").text("Mobiel kan niet leeg zijn!");
+        } else if (!/^\d+$/.test(phone)) {
+            errorcount++;
+            $("#phoneEditError").text("Mobiel moet alleen nummers zijn!");
+        }
+
+        if (email === "") {
+            errorcount++;
+            $("#emailError").text("Email kan niet leeg zijn!");
+        }
+
+        if (errorcount > 0) {
+            return true;
+        } else {
+            $("#firstnameError").text("");
+            $("#lastnameError").text("");
+            $("#phoneEditError").text("");
+            $("#emailError").text("");
+        }
     }
 }
