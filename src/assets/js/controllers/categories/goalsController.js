@@ -66,7 +66,6 @@ class GoalsController extends CategoryController {
     }
 
     generateActivityCard(cardData) {
-        console.log(cardData)
         const pamText = cardData['earnable_pam'] === null ? "" : `<p class="goal-card-subheader">${cardData['earnable_pam']} verwachten PAM punten</p>`;
         return `
         <div class="goal-card-container mx-auto">

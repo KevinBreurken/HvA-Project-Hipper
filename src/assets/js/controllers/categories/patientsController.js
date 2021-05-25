@@ -91,7 +91,6 @@ class PatientsController extends CategoryController {
             this.editPatient(e, dataId);
         })
 
-
         this.view = $(data);
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
@@ -129,7 +128,7 @@ class PatientsController extends CategoryController {
         $(document).on("click", ".btn-edit--appointment", (e) => {
             const userId = e.target.parentNode.attributes["data-userid"].nodeValue
             const revalidantId = e.target.parentNode.attributes["data-id"].nodeValue
-            this.openAppointmentEditor(userId,revalidantId)
+            this.openAppointmentEditor(userId, revalidantId)
         });
         // When the form gets sent
         $(document).on("click", ".submit-btn--appointment", (e) => {
@@ -155,9 +154,9 @@ class PatientsController extends CategoryController {
 
         $(".page-item").each(function () {
             $(this).removeClass('active');
-            if ($(this).data('page') == paginationPosition) {
+
+            if ($(this).data('page') == paginationPosition)
                 $(this).addClass('active');
-            }
         })
     }
 
@@ -206,11 +205,13 @@ class PatientsController extends CategoryController {
                 clone.find(".imgpatient").attr('src', 'assets/img/patient1.png')
             }
 
-            //Load progress bar.
+            //Initialize a new progress bar.
             const progressBar = await new ProgressComponent(clone.find(".progress-anchor"));
-            progressBar.assignID(patients[i].id);
             progressbars.push(progressBar);
+
+            progressBar.assignID(patients[i].id);
             await progressBar.retrieveProgressData(patients[i]['user_id']);
+            //Show changed in DOM.
             progressBar.repaintProgressBar();
 
             holder.append(clone);
@@ -307,7 +308,7 @@ class PatientsController extends CategoryController {
      * This function sets the appointment modal with info from the patients appointment.
      * @param id
      */
-    async openAppointmentEditor(userID,revalidantid) {
+    async openAppointmentEditor(userID, revalidantid) {
         $('#modal-progress-anchor').find('.appointment-text').hide();
         await modalProgressbar.retrieveProgressData(userID);
         modalProgressbar.repaintProgressBar();
@@ -358,7 +359,7 @@ class PatientsController extends CategoryController {
         for (let i = 0; i < progressbars.length; i++) {
             if (progressbars[i].getAssignedID() == id) {
                 progressbars[i].setTotalGoal(totalgoal);
-                progressbars[i].setAppointmentDate(new Date(appointmentDate))
+                progressbars[i].setAppointmentDate(new Date(appointmentDate));
                 progressbars[i].repaintProgressBar();
             }
         }
