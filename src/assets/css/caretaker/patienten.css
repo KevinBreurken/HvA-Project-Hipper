@@ -44,6 +44,10 @@
     color: #666666;
 }
 
+.pad-caretaker-content .imgcaregiver {
+    border-radius: 0;
+}
+
 .imgpatient1 {
     width: 324px;
     height: 300px;
@@ -89,6 +93,7 @@
     margin-bottom: 0;
 }
 
+.ct-name {
 .ct-header {
     font-weight: bold;
     margin-bottom: 0;
