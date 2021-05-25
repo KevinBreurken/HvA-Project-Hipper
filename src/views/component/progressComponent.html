@@ -1,9 +1,15 @@
 <div class="pad-progress-container p-2">
     <div class="progress">
+
         <div id="goal-now" class="current-bar progress-bar bar-color-yesterday" role="progressbar" aria-valuenow="30"
              aria-valuemin="0" aria-valuemax="100">
         </div>
-        <div id="goal-goal" class="goal-bar progress-bar-striped progress-bar-animated bar-color-goal"
+
+        <div id="now" class="current-bar progress-bar bar-color-current progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="30"
+             aria-valuemin="0" aria-valuemax="100">
+        </div>
+
+        <div id="goal-goal" class="goal-bar  bar-color-goal "
              role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
         </div>
         <div class="progress-bar-end">
@@ -22,8 +28,11 @@
 <ul class="legend">
     <li><span class="bar-color-yesterday"></span>
         <p class="legend-earned"></p></li>
-    <li class="goal-li"><span class="bar-color-goal progress-bar-striped progress-bar-animated"></span>
-        <p class="legend-goal"></p></li>
+
+    <li><span class="bar-color-current progress-bar-striped progress-bar-animated"></span><p class="legend-current"></p></li>
+
+    <li class="goal-li"><span class="bar-color-goal"></span><p class="legend-goal"></p></li>
+
     <li class="total-li"><span class="bar-color-bg"></span>
         <p class="legend-total"></p></li>
 </ul>

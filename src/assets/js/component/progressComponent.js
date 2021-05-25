@@ -9,12 +9,14 @@ class ProgressComponent {
         })
     }
 
-    setProgressBarData(totalPamGoal, currentlyEarnedPam, dailyPamGoal) {
+    setProgressBarData(totalPamGoal, currentlyEarnedPam, earnedPam, dailyPamGoal) {
         if(totalPamGoal == null)
             this.htmlRoot.find(".pad-progress-container").hide();
 
         //Legend
+
         this.htmlRoot.find(".legend-earned").html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
+        this.htmlRoot.find(".legend-current").html(`${earnedPam} Pam punten die je momenteel hebt`);
         this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM punten doel voor vandaag`);
         if(totalPamGoal != null)
             this.htmlRoot.find(".legend-total").html(`${totalPamGoal} PAM punten als totaal doel`);
@@ -24,7 +26,9 @@ class ProgressComponent {
         this.htmlRoot.find('.pam-value').html(totalPamGoal);
         this.setProgress('#goal-previous', 0, 0, true)
         this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
+        this.setProgress('#now',  10, true)
         this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
+
     }
 
     setProgress(element, percentage, displayValue, hideOnLowPercent) {
@@ -61,10 +65,11 @@ class ProgressComponent {
     async retrieveProgressData(userId) {
         const totalPamGoal = await this.retrieveTotalPamGoal(userId);
         const currentlyEarnedPam = await this.retrieveEarnedPam(userId);
+        const earnedPam = await this.retrieveEarnedPam(userId);
         const appointmentDate = await this.retrieveAppointmentDate(userId);
         let dailyPamGoal = await this.calculateDailyPamGoal(totalPamGoal - currentlyEarnedPam,appointmentDate);
         dailyPamGoal = dailyPamGoal.toFixed(1);
-        return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal, "date": appointmentDate};
+        return {"total": totalPamGoal, "current": currentlyEarnedPam, "now": earnedPam, "daily": dailyPamGoal, "date": appointmentDate};
     }
 
     async retrievePam(userId) {

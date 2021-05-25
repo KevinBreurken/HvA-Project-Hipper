@@ -175,7 +175,7 @@ class PatientsController extends CategoryController {
             //Load progress bar.
             const progressBar = await new ProgressComponent(clone.find(".progress-anchor"));
             const pamdata = await progressBar.retrieveProgressData(patients[i]['user_id']);
-            progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['daily']);
+            progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['now'], pamdata['daily']);
             progressBar.setAppointmentText(pamdata['date']);
 
             holder.append(clone);

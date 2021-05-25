@@ -89,6 +89,10 @@
     background-color: var(--color-progress-yesterday);
 }
 
+.bar-color-current {
+    background-color: var(--color-progress-current);
+}
+
 .bar-color-goal {
     background-color: var(--color-progress-goal);
 }
