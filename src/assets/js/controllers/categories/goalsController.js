@@ -45,6 +45,7 @@ class GoalsController extends CategoryController {
 
     setAppointmentState(state) {
         $('#pam-dailygoal-text').toggle(!state);
+        $("#pam-dailygoal-text").hide();
         this.progressBar.htmlRoot.find(".goal-li").toggle(!state);
         $('#motivational-title').toggle(!state);
         $('#motivational-description').toggle(!state);

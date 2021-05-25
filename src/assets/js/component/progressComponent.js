@@ -16,8 +16,8 @@ class ProgressComponent {
         //Legend
 
         this.htmlRoot.find(".legend-earned").html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
-        this.htmlRoot.find(".legend-current").html(`${earnedPam} Pam punten die je momenteel hebt`);
-        this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM punten doel voor vandaag`);
+        this.htmlRoot.find(".legend-current").html(`${earnedPam} PAM vandaag behaald`);
+        this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM doel voor vandaag`);
         if(totalPamGoal != null)
             this.htmlRoot.find(".legend-total").html(`${totalPamGoal} PAM punten als totaal doel`);
         else
