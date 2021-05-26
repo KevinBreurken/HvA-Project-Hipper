@@ -15,11 +15,11 @@ class ProgressComponent {
 
         //Legend
 
-        this.htmlRoot.find(".legend-earned").html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
-        this.htmlRoot.find(".legend-current").html(`${earnedPam} PAM vandaag behaald`);
-        this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM doel voor vandaag`);
+        this.htmlRoot.find(".legend-earned").html(`<b style="color: gray;">${currentlyEarnedPam} PAM </b> punten Eerder behaald.`);
+        this.htmlRoot.find(".legend-current").html(`<b style="color: gray;">${earnedPam} PAM </b> vandaag behaald`);
+        this.htmlRoot.find(".legend-goal").html(`<b style="color: gray;">${dailyPamGoal} PAM </b> doel voor vandaag`);
         if(totalPamGoal != null)
-            this.htmlRoot.find(".legend-total").html(`${totalPamGoal} PAM punten als totaal doel`);
+            this.htmlRoot.find(".legend-total").html(`<b style="color: gray;">${totalPamGoal} PAM</b> punten als totaal doel`);
         else
             this.htmlRoot.find(".total-li").hide();
         //Bar
