@@ -92,6 +92,15 @@ class PatientsController extends CategoryController {
         $(".content").empty().append(this.view);
         $(".block-primary").hide();
 
+        this.view.find("#fileUpload").on("change", function () {
+            changeImageUploadPreview(this, '#file_uploader_popup', sessionManager.get("userID"))
+            $('#file_uploader_save').removeAttr("disabled");
+        });
+
+        this.view.find('#file_uploader_save').on("click", function () {
+            uploadImage(sessionManager.get("userID"), selectedImage);
+            $('#file_uploader').attr('src', selectedImage);
+        });
 
         this.setupPagination();
     }
@@ -164,12 +173,21 @@ class PatientsController extends CategoryController {
             $(".ct-description", clone).text(patients[i].description);
             $(".btn-edit--profile", clone).attr("data-id", patients[i].id);
             $(".btn-delete--confirm", clone).attr("data-id", patients[i].id);
-            //img changing to men
-            if (patients[i].gender === "Vrouw"){
-                clone.find(".imgpatient").attr('src','assets/img/patient2.png')
-            } else {
-                clone.find(".imgpatient").attr('src','assets/img/patient1.png')
+            // img changing to men
+            // if (patients[i].gender === "Vrouw"){
+            //     clone.find(".imgpatient").attr('src','assets/img/patient2.png')
+            // } else {
+            //     clone.find(".imgpatient").attr('src','assets/img/patient1.png')
+            // }
+            const userImage = await this.userRepository.getUserImage(patients[i].user_id);
+            if (userImage[0].photo != null) {
+                $(".imgpatient1", clone).attr("src", "./uploads/" + userImage[0].photo);
             }
+            else {
+                $(".imgpatient1", clone).attr("src", "/assets/img/default_image.png");
+            }
+
+            console.log(patients[i].user_id)
 
             //Load progress bar.
             const progressBar = await new ProgressComponent(clone.find(".progress-anchor"));

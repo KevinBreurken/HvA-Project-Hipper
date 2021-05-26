@@ -146,6 +146,15 @@ app.post("/user/rehabilitator", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+app.post("/user/photo", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT user.photo FROM user WHERE user.id = ?",
+        values: [req.body.id]
+    }, (data) => {
+        res.send(data)
+
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
 
 //retrieve caretaker info
 app.post("/user/caretaker", (req, res) => {
@@ -328,7 +337,7 @@ app.get("/caretaker/all/pagination", (req, res) => {
     const currentPaginationOffset = (req.query.paginationPosition - 1) * maxPerPagination;
 
     db.handleQuery(connectionPool, {
-        query: "SELECT `r`.* FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ? LIMIT ? OFFSET ?",
+        query: "SELECT r.* FROM rehabilitator as r INNER JOIN caretaker as c on r.caretaker_id = c.caretaker_id INNER JOIN user as u on u.id = c.user_id WHERE u.id = ? LIMIT ? OFFSET ?",
         values: [req.query.userID, parseInt(maxPerPagination), currentPaginationOffset]
     }, (data) => {
         console.log(data)
