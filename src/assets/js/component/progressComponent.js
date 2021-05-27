@@ -26,7 +26,7 @@ class ProgressComponent {
         this.htmlRoot.find('.pam-value').html(totalPamGoal);
         this.setProgress('#goal-previous', 0, 0, true)
         this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
-        this.setProgress('#now',  10, true)
+        this.setProgress('#now',  earnedPam, true)
         this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
 
     }
