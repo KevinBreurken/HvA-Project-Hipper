@@ -209,7 +209,7 @@ class PatientsController extends CategoryController {
             const progressBar = await new ProgressComponent(clone.find(".progress-anchor"));
             progressbars.push(progressBar);
 
-            progressBar.assignID(patients[i].id);
+            progressBar.setAssignedID(patients[i].id);
             await progressBar.retrieveProgressData(patients[i]['user_id']);
             //Show changed in DOM.
             progressBar.repaintProgressBar();
@@ -240,6 +240,8 @@ class PatientsController extends CategoryController {
      * @param id
      */
     openProfileEditor(id) {
+        //Remove alerts
+        $(".edit-succes").remove();
         // Give the submit button the right class
         if ($(".add-btn--submit")[0]) {
             $(".add-btn--submit").addClass("edit-btn--submit").removeClass("add-btn--submit");
@@ -309,6 +311,9 @@ class PatientsController extends CategoryController {
      * @param id
      */
     async openAppointmentEditor(userID, revalidantid) {
+        //Remove alerts
+        $(".edit-succes").remove();
+
         $('#modal-progress-anchor').find('.appointment-text').hide();
         await modalProgressbar.retrieveProgressData(userID);
         modalProgressbar.repaintProgressBar();
@@ -363,7 +368,7 @@ class PatientsController extends CategoryController {
                 progressbars[i].repaintProgressBar();
             }
         }
-
+        
         $("#edit-form-appointment").prepend(`
             <div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">Afspraak is bewerkt!</div>`);
 
