@@ -87,7 +87,7 @@ class PatientsController extends CategoryController {
         this.setupAppointmentModal()
         this.setupPagination();
     }
-    
+
     async setupPagination() {
         const amountPerPage = 2;
         //Get count of rehabilitator of caretaker.
