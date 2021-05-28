@@ -31,6 +31,11 @@ class CaretakerController extends CategoryController {
 
         //add the patient overview
         await this.initializeTable()
+
+        //enable tooltips
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
     }
 
     //create the table
@@ -50,7 +55,7 @@ class CaretakerController extends CategoryController {
             if(calc !== "<1"){
                 calc = (Math.floor(calc * 100))/100;
             }
-            await this.addData(name, date, score, calc, obtained);
+            await this.addData(name, date, score, calc, obtained, initial);
         }
     }
 
@@ -103,16 +108,57 @@ class CaretakerController extends CategoryController {
         return "Geen datum"
     }
 
-    async addData(name, date, score, calc, total){
+    async addData(name, date, score, calc, total, initial){
         let row;
-        if (calc > score){
+        if (this.determineValid(calc, initial) < 3){
+            row = "table-danger";
+        } else if (calc > score){
             row = "table-warning";
         }
+        let message = this.determineValid(calc, initial);
+        message = this.mesConverter(message, row);
+        //append data
         $("#table-data").append("<tr class='" + row + "'>" +
             "    <td>" + name + "</td>\n" +
             "    <td>" + date + "</td>\n" +
             "    <td>" + calc + "</td>\n" +
             "    <td>" + score + "</td>\n" +
-            "    <td>" + total + "</td>\n" + "</tr>");
+            "    <td>" + total + "</td>\n" +
+            "    <td><a tabindex='0' class='btn btn-secondary' role='button' data-toggle='popover' data-trigger='focus' title='Revalident melding' data-content='" + message + "'>>></a>" +
+            "    </td></tr>");
+        //initialize popover
+        $('[data-toggle="popover"]').popover();
+    }
+
+    determineValid(current, initial){
+        //magic number
+        const maxValue = 1.5;
+        const minValue = 0.6;
+
+        //return 1 or 2 if not valid
+        if (initial * maxValue <= current){
+            return 1;
+        }
+
+        if (initial * minValue >= current){
+            return 2;
+        }
+
+        //return 3 if its ok
+        return 3;
+    }
+
+    mesConverter(number, warning){
+        if (warning === "table-warning"){
+            return "Er zijn de afgelopen dag te weinig PAM-punten behaald"
+        }
+        switch (number){
+            case 1:
+                return "Het momenteel berekende doel is te hoog t.o.v. het ingestelde dagelijkse doel"
+            case 2:
+                return "Het momenteel berekende doel is te ver omlaag t.o.v. het ingestelde dagelijkse doel"
+            default:
+                return "Alles lijkt op orde"
+        }
     }
 }
