@@ -33,21 +33,10 @@ class PatientsController extends CategoryController {
         this.updateCurrentCategoryColor("--color-category-default");
         //Set the navigation to the correct state.
         nav.setNavigationState(navState.Caretaker)
-        //Load the login-content into memory.
-        this.patientsView = $(data);
-
-        //Empty the content-div and add the resulting view to the page.
-        $(".content").empty().append(this.patientsView);
 
         // Set the blocky content
         blocky = $(".block-primary");
-
-        // Get all patients
-        // this.caretakerRepository.getAllRehab(sessionManager.get("userID"), 1, 2).then(data => {
-        //     this.createPatients(data).then((e) => {
-        //         console.log(e)
-        //     })
-        // });
+        this.view = $(data);
 
         // Get the caretaker id
         this.caretakerRepository.getLoggedInCaretakerId(sessionManager.get("userID")).then(data => {
@@ -55,18 +44,18 @@ class PatientsController extends CategoryController {
         })
 
         // Open the profile editor
-        $(document).on("click", ".btn-edit--profile", (e) => {
+        $(this.view).on("click", ".btn-edit--profile", (e) => {
             dataId = e.target.parentNode.attributes["data-id"].nodeValue
             this.openProfileEditor(dataId)
         });
 
         //Open the delete
-        $(document).on("click", ".btn-delete--open", (e) => {
+        $(this.view).on("click", ".btn-delete--open", (e) => {
             dataId = e.target.parentNode.attributes["data-id"].nodeValue
         });
 
         // Confirm the delete
-        $(document).on("click", ".btn-delete--confirm", (e) => {
+        $(this.view).on("click", ".btn-delete--confirm", (e) => {
             userValues.forEach((user) => {
                 if (user.userID === parseInt(dataId)) {
                     this.deletePatient(dataId, user.userID);
@@ -75,23 +64,22 @@ class PatientsController extends CategoryController {
         })
 
         // When you want to open the profile editor
-        $(document).on("click", ".btn-add--profile", (e) => {
+        $(this.view).on("click", ".btn-add--profile", (e) => {
             this.openAddFields();
         })
 
         //
-        $(document).on("click", ".add-btn--submit", (e) => {
+        $(this.view).on("click", ".add-btn--submit", (e) => {
             this.addPatient(e).then((e) => {
                 console.log("pixels")
             });
         })
 
         // When the form gets sent
-        $(document).on("click", ".edit-btn--submit", (e) => {
+        $(this.view).on("click", ".edit-btn--submit", (e) => {
             this.editPatient(e, dataId);
         })
 
-        this.view = $(data);
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
         $(".block-primary").hide();
@@ -99,7 +87,7 @@ class PatientsController extends CategoryController {
         this.setupAppointmentModal()
         this.setupPagination();
     }
-
+    
     async setupPagination() {
         const amountPerPage = 2;
         //Get count of rehabilitator of caretaker.
@@ -125,31 +113,31 @@ class PatientsController extends CategoryController {
 
     async setupAppointmentModal() {
         // Open the appointment editor
-        $(document).on("click", ".btn-edit--appointment", (e) => {
+        $(this.view).on("click", ".btn-edit--appointment", (e) => {
             const userId = e.target.parentNode.attributes["data-userid"].nodeValue
             const revalidantId = e.target.parentNode.attributes["data-id"].nodeValue
-            this.openAppointmentEditor(userId, revalidantId)
+            this.openAppointmentEditor(userId, revalidantId);
         });
         // When the form gets sent
-        $(document).on("click", ".submit-btn--appointment", (e) => {
+        $(this.view).on("click", ".submit-btn--appointment", (e) => {
             this.editAppointment(e, dataId);
         })
 
         //Load progress bar.
         modalProgressbar = await new ProgressComponent($('#modal-progress-anchor'));
         $("#appointment-totalgoal").change(function () {
-            modalProgressbar.setTotalGoal($(this).val())
-            modalProgressbar.repaintProgressBar()
+            modalProgressbar.setTotalGoal($(this).val());
+            modalProgressbar.repaintProgressBar();
         });
         $("#appointment-date-edit").change(function () {
-            modalProgressbar.setAppointmentDate(new Date($(this).val()))
-            modalProgressbar.repaintProgressBar()
+            modalProgressbar.setAppointmentDate(new Date($(this).val()));
+            modalProgressbar.repaintProgressBar();
         });
     }
 
     paginatePatient(paginationPosition) {
         this.caretakerRepository.getRehabByPageID(sessionManager.get("userID"), paginationPosition, 2).then(data => {
-            this.createPatients(data)
+            this.createPatients(data);
         });
 
         $(".page-item").each(function () {

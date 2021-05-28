@@ -26,7 +26,7 @@ class CaretakerProfileController extends CategoryController {
         this.getCaretakerInfo();
 
         // once the modal is opened, set up the modal
-        $(document).on("click", ".btn-edit--caretaker", (e) => {
+        $(this.caretakerView).on("click", ".btn-edit--caretaker", (e) => {
             this.fillProfileEdit();
         });
 

@@ -20,8 +20,8 @@
     padding-left: 30px;
 }
 
-/*@media (min-width: 992px) {*/
-/*    .col-lg-5 {*/
-/*        max-width: 100%;*/
-/*    }*/
-/*}*/
+@media (min-width: 992px) {
+    .profile-side-content .col-lg-5 {
+        max-width: 100%;
+    }
+}
