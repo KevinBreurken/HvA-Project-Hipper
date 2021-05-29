@@ -126,7 +126,7 @@ app.post("/user/addRehab", (req, res) => {
 // add an user
 app.post("/user/addUser", (req, res) => {
     let crypted = cryptoHelper.getHashedPassword(req.body.userValues[1]);
-    console.log(crypted);
+
     db.handleQuery(connectionPool, {
         query: "INSERT INTO `user` (`username`, `password`, `role`) VALUES (?, ?, ?)",
         values: [req.body.userValues[0],crypted,0]

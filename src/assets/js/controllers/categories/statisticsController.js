@@ -149,7 +149,6 @@ class StatisticsController extends CategoryController {
             // Set the dates
             let today = moment();
 
-            // console.log(today, date, pamDates[i]["date"]);
             if (today.isSame(momentArray[i]["date"], 'day')) {
                 start = i;
             }
@@ -168,6 +167,7 @@ class StatisticsController extends CategoryController {
                 weekData[dateIso - 1] = date.pam_score;
             }
         })
+
         // Create the context
         let ctx = document.getElementById('stats-chart').getContext('2d');
 
@@ -213,16 +213,4 @@ class StatisticsController extends CategoryController {
             }
         });
     }
-
-    async getPamData(id) {
-        this.retrievePam(id).then((event) => {
-            return event;
-        });
-    }
 }
-
-// $(document).on((".datepicker-stats").change(() => {
-//     console.log("kek");
-// })
-
-

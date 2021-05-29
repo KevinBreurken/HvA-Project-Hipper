@@ -285,7 +285,7 @@ class PatientsController extends CategoryController {
         userEditValues = this.setUserValues();
         userEditValues.push(userId);
 
-        console.log(editValues[0].adres);
+        // Validate
         if (this.validateForm(editValues[0].firstname, editValues[0].lastname, editValues[0].birthdate, editValues[0].bloodtype, editValues[0].status,
             editValues[0].phone, editValues[0].email, userEditValues[0], userEditValues[1])) {
             return false;
@@ -299,7 +299,6 @@ class PatientsController extends CategoryController {
                 "</div>")
             $("html, .modal").animate({ scrollTop: 0 }, "slow");
 
-            console.log(edited.values[0].id);
             // Set the values In the person self
             $(".block-" + edited.values[0].id + " .ct-name").text(edited.values[0].firstname)
             $(".block-" + edited.values[0].id + " .ct-lastname").text(edited.values[0].lastname)
