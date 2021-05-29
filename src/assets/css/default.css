@@ -41,6 +41,7 @@ h3 {
 }
 
 .category-container {
+    justify-content: center !important;
     margin-right: 0 !important;
     margin-left: 0 !important;
 }
@@ -61,6 +62,15 @@ h3 {
     line-height: 40px;
     font-size: 30px;
     color: #ffffff;
+}
+
+.modal-dialog .pad-container-header{
+    line-height: 48px;
+    padding: 0.2rem 1rem !important;
+}
+
+.image-border {
+    max-width: 100%;
 }
 
 .pad-container-content {
@@ -134,4 +144,16 @@ input[type=text], input[type=password] {
     max-width: 324px !important;
     max-height: 300px;
     padding-bottom: 16px;
+}
+
+.pad-modal-close {
+    float: right;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 1;
+    background-color: transparent !important;
+    border: 0 !important;
 }
