@@ -33,6 +33,10 @@ class StatisticsController extends CategoryController {
 
         this.getPamDates().then((e) => {
             pamDates = e;
+            pamDates.forEach((date, index) => {
+                return pamDates[index].date = moment(date.date);
+            })
+            this.loadSimpleStats(pamDates);
         });
 
         //When clicked the advance stats button, show stats
@@ -59,13 +63,13 @@ class StatisticsController extends CategoryController {
     changeScreen(advanced) {
         if (advanced === true) {
             $(".content").load("views/advanced_statistics.html", () => {
-                this.makeStats();
+                this.makeStats().then(() => {
+                    console.log("yo")
+                });
                 $(".datepicker-stats").val(moment().format("YYYY-MM-DD"));
             });
         } else {
-            $(".content").load("views/statistics.html", () => {
-
-            });
+            $(".content").load("views/statistics.html");
         }
     }
 
@@ -77,10 +81,30 @@ class StatisticsController extends CategoryController {
         return await this.userRepository.getAll(sessionManager.get("userID"));
     }
 
+    async loadSimpleStats(dates) {
+        let today = moment();
+
+        dates.forEach((index) => {
+
+            if (today.isSame(index.date, 'date')) {
+                console.log("wow")
+                this.applySimpleStats(index)
+            }
+        })
+    }
+
+    applySimpleStats(date) {
+        // Calorie section
+        $(".compare-calorie .card-text").text(`${date.pam_score * 25} is je calorie verbrand, wow!`)
+
+        $(".compare-yesterday .text-center").text(date.pam_score)
+    }
+
     /**
      * Uses the arrows on statistic to change the week
      */
     changeWeekArrows(direction) {
+        // If the direction is left, go back one week, otherwise go up one week
         if (direction === "left") {
             let firstVal = moment($(".datepicker-stats").val());
             firstVal = firstVal.subtract("1", "weeks");
@@ -110,6 +134,8 @@ class StatisticsController extends CategoryController {
                 weekData[dateIso - 1] = moment.pam_score;
             }
         })
+
+        // Set the weekdata and update the chart
         statsChart.data.datasets[0].data = weekData;
         statsChart.update();
     }
@@ -149,7 +175,6 @@ class StatisticsController extends CategoryController {
             // Set the dates
             let today = moment();
 
-            // console.log(today, date, pamDates[i]["date"]);
             if (today.isSame(momentArray[i]["date"], 'day')) {
                 start = i;
             }
