@@ -72,8 +72,20 @@ app.post("/user/update", (req, res) => {
 
     // Put all the values in a big array we can send back to update the site without reload!
     let values = [];
-    values.push({"firstname": firstname, "lastname": lastname, "birthdate": birthdate, "gender": gender, "bloodtype": bloodtype,
-        "status": status, "phone": phone, "email": email, "description": description, "adres": adres, "postcode": postcode, "id": req.body.id});
+    values.push({
+        "firstname": firstname,
+        "lastname": lastname,
+        "birthdate": birthdate,
+        "gender": gender,
+        "bloodtype": bloodtype,
+        "status": status,
+        "phone": phone,
+        "email": email,
+        "description": description,
+        "adres": adres,
+        "postcode": postcode,
+        "id": req.body.id
+    });
 
     db.handleQuery(connectionPool, {
         query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ?, `adress` = ?, `postalcode` = ? WHERE `id` = ?;" +
@@ -82,7 +94,7 @@ app.post("/user/update", (req, res) => {
             cryptoHelper.getHashedPassword(req.body.userValues[1]), req.body.userValues[2]]
     }, (data) => {
 
-       res.status(httpOkCode).json({"values": values});
+        res.status(httpOkCode).json({"values": values});
     }, (err) => res.status(badRequestCode).json({"reason": err}));
 })
 
@@ -111,8 +123,19 @@ app.post("/user/addRehab", (req, res) => {
     let postcode = req.body.editValues[0].postcode;
 
     let values = [];
-    values.push({"firstname": firstname, "lastname": lastname, "birthdate": birthdate, "gender": gender, "bloodtype": bloodtype,
-        "status": status, "phone": phone, "email": email, "description": description, "adres": adres, "postcode": postcode})
+    values.push({
+        "firstname": firstname,
+        "lastname": lastname,
+        "birthdate": birthdate,
+        "gender": gender,
+        "bloodtype": bloodtype,
+        "status": status,
+        "phone": phone,
+        "email": email,
+        "description": description,
+        "adres": adres,
+        "postcode": postcode
+    })
 
     db.handleQuery(connectionPool, {
         query: "INSERT INTO `rehabilitator` (`first_name`, `last_name`, `birthdate`, `gender`, `bloodtype`, `status`, `phonenumber`, `email`, `description`, `adress`, `postalcode`, `caretaker_id`, `user_id`)" +
@@ -120,7 +143,7 @@ app.post("/user/addRehab", (req, res) => {
         values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.caretakerId, req.body.userID]
     }, (data) => {
         res.status(httpOkCode).json({"data": data, "values": values});
-    }, (err) => res.status(badRequestCode).json({"reason" : err}))
+    }, (err) => res.status(badRequestCode).json({"reason": err}))
 })
 
 // add an user
@@ -129,7 +152,7 @@ app.post("/user/addUser", (req, res) => {
     console.log(crypted);
     db.handleQuery(connectionPool, {
         query: "INSERT INTO `user` (`username`, `password`, `role`) VALUES (?, ?, ?)",
-        values: [req.body.userValues[0],crypted,0]
+        values: [req.body.userValues[0], crypted, 0]
     }, (result) => {
         res.status(httpOkCode).json({"data": result});
     }, (err) => res.status(badRequestCode).json({"reason": err}));
@@ -192,8 +215,8 @@ app.post("/caretaker/saveInfo", (req, res) => {
 //retrieve messages
 app.post("/messages", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT message.content, message.date, rehabilitator.first_name, rehabilitator.birthdate FROM message INNER JOIN rehabilitator ON message.rehabilitator_id = rehabilitator.id",
-        values: [req.body.id]
+        query: "SELECT message.message_id, message.content, message.message_id, message.date, message.rehabilitator_id, rehabilitator.first_name, rehabilitator.birthdate FROM message INNER JOIN rehabilitator ON message.rehabilitator_id = rehabilitator.id WHERE message.message_id NOT IN (SELECT message_has_report.message_id FROM message_has_report WHERE message_has_report.rehabilitator_id = ?)",
+        values: [req.body.rehabilitatorID]
     }, (data) => {
         console.log(data)
         res.send(data)
@@ -228,7 +251,6 @@ app.post("/messages/delete", (req, res) => {
 
 //insert messages
 app.post("/messages/insert", (req, res) => {
-    console.log("body = " , req.body)
     db.handleQuery(connectionPool, {
         query: "INSERT INTO message(caretaker_id, rehabilitator_id, content, date) VALUES (?, ?, ?, ?);",
         values: [req.body.caretakerID, req.body.userID, req.body.message, req.body.date]
@@ -238,6 +260,41 @@ app.post("/messages/insert", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
+//report message
+app.post("/messages/report", (req, res) => {
+    const {messageID, rehabilitatorID} = req.body;
+
+    const handleErr = (err, requestCode = badRequestCode) => res.status(requestCode).json({reason: err});
+
+    console.log(req.body)
+    db.handleQuery(connectionPool, {
+        //report message in message_has_report
+        query: "INSERT INTO message_has_report (message_id, rehabilitator_id) VALUES (?, ?);",
+        values: [messageID, rehabilitatorID]
+    }, (reportData) => {
+        console.log(reportData)
+        //get amount of reports back
+        db.handleQuery(connectionPool, {
+            query: "SELECT COUNT(message_id) messageCount FROM message_has_report where message_id = ?;",
+            values: [messageID]
+        }, (countData) => {
+            const messageCount = +countData[0].messageCount;
+            //handle delete
+            if (messageCount >= 3) {
+                db.handleQuery(connectionPool, {
+                    query: "DELETE message, message_has_report FROM message INNER JOIN message_has_report WHERE message.message_id = message_has_report.message_id and message.message_id = ?;",
+                    values: [messageID]
+                }, () => {
+                }, deleteErr => handleErr(deleteErr))
+            }
+
+            res.send(reportData)
+        }, (countErr) => handleErr(countErr))
+
+    }, reportErr => handleErr(reportErr));
+});
+
 
 app.post("/pam", (req, res) => {
     db.handleQuery(connectionPool, {
