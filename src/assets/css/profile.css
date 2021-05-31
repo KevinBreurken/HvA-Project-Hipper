@@ -21,7 +21,7 @@
 }
 
 @media (min-width: 992px) {
-    .col-lg-5 {
+    .profile-side-content .col-lg-5 {
         max-width: 100%;
     }
 }

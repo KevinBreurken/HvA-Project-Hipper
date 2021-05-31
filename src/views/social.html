@@ -5,16 +5,20 @@
         </div>
         <div class="w-100 pad-container-content">
             <div class="row pb-3">
-                <div class="col-lg-5 image-border1">
+                <div class="col-lg-5 image-border">
                     <img class="imgcaregiver profile_pic_caretaker" src=""
-                         onerror="if (this.src !== 'error.jpg') this.src = 'assets/img/default_image.png';" alt="verzorger">
+                         onerror="if (this.src !== 'error.jpg') this.src = 'assets/img/default_image.png';"
+                         alt="verzorger">
                 </div>
                 <div class="col-lg-5 rehabilitator-text">
-                    <p><small><ins>Contact:</ins><br>
+                    <p><small>
+                        <ins>Contact:</ins>
+                        <br>
                         Telefoon: <span class="phone_caretaker"></span><br>
                         E-Mail: <span class="email_caretaker"></span><br>
                         <br>
-                        <ins>Ervaring:</ins><br>
+                        <ins>Ervaring:</ins>
+                        <br>
                         <span class="experience1_caretaker"></span><br>
                         <span class="experience2_caretaker"></span><br>
                         <span class="experience3_caretaker"></span><br>
@@ -38,14 +42,15 @@
         <div class="w-100 pad-container-content">
             <h2 class="mb-2"><b>Beschrijving</b></h2>
             <p style="padding-bottom: 20px">
-                Wilt u wat delen met andere revalidanten? heeft u tips/suggesties of wilt u gewoon iets gezelligs plaatsen? Typ uw bericht hieronder en verstuur het om met andere te delen!
+                Wilt u wat delen met andere revalidanten? heeft u tips/suggesties of wilt u gewoon iets gezelligs
+                plaatsen? Typ uw bericht hieronder en verstuur het om met andere te delen!
             </p>
 
-            <form class="contact-form" method="POST" action="send">
+            <form id="message-form-other" class="contact-form" method="POST">
                 <!-- Message -->
                 <div class="form-group row">
                     <div class="col-lg-8">
-                        <textarea class="form-control form-control-sm" name="message" rows="15" required></textarea>
+                        <textarea id="message-content" class="form-control form-control-sm" name="message" rows="15" required></textarea>
                     </div>
 
                 </div>
@@ -59,33 +64,26 @@
         </div>
     </div>
 </div>
+<div class="category-container row justify-content-md-center">
+    <div class="col-lg-6 pad-container">
+        <div class="w-100 pad-container-header">
+            MIJN GEDEELDE BERICHTEN
+        </div>
+        <div id="my-messages" class="w-100 pad-container-content social-messages">
+
+        </div>
+    </div>
+</div>
 
 <div class="category-container row justify-content-md-center">
     <div class="col-lg-6 pad-container">
         <div class="w-100 pad-container-header">
             HOE GAAT HET MET ANDERE REVALIDANTEN?
         </div>
-        <div class="w-100 pad-container-content">
-            <h2 class="mb-2"><b>Maarten - 50 jaar</b></h2>
-            <p style="padding-bottom: 20px; border-bottom:2px solid var(--color-category-current);">
-                Met een ski ongeluk mijn gebroken Praesent consectetur enim in aliquam efficitur. Suspendisse vel lacinia felis. Quisque at orci lacus. Nullam sit amet pellentesque augue. Fusce ultricies elit sed nulla rutrum, at maximus mi convallis. Sed hendrerit sapien id elit tincidunt, et fringilla leo varius.
-            </p>
+        <div id="social-messages" class="w-100 pad-container-content social-messages">
 
-            <h1 class="pl-3 profile-title"><b></b></h1>
-
-            <h2 class="mb-2"><b>Judith - 67 jaar</b></h2>
-            <p style="padding-bottom: 20px; border-bottom:2px solid var(--color-category-current);">
-                Praesent consectetur enim in aliquam efficitur. Suspendisse vel lacinia felis. Quisque at orci lacus. Nullam sit amet pellentesque augue.
-                Fusce ultricies elit sed nulla rutrum, at maximus mi convallis. Sed hendrerit sapien id elit tincidunt, et fringilla leo varius.
-            </p>
-
-            <h1 class="pl-3 profile-title"><b></b></h1>
-
-            <h2 class="mb-2"><b>Tim - 31 jaar</b></h2>
-            <p style="padding-bottom: 20px">
-                Donec rhoncus imperdiet arcu ac posuere. Cras egestas, velit vehicula accumsan condimentum, erat nibh ullamcorper dolor, a dignissim magna nibh a est. Suspendisse semper ornare consectetur. Pellentesque non lectus lacinia, blandit elit id, consequat erat. Praesent viverra nunc sed nulla volutpat sodales. Donec porttitor diam at egestas fermentum.
-            </p>
         </div>
     </div>
 </div>
 
+</div>

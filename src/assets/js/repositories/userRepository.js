@@ -26,8 +26,9 @@ class UserRepository {
             .doRequest(`${this.route}/login`, {"username": username, "password": password}, "POST");
     }
 
-    async delete() {
-
+    async delete(id, userID) {
+        return await networkManager
+            .doRequest(`${this.route}/delete`, {"id": id, "userID": userID});
     }
 
 
@@ -35,8 +36,25 @@ class UserRepository {
 
     }
 
-    async update(id, values = {}) {
+    async update(id, editValues, userValues) {
+        return await networkManager
+            .doRequest(`${this.route}/update`, {"id": id, "editValues": editValues, "userValues": userValues});
+    }
 
+    // Adds a rehibalitant
+    async addPatient(caretakerId, editValues, userID) {
+        return await networkManager
+            .doRequest(`${this.route}/addRehab`, {"caretakerId": caretakerId, "editValues": editValues, "userID": userID});
+    }
+
+    // adds an user
+    async addUser(userValues) {
+        return await networkManager
+            .doRequest(`${this.route}/addUser`, {"userValues": userValues});
+    }
+    async upload(){
+        return await networkManager
+            .doRequest(`${this.route}/upload`, {}, "POST");
     }
 
     async getRehabilitatorInfo(id) {

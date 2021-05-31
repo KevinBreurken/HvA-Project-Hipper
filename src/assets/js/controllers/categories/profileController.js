@@ -26,6 +26,16 @@ class ProfileController extends CategoryController {
         this.retrieveRehabilitatorInfo();
         this.retrieveCaretakerInfo();
 
+        this.view.find("#fileUpload").on("change", function () {
+            changeImageUploadPreview(this, '#file_uploader_popup', sessionManager.get("userID"))
+            $('#file_uploader_save').removeAttr("disabled");
+        });
+
+        this.view.find('#file_uploader_save').on("click", function () {
+            uploadImage(sessionManager.get("userID"), selectedImage);
+            $('#file_uploader').attr('src', selectedImage);
+        });
+        
     }
 
     async retrieveRehabilitatorInfo() {
@@ -33,7 +43,7 @@ class ProfileController extends CategoryController {
             const currentLoggedID = sessionManager.get("userID");
             const rehabilitatorData = await this.userRepository.getRehabilitatorInfo(currentLoggedID);
             //convert birthdate to string
-            var birthdate = rehabilitatorData[0].Birthdate
+            var birthdate = rehabilitatorData[0].birthdate
             var birthdateString = birthdate.toString();
             var age = this.getAge(birthdateString)
 
@@ -48,9 +58,10 @@ class ProfileController extends CategoryController {
             document.querySelector(".description_rehabilitator").innerText = rehabilitatorData[0].Description
             document.querySelector(".postalcode_rehabilitator").innerText = rehabilitatorData[0].Postalcode
             // //profile pic
-            document.querySelector(".profile_pic_rehabilitator").src =
-                rehabilitatorData[0]['Gender'] === "Vrouw" ? 'assets/img/patient2.png' : 'assets/img/patient1.png';
-
+            if (rehabilitatorData[0].photo != null) {
+                var photo = rehabilitatorData[0].photo;
+                $(".profile_pic_rehabilitator").attr("src", "./uploads/" + photo);
+            }
 
         } catch (e) {
             console.log("error while fetching rooms", e);
@@ -62,8 +73,6 @@ class ProfileController extends CategoryController {
         try {
             const currentLoggedID = sessionManager.get("userID");
             const caretakerData = await this.userRepository.getCaretakerInfo(currentLoggedID);
-            console.log(currentLoggedID)
-            console.log(caretakerData)
             const caretakerID = caretakerData[0].caretaker_id;
             const fullname = caretakerData[0].first_name + " " + caretakerData[0].last_name
 
@@ -95,4 +104,5 @@ class ProfileController extends CategoryController {
         }
         return age;
     }
+
 }
