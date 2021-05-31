@@ -110,7 +110,8 @@
 }
 
 .legend li p {
-    margin-bottom: 0
+    margin-bottom: 0;
+    min-height: 32px;
 }
 
 .legend span {

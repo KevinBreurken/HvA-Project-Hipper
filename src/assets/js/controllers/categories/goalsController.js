@@ -29,8 +29,8 @@ class GoalsController extends CategoryController {
         //Create the progress component.
         this.progressBar = await new ProgressComponent(this.view.find("#progress-anchor"));
         const pamdata = await this.progressBar.retrieveProgressData(sessionManager.get("userID"));
-        this.progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['daily']);
-        this.progressBar.setAppointmentText(pamdata['date']);
+        this.progressBar.repaintProgressBar();
+
         //Empty the content-div and add the resulting view to the page
         $(".content").append(this.view);
         this.loadActivities(pamdata['daily']);
@@ -66,7 +66,6 @@ class GoalsController extends CategoryController {
     }
 
     generateActivityCard(cardData) {
-        console.log(cardData)
         const pamText = cardData['earnable_pam'] === null ? "" : `<p class="goal-card-subheader">${cardData['earnable_pam']} verwachten PAM punten</p>`;
         return `
         <div class="goal-card-container mx-auto">

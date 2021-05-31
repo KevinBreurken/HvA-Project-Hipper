@@ -168,6 +168,36 @@ app.post("/user/caretaker", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
+// retrieve caretaker info WITH caretaker logged in
+app.post("/caretaker/getInfo", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT * FROM `caretaker` WHERE `caretaker`.`user_id` = ?",
+        values: [req.body.userID]
+    }, (data) => {
+        res.send(data)
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+})
+
+// Save the caretaker
+app.post("/caretaker/saveInfo", (req, res) => {
+    console.log(req.body.values[0].firstname);
+    let firstname = req.body.values[0].firstname;
+    let lastname = req.body.values[0].lastname;
+    let email = req.body.values[0].email;
+    let description = req.body.values[0].description;
+    let phone = req.body.values[0].phone;
+    let experience_one = req.body.values[0].experience_one;
+    let experience_two = req.body.values[0].two;
+    let experience_three = req.body.values[0].experience_three;
+
+    db.handleQuery(connectionPool, {
+        query: "UPDATE `caretaker` SET `first_name` = ?, `last_name` = ?, `email` = ?, `phone` = ?, `description` = ?, `experience_field1` = ?, `experience_field2` = ?, `experience_field3` = ? WHERE `user_id` = ?",
+        values: [firstname, lastname, email, phone, description, experience_one, experience_two, experience_three, req.body.userID]
+    }, (data) => {
+        res.send(data)
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+})
+
 //retrieve messages
 app.post("/messages", (req, res) => {
     db.handleQuery(connectionPool, {
@@ -192,6 +222,7 @@ app.post("/messages/me", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
 //delete message
 app.post("/messages/delete", (req, res) => {
     db.handleQuery(connectionPool, {
@@ -282,6 +313,7 @@ app.post("/rehabilitator/goal/total", (req, res) => {
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
+
 app.post("/rehabilitator/goal/date", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `appointment_date` from `rehabilitator` WHERE user_id = ?",
@@ -290,6 +322,24 @@ app.post("/rehabilitator/goal/date", (req, res) => {
         res.send(data)
 
     }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
+app.post("/rehabilitator/appointment", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `appointment_date`, `pam_goal_total` from `rehabilitator` WHERE `id` = ?",
+        values: [req.body.id]
+    }, (data) => {
+        res.send(data)
+    }, (err) => res.status(badRequestCode).json({reason: err}));
+});
+
+app.post("/rehabilitator/appointment/update", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "UPDATE `rehabilitator` SET `appointment_date` = ?, `pam_goal_total` = ?, `initial_daily_goal` = ? WHERE `id` = ?;",
+        values: [req.body.appointment_date,req.body.pam_goal_total,req.body.initial_daily_goal,req.body.id]
+    }, (data) => {
+        res.status(httpOkCode);
+    }, (err) => res.status(badRequestCode).json({"reason": err}));
 });
 
 // Get data from user

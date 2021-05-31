@@ -1,52 +1,66 @@
+/**
+ * Component used for handling and maintaining a progress bar UI element.
+ */
 class ProgressComponent {
+
     constructor(htmlRoot) {
         this.pamRepository = new PamRepository();
         this.rehabilitatorRepository = new RehabilitatorRepository();
 
+        this.totalPamGoal = 0;
+        this.currentlyEarnedPam = 0;
+        this.appointmentDate = null;
+
         $.get("views/component/progressComponent.html").done((data) => {
             this.htmlRoot = htmlRoot;
             htmlRoot.append(data);
-        })
+        });
     }
 
-    setProgressBarData(totalPamGoal, currentlyEarnedPam, dailyPamGoal) {
-        if(totalPamGoal == null)
-            this.htmlRoot.find(".pad-progress-container").hide();
+    /**
+     * Displays the stored changes to the DOM.
+     * @returns {Promise<void>}
+     */
+    async repaintProgressBar() {
 
-        //Legend
-        this.htmlRoot.find(".legend-earned").html(`${currentlyEarnedPam} Eerder behaalde PAM punten`);
-        this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM punten doel voor vandaag`);
-        if(totalPamGoal != null)
-            this.htmlRoot.find(".legend-total").html(`${totalPamGoal} PAM punten als totaal doel`);
-        else
-            this.htmlRoot.find(".total-li").hide();
-        //Bar
-        this.htmlRoot.find('.pam-value').html(totalPamGoal);
-        this.setProgress('#goal-previous', 0, 0, true)
-        this.setProgress('#goal-now', currentlyEarnedPam / totalPamGoal * 100, currentlyEarnedPam, true)
-        this.setProgress('#goal-goal', dailyPamGoal / totalPamGoal * 100, currentlyEarnedPam + dailyPamGoal, false)
+        this.dailyPamGoal = await this.calculateDailyPamGoal(this.totalPamGoal - this.currentlyEarnedPam, this.appointmentDate);
+        this.dailyPamGoal = this.dailyPamGoal.toFixed(1);
+
+        //Hide if there's no total goal.
+        this.htmlRoot.find(".pad-progress-container").toggle(this.totalPamGoal !== null);
+
+        //Update legend
+        this.htmlRoot.find(".legend-earned").html(`${this.currentlyEarnedPam} Eerder behaalde PAM punten`);
+        this.htmlRoot.find(".legend-goal").html(`${this.dailyPamGoal} PAM punten doel voor vandaag`);
+        this.htmlRoot.find(".total-li").toggle(this.totalPamGoal !== null);
+        this.htmlRoot.find(".legend-total").html(`${this.totalPamGoal} PAM punten als totaal doel`);
+
+        //Update bar
+        this.htmlRoot.find('.pam-value').html(this.totalPamGoal);
+        this.setProgressBarElement('#goal-previous', 0, 0, true)
+        this.setProgressBarElement('#goal-now', this.currentlyEarnedPam / this.totalPamGoal * 100, this.currentlyEarnedPam, true)
+        this.setProgressBarElement('#goal-goal', this.dailyPamGoal / this.totalPamGoal * 100, this.currentlyEarnedPam + this.dailyPamGoal, false)
+        this.updateAppointmentText();
     }
 
-    setProgress(element, percentage, displayValue, hideOnLowPercent) {
-        const barElement = this.htmlRoot.find(element);
-        barElement.css("width", percentage + '%');
-        if (hideOnLowPercent)
-            barElement.find('.progress-pin-element').toggle(percentage > 5);
-    }
-
-    setAppointmentText(appointmentDate) {
-        const dateDisplayText = appointmentDate.getDate() + '/' + (appointmentDate.getMonth() + 1) + '/' + appointmentDate.getFullYear();
-        const dateExpired = (appointmentDate < new Date());
+    /**
+     * Changes the appointment display text to the desired text.
+     */
+    updateAppointmentText() {
+        const dateDisplayText = this.appointmentDate.getDate() + '/' + (this.appointmentDate.getMonth() + 1) + '/' + this.appointmentDate.getFullYear();
+        const dateExpired = (this.appointmentDate < new Date());
         const preText = dateExpired ? "Laatste afspraak was op: " : "Volgende afspraak is op: ";
-        if(dateExpired)
-            this.htmlRoot.find(".goal-li").hide();
+
+        this.htmlRoot.find(".goal-li").toggle(!dateExpired); //List item is hidden when appointment is in the past.
         this.htmlRoot.find(".appointment-text").html(`<b>${preText}${dateDisplayText}</b>`);
     }
+
 
     async calculateDailyPamGoal(leftToDoPam, appointment) {
         try {
             const diffInMs = new Date(appointment) - new Date();
             const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+
             return leftToDoPam / diffInDays;
         } catch (e) {
             console.log("error while calculating daily pam goal.", e);
@@ -59,17 +73,25 @@ class ProgressComponent {
      * @returns {Promise<void>}
      */
     async retrieveProgressData(userId) {
-        const totalPamGoal = await this.retrieveTotalPamGoal(userId);
-        const currentlyEarnedPam = await this.retrieveEarnedPam(userId);
-        const appointmentDate = await this.retrieveAppointmentDate(userId);
-        let dailyPamGoal = await this.calculateDailyPamGoal(totalPamGoal - currentlyEarnedPam,appointmentDate);
+        this.totalPamGoal = await this.retrieveTotalPamGoal(userId);
+        this.currentlyEarnedPam = await this.retrieveEarnedPam(userId);
+        this.appointmentDate = await this.retrieveAppointmentDate(userId);
+
+        let dailyPamGoal = await this.calculateDailyPamGoal(this.totalPamGoal - this.currentlyEarnedPam,this.appointmentDate);
         dailyPamGoal = dailyPamGoal.toFixed(1);
-        return {"total": totalPamGoal, "current": currentlyEarnedPam, "daily": dailyPamGoal, "date": appointmentDate};
+
+        return {"total": this.totalPamGoal, "current": this.currentlyEarnedPam, "daily": dailyPamGoal, "date": this.appointmentDate};
+    }
+
+    setProgressBarElement(element, percentage, displayValue, hideOnLowPercent) {
+        const barElement = this.htmlRoot.find(element);
+        barElement.css("width", percentage + '%');
+        if (hideOnLowPercent)
+            barElement.find('.progress-pin-element').toggle(percentage > 5);
     }
 
     async retrievePam(userId) {
         try {
-            //await keyword 'stops' code until data is returned - can only be used in async function
             return await this.pamRepository.getPam(userId);
         } catch (e) {
             console.log("error while fetching pam data.", e);
@@ -108,5 +130,25 @@ class ProgressComponent {
             console.log("error while fetching appointment date.", e);
             return 0;
         }
+    }
+
+    getCalculatedDailyPamGoal(){
+        return this.dailyPamGoal;
+    }
+
+    setTotalGoal(value) {
+        this.totalPamGoal = value;
+    }
+
+    setAppointmentDate(value) {
+        this.appointmentDate = value;
+    }
+
+    setAssignedID(id) {
+        this.assignedID = id;
+    }
+
+    getAssignedID() {
+        return this.assignedID;
     }
 }
