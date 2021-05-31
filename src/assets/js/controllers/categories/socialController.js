@@ -116,6 +116,11 @@ class SocialController extends CategoryController {
             const messages = await this.messagesRepository.getAllMessages(rehabilitatorID);
             const messagesHtml = messages.map(message => {
                 const age = Utils.getAge(message.birthdate)
+                let actionsHtml = '';
+                if (message.rehabilitator_id !== rehabilitatorID) {
+                    actionsHtml += `<button class="btn-report" data-message-id="${message.message_id}">Rapporteer</button>`
+                }
+
                 return (`
                     <b>OP ${message.date.split("T")[0]}</b> <br>
                     <h2 class="mb-2"><b>${message.first_name}  ${age} jaar</b></h2>
