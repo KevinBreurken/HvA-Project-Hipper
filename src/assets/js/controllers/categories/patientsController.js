@@ -116,6 +116,7 @@ class PatientsController extends CategoryController {
         $(this.view).on("click", ".btn-edit--appointment", (e) => {
             const userId = e.target.parentNode.attributes["data-userid"].nodeValue
             const revalidantId = e.target.parentNode.attributes["data-id"].nodeValue
+            dataId = e.target.parentNode.attributes["data-id"].nodeValue;
             this.openAppointmentEditor(userId, revalidantId);
         });
         // When the form gets sent
@@ -343,10 +344,13 @@ class PatientsController extends CategoryController {
             return false;
         }
 
+        console.log("ID: " + id)
         this.rehabilitatorRepository.updateAppointmentData(id, {
             "appointment_date": appointmentDate,
-            "pam_goal_total": totalgoal
+            "pam_goal_total": totalgoal,
+            "initial_daily_goal": modalProgressbar.getCalculatedDailyPamGoal()
         });
+
 
         //Find the correct progress bar and update.
         for (let i = 0; i < progressbars.length; i++) {

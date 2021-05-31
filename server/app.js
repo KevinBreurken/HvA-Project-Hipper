@@ -320,15 +320,14 @@ app.post("/rehabilitator/appointment", (req, res) => {
         query: "SELECT `appointment_date`, `pam_goal_total` from `rehabilitator` WHERE `id` = ?",
         values: [req.body.id]
     }, (data) => {
-        console.log(data)
         res.send(data)
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
 app.post("/rehabilitator/appointment/update", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "UPDATE `rehabilitator` SET `appointment_date` = ?, `pam_goal_total` = ? WHERE `id` = ?;",
-        values: [req.body.appointment_date,req.body.pam_goal_total,req.body.id]
+        query: "UPDATE `rehabilitator` SET `appointment_date` = ?, `pam_goal_total` = ?, `initial_daily_goal` = ? WHERE `id` = ?;",
+        values: [req.body.appointment_date,req.body.pam_goal_total,req.body.initial_daily_goal,req.body.id]
     }, (data) => {
         res.status(httpOkCode);
     }, (err) => res.status(badRequestCode).json({"reason": err}));
