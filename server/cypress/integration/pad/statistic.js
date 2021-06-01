@@ -21,13 +21,13 @@ describe('Statistics', function () {
         cy.get(".login-form button").click();
 
         // Cy post get data
-        cy.route("POST", "/pam", {"id": "0"}).as("pam");
-
-        cy.wait("@pam");
-
-        cy.get("@pam").should((xhr) => {
-            alert(xhr);
-        })
+        // cy.route("POST", "/pam", {"id": "0"}).as("pam");
+        //
+        // cy.wait("@pam");
+        //
+        // cy.get("@pam").should((xhr) => {
+        //     alert(xhr);
+        // })
 
         // After getting data go to statistics
         cy.get(".nav-link[data-controller='statistics']").click();
