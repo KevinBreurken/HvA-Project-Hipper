@@ -36,7 +36,6 @@ class GoalsController extends CategoryController {
         this.loadActivities(pamdata['daily']);
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
 
-        $("#pam-dailygoal-text").html(`<b>Om het PAM totaal te bereiken moet u voor vandaag ${pamdata['daily']} PAM punten behalen.</b>`);
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${pamdata['daily']} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
         const dateExpired = (pamdata['date'] < new Date());
@@ -44,7 +43,6 @@ class GoalsController extends CategoryController {
     }
 
     setAppointmentState(state) {
-        $('#pam-dailygoal-text').toggle(!state);
         this.progressBar.htmlRoot.find(".goal-li").toggle(!state);
         $('#motivational-title').toggle(!state);
         $('#motivational-description').toggle(!state);
