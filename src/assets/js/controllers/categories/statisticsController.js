@@ -134,13 +134,26 @@ class StatisticsController extends CategoryController {
      * @param yesterday the date to compare with
      */
     applySimpleStats(date, yesterday) {
-        console.log(date);
         // Calorie section
         if (date != null) {
             $(".compare-calorie .card-text").text(`Je hebt ongeveer ${date.pam_score * 25} kilocalorieën verbrand!`)
 
             // Animal
-            $(".compare-animal .card-text").text('Je bent even sloom als een schildpad!')
+            if (date.pam_score < 0) {
+                $(".compare-animal .card-text").text('Je loopt evenveel als een schildpad!')
+            } else if (date.pam_score > 0 && date.pam_score < 1 || date.pam_score === 1) {
+                $(".compare-animal .card-text").text('Je hebt een slakkentempo, maar je loopt wel!')
+            } else if (date.pam_score > 1 && date.pam_score < 2 || date.pam_score === 2) {
+                $(".compare-animal .card-text").text('Nog niet vogelsvlug, maar wel onderweg!')
+            } else if (date.pam_score > 2 && date.pam_score < 3 || date.pam_score === 3) {
+                $(".compare-animal .card-text").text('Jeetje, je doet het even goed als een buizerd!')
+            } else if (date.pam_score > 3 && date.pam_score < 4 || date.pam_score === 4) {
+                $(".compare-animal .card-text").text('Dit is wel bijna een tijgertempo!')
+            } else if (date.pam_score > 4 && date.pam_score < 5 || date.pam_score === 5) {
+                $(".compare-animal .card-text").text('Jij bent stiekem gewoon een leeuw of niet?')
+            } else if (date.pam_score > 5) {
+                $(".compare-animal .card-text").text('Jij gaat zo goed, je hoeft deze hipper niet eens te dragen!')
+            }
 
             // Yesterday section
             if (yesterday === null) {
