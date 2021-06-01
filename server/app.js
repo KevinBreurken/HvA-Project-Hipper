@@ -311,7 +311,7 @@ app.post("/pam", (req, res) => {
         values: [req.body.id]
     }, (data) => {
         db.handleQuery(connectionPool, {
-            query: "SELECT `quarterly_score` from `pam_score` WHERE rehabilitator_id = ?",
+            query: "SELECT `quarterly_score` , `date` from `pam_score` WHERE rehabilitator_id = ?",
             values: [data[0]['id']]
         }, (datapam) => {
             res.send(datapam)
