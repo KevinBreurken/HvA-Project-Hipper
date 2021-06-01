@@ -23,8 +23,8 @@ class ProgressComponent {
      */
     async repaintProgressBar() {
 
-        let dailyPamGoal = await this.calculateDailyPamGoal(this.totalPamGoal - this.currentlyEarnedPam, this.appointmentDate);
-        dailyPamGoal = dailyPamGoal.toFixed(1);
+        this.dailyPamGoal = await this.calculateDailyPamGoal(this.totalPamGoal - this.currentlyEarnedPam, this.appointmentDate);
+        this.dailyPamGoal = this.dailyPamGoal.toFixed(1);
 
         //Hide if there's no total goal.
         this.htmlRoot.find(".pad-progress-container").toggle(this.totalPamGoal !== null);
@@ -38,7 +38,7 @@ class ProgressComponent {
         this.htmlRoot.find('.pam-value').html(this.totalPamGoal);
         this.setProgressBarElement('#goal-previous', 0, 0, true)
         this.setProgressBarElement('#goal-now', this.currentlyEarnedPam / this.totalPamGoal * 100, this.currentlyEarnedPam, true)
-        this.setProgressBarElement('#goal-goal', dailyPamGoal / this.totalPamGoal * 100, this.currentlyEarnedPam + dailyPamGoal, false)
+        this.setProgressBarElement('#goal-goal', this.dailyPamGoal / this.totalPamGoal * 100, this.currentlyEarnedPam + this.dailyPamGoal, false)
         this.updateAppointmentText();
     }
 
@@ -130,6 +130,10 @@ class ProgressComponent {
             console.log("error while fetching appointment date.", e);
             return 0;
         }
+    }
+
+    getCalculatedDailyPamGoal(){
+        return this.dailyPamGoal;
     }
 
     setTotalGoal(value) {

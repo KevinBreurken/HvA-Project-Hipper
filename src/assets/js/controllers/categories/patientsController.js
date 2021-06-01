@@ -84,7 +84,19 @@ class PatientsController extends CategoryController {
         $(".content").empty().append(this.view);
         $(".block-primary").hide();
 
-        this.setupAppointmentModal()
+		this.setupAppointmentModal()
+        //When an image is selected on the upload modal.
+        this.view.find("#fileUpload").on("change", function () {
+            changeImageUploadPreview(this, '#file_uploader_popup', userId)
+            $('#file_uploader_save').removeAttr("disabled");
+        });
+
+        //When save is clicked on the upload modal.
+        this.view.find('#file_uploader_save').on("click", function () {
+            uploadImage(userId, selectedImage);
+            $(`.imgpatient1[data-id='${dataId}']` ).attr('src', selectedImage);
+        });
+
         this.setupPagination();
     }
 
@@ -116,6 +128,7 @@ class PatientsController extends CategoryController {
         $(this.view).on("click", ".btn-edit--appointment", (e) => {
             const userId = e.target.parentNode.attributes["data-userid"].nodeValue
             const revalidantId = e.target.parentNode.attributes["data-id"].nodeValue
+            dataId = e.target.parentNode.attributes["data-id"].nodeValue;
             this.openAppointmentEditor(userId, revalidantId);
         });
         // When the form gets sent
@@ -186,12 +199,31 @@ class PatientsController extends CategoryController {
             $(".ct-phonenumber", clone).text("Mobiel: " + patients[i].phonenumber);
             $(".ct-mail", clone).text("Email: " + patients[i].email);
             $(".ct-description", clone).text(patients[i].description);
-            //img changing to men
-            if (patients[i].gender === "Vrouw") {
-                clone.find(".imgpatient").attr('src', 'assets/img/patient2.png')
-            } else {
-                clone.find(".imgpatient").attr('src', 'assets/img/patient1.png')
+            $(".btn-edit--profile", clone).attr("data-id", patients[i].id);
+            $(".btn-delete--confirm", clone).attr("data-id", patients[i].id);
+            $(".file_uploader_open", clone).attr("data-id", patients[i].id);
+            $(".imgpatient1", clone).attr("data-id", patients[i].id);
+            $(".file_uploader_open", clone).on("click", (e)=> {
+                dataId = e.target.attributes["data-id"].nodeValue
+                // Put the right user values there
+                userValues.forEach((user, index) => {
+                    if (user.userID === parseInt(dataId)) {
+                        $("#userNameAdd").val(user.username);
+                        userId = user.id;
+                        userIndexValue = index;
+                    }
+                });
+            });
+
+            const userImage = await this.userRepository.getUserImage(patients[i].user_id);
+            if (userImage[0].photo != null) {
+                $(".imgpatient1", clone).attr("src", "./uploads/" + userImage[0].photo);
             }
+            else {
+                $(".imgpatient1", clone).attr("src", "/assets/img/default_image.png");
+            }
+
+            console.log(patients[i].user_id)
 
             //Initialize a new progress bar.
             const progressBar = await new ProgressComponent(clone.find(".progress-anchor"));
@@ -343,10 +375,13 @@ class PatientsController extends CategoryController {
             return false;
         }
 
+        console.log("ID: " + id)
         this.rehabilitatorRepository.updateAppointmentData(id, {
             "appointment_date": appointmentDate,
-            "pam_goal_total": totalgoal
+            "pam_goal_total": totalgoal,
+            "initial_daily_goal": modalProgressbar.getCalculatedDailyPamGoal()
         });
+
 
         //Find the correct progress bar and update.
         for (let i = 0; i < progressbars.length; i++) {
