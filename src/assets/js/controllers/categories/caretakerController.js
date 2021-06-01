@@ -125,7 +125,7 @@ class CaretakerController extends CategoryController {
             "    <td>" + calc + "</td>\n" +
             "    <td>" + score + "</td>\n" +
             "    <td>" + total + "</td>\n" +
-            "    <td><a tabindex='0' class='btn btn-secondary' role='button' data-toggle='popover' data-trigger='focus' title='Revalident melding' data-content='" + message + "'>>></a>" +
+            "    <td><a tabindex='0' class='btn btn-secondary' role='button' data-toggle='popover' data-trigger='focus' title='Revalidant melding' data-content='" + message + "'>>></a>" +
             "    </td></tr>");
         //initialize popover
         $('[data-toggle="popover"]').popover();
