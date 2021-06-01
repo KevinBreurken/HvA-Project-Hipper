@@ -39,7 +39,6 @@ app.post("/user/login", (req, res) => {
     //TODO: We shouldn't save a password unencrypted!! Improve this by using cryptoHelper :)
     const password = req.body.password;
     const hashed_password = cryptoHelper.getHashedPassword(password);
-    console.log(hashed_password);
 
     db.handleQuery(connectionPool, {
         query: "SELECT `username`, `password`, `id`, `role` FROM user WHERE username = ? AND password = ?",
@@ -402,7 +401,7 @@ app.post("/rehabilitator/appointment/update", (req, res) => {
 // Get data from user
 app.post("/user/data", (req, res) => {
     db.handleQuery(connectionPool, {
-        query: "SELECT `p`.`pam_score`, `p`.`date` FROM `pam_score` as `p` INNER JOIN `rehabilitator` as `r` on `r`.`id` = `p`.`rehabilitator_id` WHERE `r`.`user_id` = ?",
+        query: "SELECT `p`.`pam_score`, `p`.`date`, `p`.`quarterly_score` FROM `pam_score` as `p` INNER JOIN `rehabilitator` as `r` on `r`.`id` = `p`.`rehabilitator_id` WHERE `r`.`user_id` = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data);

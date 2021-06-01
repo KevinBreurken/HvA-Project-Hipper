@@ -32,15 +32,24 @@ class HomeController extends CategoryController {
 
         //pam score motivatie
         const motivatiePam = await this.pamRepository.motivationGoal(currentLoggedID)
-        console.log(motivatiePam)
 
         //Getting the pam score
         const pam = await this.userRepository.getAll(currentLoggedID)
-        console.log(pam)
 
-        this.assistantContent(motivatiePam['total'], pam['current']);
+        let totalPointsEarned = 0;
+        pam.forEach((e) => {
+            for (let i = 0; i < e.quarterly_score.length; i++) {
+                if (e.quarterly_score.charAt(i) != 0) {
+                    let number = Number(e.quarterly_score.charAt(i))
+                    totalPointsEarned += number
+                }
+            }
+        })
 
-
+        // After a few seconds change sentence
+        setTimeout(() => {
+            this.assistantContent(motivatiePam[0].pam_goal_total, totalPointsEarned);
+        }, 5000)
 
         //display random greeting sentence
 
@@ -52,8 +61,10 @@ class HomeController extends CategoryController {
     }
 
     assistantContent(total, current) {
+        console.log(total, current);
         const progresionIndex = this.calculateProgress(total, current);
-        $('#assistant-content').empty().append(this.assistantTitle[progresionIndex]);
+        console.log();
+        this.view.find('#welkom-text').html(this.assistantTitle[progresionIndex]);
     }
 
     calculateProgress(total, current) {
