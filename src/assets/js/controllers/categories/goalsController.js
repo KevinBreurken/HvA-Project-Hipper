@@ -82,6 +82,7 @@ class GoalsController extends CategoryController {
     }
 
     fillMotivationalContent(total, current) {
+        console.log(this.calculateProgress(total, current))
         const progresionIndex = this.calculateProgress(total, current);
         $('#motivational-title').empty().append(this.titlesMotivational[progresionIndex]);
         $('#motivational-description').empty().append(this.motvivationalContent[progresionIndex]);

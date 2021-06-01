@@ -31,14 +31,20 @@ class ProgressComponent {
 
         //Update legend
         this.htmlRoot.find(".legend-earned").html(`${this.currentlyEarnedPam} Eerder behaalde PAM punten`);
-        this.htmlRoot.find(".legend-goal").html(`${this.dailyPamGoal} PAM punten doel voor vandaag`);
         this.htmlRoot.find(".legend-total").html(`${this.totalPamGoal} PAM punten als totaal doel`);
+        this.htmlRoot.find(".legend-current").html(`${this.pamNow} PAM vandaag behaald`);
+
+        let todayGoalAmount = this.getCalculatedDailyPamGoal()
+        this.htmlRoot.find(".legend-goal").html(`${todayGoalAmount} PAM punten doel voor vandaag`);
 
         //Update bar
         this.htmlRoot.find('.pam-value').html(this.totalPamGoal);
         this.setProgressBarElement('#goal-previous', 0, 0, true)
         this.setProgressBarElement('#goal-now', this.currentlyEarnedPam / this.totalPamGoal * 100, this.currentlyEarnedPam, true)
-        this.setProgressBarElement('#goal-goal', this.dailyPamGoal / this.totalPamGoal * 100, this.currentlyEarnedPam + this.dailyPamGoal, false)
+        this.setProgressBarElement('#goal-goal', todayGoalAmount / this.totalPamGoal * 100, this.currentlyEarnedPam + this.dailyPamGoal, false)
+        this.setProgressBarElement('#now', this.pamNow / this.totalPamGoal * 100, 0, false)
+
+        // this.setProgressBarElement('#now',  this.pamNow / this.totalPamGoal * 100, true)
         this.updateAppointmentText();
     }
 
@@ -48,7 +54,11 @@ class ProgressComponent {
     updateAppointmentText() {
         const dateDisplayText = this.appointmentDate.getDate() + '/' + (this.appointmentDate.getMonth() + 1) + '/' + this.appointmentDate.getFullYear();
         const dateExpired = (this.appointmentDate < new Date());
-        const preText = dateExpired ? "Laatste afspraak was op: " : "Volgende afspraak is op: ";
+
+        const diffInMs = new Date(this.appointmentDate) - new Date();
+        const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+
+        const preText = dateExpired ? `Laatste afspraak was op: ` : `Volgende afspraak is over ${diffInDays} dagen op: `;
 
         this.htmlRoot.find(".goal-li").toggle(!dateExpired); //List item is hidden when appointment is in the past.
         this.htmlRoot.find(".appointment-text").html(`<b>${preText}${dateDisplayText}</b>`);
@@ -75,11 +85,18 @@ class ProgressComponent {
         this.totalPamGoal = await this.retrieveTotalPamGoal(userId);
         this.currentlyEarnedPam = await this.retrieveEarnedPam(userId);
         this.appointmentDate = await this.retrieveAppointmentDate(userId);
+        this.pamNow = await this.retrievePamNow(userId);
 
-        let dailyPamGoal = await this.calculateDailyPamGoal(this.totalPamGoal - this.currentlyEarnedPam,this.appointmentDate);
+        let dailyPamGoal = await this.calculateDailyPamGoal(this.totalPamGoal - this.currentlyEarnedPam, this.appointmentDate);
         dailyPamGoal = dailyPamGoal.toFixed(1);
 
-        return {"total": this.totalPamGoal, "current": this.currentlyEarnedPam, "daily": dailyPamGoal, "date": this.appointmentDate};
+        return {
+            "total": this.totalPamGoal,
+            "current": this.currentlyEarnedPam,
+            "daily": dailyPamGoal,
+            "date": this.appointmentDate,
+            "now": this.pamNow
+        };
     }
 
     setProgressBarElement(element, percentage, displayValue, hideOnLowPercent) {
@@ -98,17 +115,43 @@ class ProgressComponent {
     }
 
     async retrieveEarnedPam(userId) {
+        const today = moment();
         const allPam = await this.retrievePam(userId);
         let totalScore = 0;
         //Loop through every PAM score.
         for (let i = 0; i < allPam.length; i++) {
             //Loop through every digit of PAM score.
-            for (let j = 0; j < allPam[i]['quarterly_score'].length; j++) {
-                totalScore += parseInt(allPam[i]['quarterly_score'][j]);
+            if (!today.isSame(allPam[i]["date"], 'date')) {
+                for (let j = 0; j < allPam[i]['quarterly_score'].length; j++) {
+
+                    totalScore += parseInt(allPam[i]['quarterly_score'][j]);
+
+                }
             }
         }
         return totalScore;
     }
+
+
+    async retrievePamNow(userId) {
+        const today = moment();
+        const allPam = await this.retrievePam(userId);
+        let totalScore = 0;
+
+        //Loop through every PAM score.
+        for (let i = 0; i < allPam.length; i++) {
+            //Loop through every digit of PAM score.
+            if (today.isSame(allPam[i]["date"], 'date')) {
+                for (let j = 0; j < allPam[i]['quarterly_score'].length; j++) {
+
+                    totalScore += parseInt(allPam[i]['quarterly_score'][j]);
+
+                }
+            }
+        }
+        return totalScore;
+    }
+
 
     async retrieveTotalPamGoal(userId) {
         try {
@@ -132,8 +175,11 @@ class ProgressComponent {
         }
     }
 
-    getCalculatedDailyPamGoal(){
-        return this.dailyPamGoal;
+    getCalculatedDailyPamGoal() {
+        let todayGoalAmount = this.dailyPamGoal - this.pamNow;
+        if(todayGoalAmount < 0)
+            todayGoalAmount = 0;
+        return todayGoalAmount;
     }
 
     setTotalGoal(value) {

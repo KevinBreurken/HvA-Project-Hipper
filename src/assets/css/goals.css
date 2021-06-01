@@ -75,6 +75,9 @@
 
 #pin-end-text {
     left: -100px;
+
+
+
 }
 
 #pin-end-pam {
@@ -87,6 +90,10 @@
 
 .bar-color-yesterday {
     background-color: var(--color-progress-yesterday);
+}
+
+.bar-color-current {
+    background-color: var(--color-progress-current);
 }
 
 .bar-color-goal {
@@ -104,9 +111,17 @@
     padding-inline-start: 8px;
 }
 
+.legend-small {
+    font-size: 20px;
+}
+
 .legend li {
     margin-right: 10px;
     padding-bottom: 8px;
+}
+
+hr.hr-element{
+    border-top:2px solid var(--color-category-current);
 }
 
 .legend li p {

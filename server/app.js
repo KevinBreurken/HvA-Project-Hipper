@@ -311,7 +311,7 @@ app.post("/pam", (req, res) => {
         values: [req.body.id]
     }, (data) => {
         db.handleQuery(connectionPool, {
-            query: "SELECT `quarterly_score` from `pam_score` WHERE rehabilitator_id = ?",
+            query: "SELECT `quarterly_score` , `date` from `pam_score` WHERE rehabilitator_id = ?",
             values: [data[0]['id']]
         }, (datapam) => {
             res.send(datapam)
@@ -403,6 +403,17 @@ app.post("/rehabilitator/appointment/update", (req, res) => {
 app.post("/user/data", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `p`.`pam_score`, `p`.`date` FROM `pam_score` as `p` INNER JOIN `rehabilitator` as `r` on `r`.`id` = `p`.`rehabilitator_id` WHERE `r`.`user_id` = ?",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data);
+        res.send(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}))
+});
+
+//get total goal and daily goal for motivational text home screen
+app.post("/pam/goal", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `initial_daily_goal`, `pam_goal_total`, `appointment_date` FROM `rehabilitator` WHERE `user_id` = ?",
         values: [req.body.id]
     }, (data) => {
         console.log(data);
