@@ -30,12 +30,12 @@ class ProgressComponent {
         this.htmlRoot.find(".pad-progress-container").toggle(this.totalPamGoal !== null);
 
         //Update legend
-        this.htmlRoot.find(".legend-earned").html(`${this.currentlyEarnedPam} Eerder behaalde PAM punten`);
-        this.htmlRoot.find(".legend-total").html(`${this.totalPamGoal} PAM punten als totaal doel`);
-        this.htmlRoot.find(".legend-current").html(`${this.pamNow} PAM vandaag behaald`);
+        this.htmlRoot.find(".legend-earned").html(`<b style="color:gray;">${this.currentlyEarnedPam} PAM </b> punten Eerder behaald`);
+        this.htmlRoot.find(".legend-total").html(`<b style="color:gray;">${this.totalPamGoal} PAM</b> punten als totaal doel`);
+        this.htmlRoot.find(".legend-current").html(`<b style="color:gray;">${this.pamNow} PAM</b> vandaag behaald`);
 
         let todayGoalAmount = this.getCalculatedDailyPamGoal()
-        this.htmlRoot.find(".legend-goal").html(`${todayGoalAmount} PAM punten doel voor vandaag`);
+        this.htmlRoot.find(".legend-goal").html(`<b style="color:gray;">${todayGoalAmount} PAM</b> punten doel voor vandaag`);
 
         //Update bar
         this.htmlRoot.find('.pam-value').html(this.totalPamGoal);

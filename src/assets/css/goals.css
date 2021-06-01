@@ -100,6 +100,10 @@
     background-color: var(--color-progress-goal);
 }
 
+.bar-color-bg {
+    background-color: #e9ecef;
+}
+
 .bar-color-total {
     background-color: var(--color-hover-element);
 }
