@@ -31,6 +31,9 @@ class StatisticsController extends CategoryController {
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
 
+        // Set the normal datepicker date
+        $(".datepicker-stats--normal").val(moment().format("YYYY-MM-DD"));
+
         this.getPamDates().then((e) => {
             pamDates = e;
             pamDates.forEach((date, index) => {
@@ -44,14 +47,37 @@ class StatisticsController extends CategoryController {
         $(document).on("click", ".normal-stats", () => this.changeScreen(false));
 
         // When the datepicker changes value
-        $(document).on("change", ".datepicker-stats", () => this.updateChart());
 
-        // The left and right arrow on click
-        $(document).on("click", ".fa-arrow-left", () => {
+        $(document).on("change", ".datepicker-stats", () => this.updateChart());
+        $(document).on("change", ".datepicker-stats--normal", () => console.log("please"));
+
+        // The left and right for normal stats
+        $(document).on("click", ".arrow-normal-date__left", (e) => {
+            // Stops firing the event twice
+            e.stopImmediatePropagation();
+
+            this.changeDayArrows("left");
+        });
+
+        $(document).on("click", ".arrow-normal-date__right", (e) => {
+            // Stops firing the event twice
+            e.stopImmediatePropagation();
+
+            this.changeDayArrows("right")
+        });
+
+        // The left and right arrow on click for advanced stats
+        $(document).on("click", ".arrow-advanced-date__left", (e) => {
+            // Stops firing the event twice
+            e.stopImmediatePropagation();
+
             this.changeWeekArrows("left");
         });
 
-        $(document).on("click", ".fa-arrow-right", () => {
+        $(document).on("click", ".arrow-advanced-date__right", (e) => {
+            // Stops firing the event twice
+            e.stopImmediatePropagation();
+
             this.changeWeekArrows("right");
         });
     }
@@ -66,7 +92,9 @@ class StatisticsController extends CategoryController {
                 this.makeStats().then(() => {
                     console.log("yo")
                 });
-                $(".datepicker-stats").val(moment().format("YYYY-MM-DD"));
+                if ($(".datepicker-stats").val() === "") {
+                    $(".datepicker-stats").val(moment().format("YYYY-MM-DD"));
+                }
             });
         } else {
             $(".content").load("views/statistics.html");
@@ -81,23 +109,49 @@ class StatisticsController extends CategoryController {
         return await this.userRepository.getAll(sessionManager.get("userID"));
     }
 
+    /**
+     * Load the simple stats beginning with today
+     * @param dates
+     * @returns {Promise<void>}
+     */
     async loadSimpleStats(dates) {
         let today = moment();
 
-        dates.forEach((index) => {
-
-            if (today.isSame(index.date, 'date')) {
-                console.log("wow")
-                this.applySimpleStats(index)
+        for (let i = 0; i < dates.length; i++) {
+            if (today.isSame(dates[i].date, 'date')) {
+                this.applySimpleStats(dates[i], dates[i - 1]);
             }
-        })
+        }
+
+        if (dates.length < 1) {
+            this.applySimpleStats(null, null);
+        }
     }
 
-    applySimpleStats(date) {
+    /**
+     * Set the simple stats
+     * @param date, the date for the stats
+     * @param yesterday the date to compare with
+     */
+    applySimpleStats(date, yesterday) {
         // Calorie section
-        $(".compare-calorie .card-text").text(`${date.pam_score * 25} is je calorie verbrand, wow!`)
+        if (date != null) {
+            $(".compare-calorie .card-text").text(`Je hebt ongeveer ${date.pam_score * 25} kilocalorieën verbrand!`)
 
-        $(".compare-yesterday .text-center").text(date.pam_score)
+            // Animal
+            $(".compare-animal .card-text").text('Je bent even sloom als een schildpad!')
+
+            // Yesterday section
+            if (yesterday === undefined) {
+                $(".compare-yesterday .card-text").text(`Je doet het beter dan gister! (Omdat je gister geen score had)`)
+            } else {
+                if (yesterday.pam_score > date.pam_score) {
+                    $(".compare-yesterday .card-text").text(`Gister had je wat meer pam punten, kom op he! Het verschil is ${yesterday.pam_score - date.pam_score}`);
+                } else {
+                    $(".compare-yesterday .card-text").text(`Je doet het al beter dan gister! Lekker hoor! Je hebt ${date.pam_score - yesterday.pam_score} punten in verschil`);
+                }
+            }
+        }
     }
 
     /**
@@ -117,6 +171,37 @@ class StatisticsController extends CategoryController {
             this.updateChart();
         }
     }
+
+    /**
+     * Uses the arrows to change the day
+     * @param direction left or right
+     */
+    changeDayArrows(direction) {
+        if (direction === "left") {
+            let firstVal = moment($(".datepicker-stats--normal").val());
+            firstVal = firstVal.subtract("1", "days");
+            $(".datepicker-stats--normal").val(firstVal.format("YYYY-MM-DD"));
+            this.updateStats();
+        } else {
+            let firstVal = moment($(".datepicker-stats--normal").val());
+            firstVal = firstVal.add("1", "days");
+            $(".datepicker-stats--normal").val(firstVal.format("YYYY-MM-DD"));
+            this.updateStats();
+        }
+    }
+
+    updateStats() {
+        let chosenDate = moment($(".datepicker-stats--normal").val());
+
+        for (let i = 0; i < pamDates.length; i++) {
+            if (chosenDate.isSame(pamDates[i].date, 'date')) {
+                this.applySimpleStats(pamDates[i], pamDates[i - 1]);
+            } else {
+                this.applySimpleStats(null, null);
+            }
+        }
+    }
+
     /**
      * Update the stats chart
      */
