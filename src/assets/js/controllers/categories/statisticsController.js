@@ -49,7 +49,7 @@ class StatisticsController extends CategoryController {
         // When the datepicker changes value
 
         $(document).on("change", ".datepicker-stats", () => this.updateChart());
-        $(document).on("change", ".datepicker-stats--normal", () => console.log("please"));
+        $(document).on("change", ".datepicker-stats--normal", () => this.updateStats());
 
         // The left and right for normal stats
         $(document).on("click", ".arrow-normal-date__left", (e) => {
@@ -151,6 +151,10 @@ class StatisticsController extends CategoryController {
                     $(".compare-yesterday .card-text").text(`Je doet het al beter dan gister! Lekker hoor! Je hebt ${date.pam_score - yesterday.pam_score} punten in verschil`);
                 }
             }
+        } else {
+            $(".compare-calorie .card-text").text("Je hebt geen score voor vandaag")
+            $(".compare-animal .card-text").text("Je hebt geen score voor vandaag")
+            $(".compare-yesterday .card-text").text("Je hebt geen score voor vandaag")
         }
     }
 
@@ -190,9 +194,13 @@ class StatisticsController extends CategoryController {
         }
     }
 
+    /**
+     * Update the simple stats
+     */
     updateStats() {
         let chosenDate = moment($(".datepicker-stats--normal").val());
 
+        console.log(chosenDate);
         for (let i = 0; i < pamDates.length; i++) {
             if (chosenDate.isSame(pamDates[i].date, 'date')) {
                 this.applySimpleStats(pamDates[i], pamDates[i - 1]);
