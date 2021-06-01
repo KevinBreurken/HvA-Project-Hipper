@@ -94,7 +94,7 @@ class PatientsController extends CategoryController {
         //When save is clicked on the upload modal.
         this.view.find('#file_uploader_save').on("click", function () {
             uploadImage(userId, selectedImage);
-            $(`.imgpatient1[data-id='${dataId}']` ).attr('src', selectedImage);
+            $(`.imgpatient[data-id='${dataId}']` ).attr('src', selectedImage);
         });
 
         this.setupPagination();
@@ -202,7 +202,7 @@ class PatientsController extends CategoryController {
             $(".btn-edit--profile", clone).attr("data-id", patients[i].id);
             $(".btn-delete--confirm", clone).attr("data-id", patients[i].id);
             $(".file_uploader_open", clone).attr("data-id", patients[i].id);
-            $(".imgpatient1", clone).attr("data-id", patients[i].id);
+            $(".imgpatient", clone).attr("data-id", patients[i].id);
             $(".file_uploader_open", clone).on("click", (e)=> {
                 dataId = e.target.attributes["data-id"].nodeValue
                 // Put the right user values there
@@ -217,10 +217,10 @@ class PatientsController extends CategoryController {
 
             const userImage = await this.userRepository.getUserImage(patients[i].user_id);
             if (userImage[0].photo != null) {
-                $(".imgpatient1", clone).attr("src", "./uploads/" + userImage[0].photo);
+                $(".imgpatient", clone).attr("src", "./uploads/" + userImage[0].photo);
             }
             else {
-                $(".imgpatient1", clone).attr("src", "/assets/img/default_image.png");
+                $(".imgpatient", clone).attr("src", "/assets/img/default_image.png");
             }
 
             console.log(patients[i].user_id)
