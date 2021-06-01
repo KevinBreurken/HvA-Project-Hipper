@@ -17,7 +17,7 @@ class ProfileController extends CategoryController {
         //Set the navigation color to the correct CSS variable.
         this.updateCurrentCategoryColor("--color-category-profile");
         //Set the navigation to the correct state.
-        nav.setNavigationState(navState.User)
+        nav.setNavigationState(navState.User);
         //Load the login-content into memory.
         this.view = $(data);
 
@@ -42,24 +42,24 @@ class ProfileController extends CategoryController {
         try {
             const currentLoggedID = sessionManager.get("userID");
             const rehabilitatorData = await this.userRepository.getRehabilitatorInfo(currentLoggedID);
-            //convert birthdate to string
-            var birthdate = rehabilitatorData[0].birthdate
-            var birthdateString = birthdate.toString();
-            var age = this.getAge(birthdateString)
 
-            console.log(rehabilitatorData)
-            const fullname = rehabilitatorData[0].first_name + " " + rehabilitatorData[0].last_name
+            //convert birthdate to string
+            const birthdate = rehabilitatorData[0]['birthdate'];
+            const birthdateString = birthdate.toString();
+            const age = Utils.getAge(birthdateString);
+
+            const fullname = rehabilitatorData[0]['first_name'] + " " + rehabilitatorData[0]['last_name']
             document.querySelectorAll(".name_rehabilitator").forEach((element) => {
-                element.innerText = fullname
+                element.innerText = fullname;
             })
-            document.querySelector(".age_rehabilitator").innerText = age
-            document.querySelector(".adress_rehabilitator").innerText = rehabilitatorData[0].Adress
-            document.querySelector(".bloodtype_rehabilitator").innerText = rehabilitatorData[0].Bloodtype
-            document.querySelector(".description_rehabilitator").innerText = rehabilitatorData[0].Description
-            document.querySelector(".postalcode_rehabilitator").innerText = rehabilitatorData[0].Postalcode
+            document.querySelector(".age_rehabilitator").innerText = age;
+            document.querySelector(".adress_rehabilitator").innerText = rehabilitatorData[0]['adress'];
+            document.querySelector(".bloodtype_rehabilitator").innerText = rehabilitatorData[0]['bloodtype'];
+            document.querySelector(".description_rehabilitator").innerText = rehabilitatorData[0]['description'];
+            document.querySelector(".postalcode_rehabilitator").innerText = rehabilitatorData[0]['postalcode'];
             // //profile pic
-            if (rehabilitatorData[0].photo != null) {
-                var photo = rehabilitatorData[0].photo;
+            if (rehabilitatorData[0]['photo'] != null) {
+                const photo = rehabilitatorData[0]['photo'];
                 $(".profile_pic_rehabilitator").attr("src", "./uploads/" + photo);
             }
 
@@ -73,18 +73,18 @@ class ProfileController extends CategoryController {
         try {
             const currentLoggedID = sessionManager.get("userID");
             const caretakerData = await this.userRepository.getCaretakerInfo(currentLoggedID);
-            const caretakerID = caretakerData[0].caretaker_id;
-            const fullname = caretakerData[0].first_name + " " + caretakerData[0].last_name
+            const caretakerID = caretakerData[0]['caretaker_id'];
+            const fullname = caretakerData[0]['first_name'] + " " + caretakerData[0]['last_name'];
 
             document.querySelectorAll(".name_caretaker").forEach((element) => {
                 element.innerText = fullname
             })
-            document.querySelector(".phone_caretaker").innerText = caretakerData[0].phone
-            document.querySelector(".email_caretaker").innerText = caretakerData[0].email
-            document.querySelector(".experience1_caretaker").innerText = caretakerData[0].experience_field1
-            document.querySelector(".experience2_caretaker").innerText = caretakerData[0].experience_field2
-            document.querySelector(".experience3_caretaker").innerText = caretakerData[0].experience_field3
-            document.querySelector(".description_caretaker").innerText = caretakerData[0].description
+            document.querySelector(".phone_caretaker").innerText = caretakerData[0]['phone'];
+            document.querySelector(".email_caretaker").innerText = caretakerData[0]['email'];
+            document.querySelector(".experience1_caretaker").innerText = caretakerData[0]['experience_field1'];
+            document.querySelector(".experience2_caretaker").innerText = caretakerData[0]['experience_field2'];
+            document.querySelector(".experience3_caretaker").innerText = caretakerData[0]['experience_field3'];
+            document.querySelector(".description_caretaker").innerText = caretakerData[0]['description'];
             //profile pic
             document.querySelector(".profile_pic_caretaker").src = `assets/img/caretaker/${caretakerID}_profile_pic.png`;
 
@@ -92,17 +92,6 @@ class ProfileController extends CategoryController {
             console.log("error while fetching rooms", e);
         }
 
-    }
-
-    getAge(dateString) {
-        var today = new Date();
-        var birthDate = new Date(dateString);
-        var age = today.getFullYear() - birthDate.getFullYear();
-        var m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        return age;
     }
 
 }
