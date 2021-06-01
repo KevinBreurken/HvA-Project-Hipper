@@ -31,7 +31,7 @@ class ProgressComponent {
 
         //Update legend
         this.htmlRoot.find(".legend-earned").html(`${this.currentlyEarnedPam} Eerder behaalde PAM punten`);
-        this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM punten doel voor vandaag`);
+        this.htmlRoot.find(".legend-goal").html(`${this.dailyPamGoal} PAM punten doel voor vandaag`);
         this.htmlRoot.find(".legend-total").html(`${this.totalPamGoal} PAM punten als totaal doel`);
 
         //Update bar
