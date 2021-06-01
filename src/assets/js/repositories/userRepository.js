@@ -15,6 +15,7 @@ class UserRepository {
             .doRequest(`${this.route}/data`, {"id": id}, "POST");
     }
 
+
     /**
      * async function that handles a Promise from the networkmanager
      * @param username

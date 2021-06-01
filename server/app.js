@@ -294,6 +294,17 @@ app.post("/user/data", (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}))
 });
 
+//get total goal and daily goal for motivational text home screen
+app.post("/pam/goal", (req, res) => {
+    db.handleQuery(connectionPool, {
+        query: "SELECT `initial_daily_goal`, `pam_goal_total`, `appointment_date` FROM `rehabilitator` WHERE `user_id` = ?",
+        values: [req.body.id]
+    }, (data) => {
+        console.log(data);
+        res.send(data);
+    }, (err) => res.status(badRequestCode).json({reason: err}))
+});
+
 app.post("/caretaker/all", (req, res) => {
     db.handleQuery(connectionPool, {
         query: "SELECT `r`.* FROM `rehabilitator` as `r` INNER JOIN `caretaker` as `c` on `r`.`caretaker_id` = `c`.`caretaker_id` INNER JOIN `user` as `u` on `u`.`id` = `c`.`user_id` WHERE `u`.`id` = ?",

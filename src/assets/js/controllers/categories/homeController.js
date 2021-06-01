@@ -5,10 +5,14 @@
  */
 class HomeController extends CategoryController {
 
+    assistantTitle = ["De eerste stap", "Een goed begin", "Einde is in zicht", "De nieuwe jij"];
+
     constructor() {
         super();
         this.loadView("views/home.html");
         this.userRepository = new UserRepository();
+        this.pamRepository = new PamRepository();
+        this.rehabilitatorRepository = new RehabilitatorRepository();
     }
 
     //Called when the login.html has been loaded.
@@ -25,8 +29,19 @@ class HomeController extends CategoryController {
 
         const currentLoggedID = sessionManager.get("userID");
         const userData = await this.userRepository.getRehabilitatorInfo(currentLoggedID)
-        // place currently logged user name in name var
-        const name = userData[0].first_name
+
+        //pam score motivatie
+        const motivatiePam = await this.pamRepository.motivationGoal(currentLoggedID)
+        console.log(motivatiePam)
+
+        //Getting the pam score
+        const pam = await this.userRepository.getAll(currentLoggedID)
+        console.log(pam)
+
+        this.assistantContent(motivatiePam['total'], pam['current']);
+
+
+
         //display random greeting sentence
 
         const greetingSentence = this.pickRandomGreeting();
@@ -36,8 +51,28 @@ class HomeController extends CategoryController {
         $(".cards").click(nav.handleClickMenuItem)
     }
 
+    assistantContent(total, current) {
+        const progresionIndex = this.calculateProgress(total, current);
+        $('#assistant-content').empty().append(this.assistantTitle[progresionIndex]);
+    }
+
+    calculateProgress(total, current) {
+        const progression = Math.floor((current / total) * 100);
+        if (progression < 10) {
+            return 0;
+        } else if (progression < 50) {
+            return 1;
+        } else if (progression < 80) {
+            return 2;
+        } else if (progression < 100) {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
     pickRandomGreeting() {
-        const zinnen = ["Goed je weer te zien", "Hoi", "Hallo"];
+        const zinnen = ["Goed je weer te zien", "Je bent goed bezig", "Leuk je weer te zien"];
         const randomgetal = Math.floor(Math.random() * zinnen.length);
         return zinnen[randomgetal];
     }

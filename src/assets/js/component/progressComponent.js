@@ -65,7 +65,7 @@ class ProgressComponent {
     async retrieveProgressData(userId) {
         const totalPamGoal = await this.retrieveTotalPamGoal(userId);
         const currentlyEarnedPam = await this.retrieveEarnedPam(userId);
-        const earnedPam = await this.retrieveEarnedPam(userId);
+        const earnedPam = await this.retrievePamNow(userId);
         const appointmentDate = await this.retrieveAppointmentDate(userId);
         let dailyPamGoal = await this.calculateDailyPamGoal(totalPamGoal - currentlyEarnedPam,appointmentDate);
         dailyPamGoal = dailyPamGoal.toFixed(1);
@@ -93,6 +93,19 @@ class ProgressComponent {
         }
         return totalScore;
     }
+
+
+    async retrievePamNow(userId) {
+        console.log(userId)
+        console.log(await this.pamRepository.getScore(userId))
+        const data = await this.pamRepository.getScore(userId)
+        if(data.length === 0){
+            return 0
+        }
+        return data[0].pam_score
+
+    }
+
 
     async retrieveTotalPamGoal(userId) {
         try {

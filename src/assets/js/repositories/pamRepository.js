@@ -9,6 +9,11 @@ class PamRepository {
         this.route = "/pam"
     }
 
+    async motivationGoal(id){
+        return await networkManager
+            .doRequest(`${this.route}/goal`, {"id": id}, "POST");
+    }
+
     async getAll() {
 
     }
