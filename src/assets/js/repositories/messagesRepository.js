@@ -7,9 +7,9 @@ class MessagesRepository {
         this.route = "/messages"
     }
 
-    async getAllMessages(userID) {
+    async getAllMessages(id) {
         return await networkManager
-            .doRequest(`${this.route}`, {"userID": userID}, "POST");
+            .doRequest(`${this.route}`, {"rehabilitatorID": id}, "POST");
     }
 
     async getAllMyMessages(userID) {
@@ -31,6 +31,11 @@ class MessagesRepository {
     async deleteMessage(message) {
         return await networkManager
             .doRequest(`${this.route}/delete`, {"messageID": message}, "POST");
+    }
+
+    async reportMessage(message, id) {
+        return await networkManager
+            .doRequest(`${this.route}/report`, {"messageID": message, "rehabilitatorID": id}, "POST");
     }
 
 
