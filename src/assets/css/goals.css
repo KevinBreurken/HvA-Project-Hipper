@@ -148,8 +148,8 @@
     border-radius: 0 0 30px 30px;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     padding: 16px;
-    margin-bottom: 64px;
-    min-height: 300px;
+    margin-bottom: 32px;
+    min-height: 180px;
 }
 
 .goal-card-subheader {
@@ -161,4 +161,14 @@
 .goal-card-container {
     max-width: 430px;
     padding: 8px;
+}
+
+.pam-today-display {
+    font-size: 90px;
+
+    font-weight: bold;
+    line-height: 0.4;
+    text-align: center;
+    padding-top: 40px;
+    color: var(--color-text);
 }

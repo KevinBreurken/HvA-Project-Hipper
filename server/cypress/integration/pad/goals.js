@@ -11,7 +11,6 @@ describe('Goals', function () {
     })
 
     it("#1 Check if element is loaded on the goal screen.", () => {
-
         //Visit the goals page
         cy.visit("http://localhost:8080/#goals");
 

@@ -29,7 +29,7 @@ class GoalsController extends CategoryController {
         //Create the progress component.
         this.progressBar = await new ProgressComponent(this.view.find("#progress-anchor"));
         const pamdata = await this.progressBar.retrieveProgressData(sessionManager.get("userID"));
-        this.progressBar.repaintProgressBar();
+        await this.progressBar.repaintProgressBar();
 
         //Empty the content-div and add the resulting view to the page
         $(".content").append(this.view);
@@ -39,7 +39,9 @@ class GoalsController extends CategoryController {
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${pamdata['daily']} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
         const dateExpired = (pamdata['date'] < new Date());
-        this.setAppointmentState(dateExpired)
+        this.setAppointmentState(dateExpired);
+
+        $('.pam-today-display').text(this.progressBar.getCalculatedDailyPamGoal());
     }
 
     setAppointmentState(state) {
