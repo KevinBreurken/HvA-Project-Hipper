@@ -54,7 +54,11 @@ class ProgressComponent {
     updateAppointmentText() {
         const dateDisplayText = this.appointmentDate.getDate() + '/' + (this.appointmentDate.getMonth() + 1) + '/' + this.appointmentDate.getFullYear();
         const dateExpired = (this.appointmentDate < new Date());
-        const preText = dateExpired ? "Laatste afspraak was op: " : "Volgende afspraak is op: ";
+
+        const diffInMs = new Date(this.appointmentDate) - new Date();
+        const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+
+        const preText = dateExpired ? `Laatste afspraak was op: ` : `Volgende afspraak is over ${diffInDays} dagen op: `;
 
         this.htmlRoot.find(".goal-li").toggle(!dateExpired); //List item is hidden when appointment is in the past.
         this.htmlRoot.find(".appointment-text").html(`<b>${preText}${dateDisplayText}</b>`);
