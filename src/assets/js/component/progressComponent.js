@@ -31,8 +31,7 @@ class ProgressComponent {
 
         //Update legend
         this.htmlRoot.find(".legend-earned").html(`${this.currentlyEarnedPam} Eerder behaalde PAM punten`);
-        this.htmlRoot.find(".legend-goal").html(`${this.dailyPamGoal} PAM punten doel voor vandaag`);
-        this.htmlRoot.find(".total-li").toggle(this.totalPamGoal !== null);
+        this.htmlRoot.find(".legend-goal").html(`${dailyPamGoal} PAM punten doel voor vandaag`);
         this.htmlRoot.find(".legend-total").html(`${this.totalPamGoal} PAM punten als totaal doel`);
 
         //Update bar
@@ -116,7 +115,8 @@ class ProgressComponent {
             const totalGoal = await this.rehabilitatorRepository.getTotalGoal(userId);
             return totalGoal[0]['pam_goal_total'];
         } catch (e) {
-            console.log("error while fetching daily pam goal.", e);
+            console.log("error while fetching total pam goal.", e);
+            this.htmlRoot.find(".total-li").hide()
             return 0;
         }
     }
