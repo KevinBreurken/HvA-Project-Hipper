@@ -67,5 +67,8 @@ class UserRepository {
         return await networkManager
             .doRequest(`${this.route}/caretaker`, {"id": id}, "POST");
     }
-
+    async getUserImage(id){
+        return await networkManager
+            .doRequest(`${this.route}/photo`, {"id": id}, "POST");
+    }
 }

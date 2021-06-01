@@ -31,8 +31,15 @@ class StatisticsController extends CategoryController {
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
 
+        // Set the normal datepicker date
+        $(".datepicker-stats--normal").val(moment().format("YYYY-MM-DD"));
+
         this.getPamDates().then((e) => {
             pamDates = e;
+            pamDates.forEach((date, index) => {
+                return pamDates[index].date = moment(date.date);
+            })
+            this.loadSimpleStats(pamDates);
         });
 
         //When clicked the advance stats button, show stats
@@ -40,14 +47,37 @@ class StatisticsController extends CategoryController {
         $(document).on("click", ".normal-stats", () => this.changeScreen(false));
 
         // When the datepicker changes value
-        $(document).on("change", ".datepicker-stats", () => this.updateChart());
 
-        // The left and right arrow on click
-        $(document).on("click", ".fa-arrow-left", () => {
+        $(document).on("change", ".datepicker-stats", () => this.updateChart());
+        $(document).on("change", ".datepicker-stats--normal", () => this.updateStats());
+
+        // The left and right for normal stats
+        $(document).on("click", ".arrow-normal-date__left", (e) => {
+            // Stops firing the event twice
+            e.stopImmediatePropagation();
+
+            this.changeDayArrows("left");
+        });
+
+        $(document).on("click", ".arrow-normal-date__right", (e) => {
+            // Stops firing the event twice
+            e.stopImmediatePropagation();
+
+            this.changeDayArrows("right")
+        });
+
+        // The left and right arrow on click for advanced stats
+        $(document).on("click", ".arrow-advanced-date__left", (e) => {
+            // Stops firing the event twice
+            e.stopImmediatePropagation();
+
             this.changeWeekArrows("left");
         });
 
-        $(document).on("click", ".fa-arrow-right", () => {
+        $(document).on("click", ".arrow-advanced-date__right", (e) => {
+            // Stops firing the event twice
+            e.stopImmediatePropagation();
+
             this.changeWeekArrows("right");
         });
     }
@@ -59,13 +89,15 @@ class StatisticsController extends CategoryController {
     changeScreen(advanced) {
         if (advanced === true) {
             $(".content").load("views/advanced_statistics.html", () => {
-                this.makeStats();
-                $(".datepicker-stats").val(moment().format("YYYY-MM-DD"));
+                this.makeStats().then(() => {
+
+                });
+                if ($(".datepicker-stats").val() === "") {
+                    $(".datepicker-stats").val(moment().format("YYYY-MM-DD"));
+                }
             });
         } else {
-            $(".content").load("views/statistics.html", () => {
-
-            });
+            $(".content").load("views/statistics.html");
         }
     }
 
@@ -78,9 +110,73 @@ class StatisticsController extends CategoryController {
     }
 
     /**
+     * Load the simple stats beginning with today
+     * @param dates
+     * @returns {Promise<void>}
+     */
+    async loadSimpleStats(dates) {
+        let today = moment();
+
+        for (let i = 0; i < dates.length; i++) {
+            if (today.isSame(dates[i].date, 'date')) {
+                this.applySimpleStats(dates[i], dates[i - 1]);
+            }
+        }
+
+        if (dates.length < 1) {
+            this.applySimpleStats(null, null);
+        }
+    }
+
+    /**
+     * Set the simple stats
+     * @param date, the date for the stats
+     * @param yesterday the date to compare with
+     */
+    applySimpleStats(date, yesterday) {
+        // Calorie section
+        if (date != null) {
+            $(".compare-calorie .card-text").text(`Je hebt ongeveer ${date.pam_score * 25} kilocalorieën verbrand!`)
+
+            // Animal
+            if (date.pam_score < 0) {
+                $(".compare-animal .card-text").text('Je loopt evenveel als een schildpad!')
+            } else if (date.pam_score > 0 && date.pam_score < 1 || date.pam_score === 1) {
+                $(".compare-animal .card-text").text('Je hebt een slakkentempo, maar je loopt wel!')
+            } else if (date.pam_score > 1 && date.pam_score < 2 || date.pam_score === 2) {
+                $(".compare-animal .card-text").text('Nog niet vogelsvlug, maar wel onderweg!')
+            } else if (date.pam_score > 2 && date.pam_score < 3 || date.pam_score === 3) {
+                $(".compare-animal .card-text").text('Jeetje, je doet het even goed als een buizerd!')
+            } else if (date.pam_score > 3 && date.pam_score < 4 || date.pam_score === 4) {
+                $(".compare-animal .card-text").text('Dit is wel bijna een tijgertempo!')
+            } else if (date.pam_score > 4 && date.pam_score < 5 || date.pam_score === 5) {
+                $(".compare-animal .card-text").text('Jij bent stiekem gewoon een leeuw of niet?')
+            } else if (date.pam_score > 5) {
+                $(".compare-animal .card-text").text('Jij gaat zo goed, je hoeft deze hipper niet eens te dragen!')
+            }
+
+            // Yesterday section
+            if (yesterday === null) {
+                $(".compare-yesterday .card-text").text(`Je doet het beter dan gister! (Omdat je gister geen score had)`)
+            } else {
+                if (yesterday.pam_score > date.pam_score) {
+                    $(".compare-yesterday .card-text").text(`Gister had je wat meer pam punten, kom op he! Het verschil is ${yesterday.pam_score - date.pam_score}`);
+                } else {
+                    $(".compare-yesterday .card-text").text(`Je doet het al beter dan gister! Lekker hoor! Je hebt ${date.pam_score - yesterday.pam_score} punten in verschil`);
+                }
+            }
+        } else {
+            $(".compare-calorie .card-text").text("Je hebt geen score voor vandaag")
+            $(".compare-animal .card-text").text("Je hebt geen score voor vandaag")
+            $(".compare-yesterday .card-text").text("Je hebt geen score voor vandaag")
+        }
+    }
+
+    /**
      * Uses the arrows on statistic to change the week
      */
     changeWeekArrows(direction) {
+        // If the direction is left, go back one week, otherwise go up one week
         if (direction === "left") {
             let firstVal = moment($(".datepicker-stats").val());
             firstVal = firstVal.subtract("1", "weeks");
@@ -93,6 +189,41 @@ class StatisticsController extends CategoryController {
             this.updateChart();
         }
     }
+
+    /**
+     * Uses the arrows to change the day
+     * @param direction left or right
+     */
+    changeDayArrows(direction) {
+        if (direction === "left") {
+            let firstVal = moment($(".datepicker-stats--normal").val());
+            firstVal = firstVal.subtract("1", "days");
+            $(".datepicker-stats--normal").val(firstVal.format("YYYY-MM-DD"));
+            this.updateStats();
+        } else {
+            let firstVal = moment($(".datepicker-stats--normal").val());
+            firstVal = firstVal.add("1", "days");
+            $(".datepicker-stats--normal").val(firstVal.format("YYYY-MM-DD"));
+            this.updateStats();
+        }
+    }
+
+    /**
+     * Update the simple stats
+     */
+    updateStats() {
+        let chosenDate = moment($(".datepicker-stats--normal").val());
+
+        for (let i = 0; i < pamDates.length; i++) {
+            if (chosenDate.isSame(pamDates[i].date, 'date')) {
+                this.applySimpleStats(pamDates[i], pamDates[i - 1]);
+                return true;
+            } else {
+                this.applySimpleStats(null, null);
+            }
+        }
+    }
+
     /**
      * Update the stats chart
      */
@@ -110,6 +241,8 @@ class StatisticsController extends CategoryController {
                 weekData[dateIso - 1] = moment.pam_score;
             }
         })
+
+        // Set the weekdata and update the chart
         statsChart.data.datasets[0].data = weekData;
         statsChart.update();
     }
@@ -149,17 +282,16 @@ class StatisticsController extends CategoryController {
             // Set the dates
             let today = moment();
 
-            // console.log(today, date, pamDates[i]["date"]);
             if (today.isSame(momentArray[i]["date"], 'day')) {
                 start = i;
             }
         }
 
+        let startOfWeek;
         if (momentArray.length > 0) {
             let weekday = momentArray[start]["date"].isoWeekday();
-            let startOfWeek = moment().subtract((weekday - 1), "days").isoWeek();
+            startOfWeek = moment().subtract((weekday - 1), "days").isoWeek();
         }
-
 
         // Check if they are from this week, and if they are, replace them in the
         momentArray.forEach((date) => {
@@ -220,9 +352,5 @@ class StatisticsController extends CategoryController {
         });
     }
 }
-
-// $(document).on((".datepicker-stats").change(() => {
-//     console.log("kek");
-// })
 
 

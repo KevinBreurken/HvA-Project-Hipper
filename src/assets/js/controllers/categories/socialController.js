@@ -39,10 +39,16 @@ class SocialController extends CategoryController {
             location.reload();
         })
 
-        $('.message button').on('click', async (event) => {
+        $('.btn-delete').on('click', async (event) => {
             const messageId = event.target.dataset.messageId
             await this.deleteMessage(messageId)
         })
+
+        $('.btn-report').on('click', async (event) => {
+            const messageId = event.target.dataset.messageId
+            await this.reportMessage(messageId);
+        })
+
     }
 
     async retrieveCaretakerInfo() {
@@ -83,6 +89,7 @@ class SocialController extends CategoryController {
                          
                          ${message.content}
                          <button class="btn-delete" data-message-id="${message.message_id}">Verwijder</button>
+                        
                     </p>
                 </div>  
                `))
@@ -104,14 +111,23 @@ class SocialController extends CategoryController {
     async retrieveOtherMessages() {
         try {
             const currentLoggedID = sessionManager.get("userID");
-            const messages = await this.messagesRepository.getAllMessages(currentLoggedID);
+            const userData = await this.userRepository.getRehabilitatorInfo(currentLoggedID);
+            const rehabilitatorID = userData[0].id;
+            const messages = await this.messagesRepository.getAllMessages(rehabilitatorID);
             const messagesHtml = messages.map(message => {
                 const age = Utils.getAge(message.birthdate)
+                let actionsHtml = '';
+                if (message.rehabilitator_id !== rehabilitatorID) {
+                    actionsHtml += `<button class="btn-report" data-message-id="${message.message_id}">Rapporteer</button>`
+                }
+
                 return (`
                     <b>OP ${message.date.split("T")[0]}</b> <br>
                     <h2 class="mb-2"><b>${message.first_name}  ${age} jaar</b></h2>
                         <p style="padding-bottom: 20px; border-bottom:2px solid var(--color-category-current);">
                             ${message.content}
+                           
+                           ${actionsHtml} 
                         </p>  
                     `)
             });
@@ -122,6 +138,15 @@ class SocialController extends CategoryController {
         }
 
     }
+
+    async reportMessage(messageID) {
+        const currentLoggedUserID = await sessionManager.get("userID");
+        const userData = await this.userRepository.getRehabilitatorInfo(currentLoggedUserID)
+        const rehabilitatorID = userData[0].id;
+        await this.messagesRepository.reportMessage(messageID, rehabilitatorID);
+        location.reload();
+    }
+
 
     async sendMessage(message) {
         const caretakerID = (await this.retrieveCaretakerInfo()).caretaker_id

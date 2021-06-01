@@ -1,4 +1,5 @@
 class Utils {
+    static userRepository = new UserRepository();
     static getAge(dateString) {
         const today = new Date();
         const birthDate = new Date(dateString);

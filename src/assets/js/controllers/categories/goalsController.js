@@ -29,23 +29,22 @@ class GoalsController extends CategoryController {
         //Create the progress component.
         this.progressBar = await new ProgressComponent(this.view.find("#progress-anchor"));
         const pamdata = await this.progressBar.retrieveProgressData(sessionManager.get("userID"));
-        this.progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['now'], pamdata['daily']);
-        this.progressBar.setAppointmentText(pamdata['date']);
+        await this.progressBar.repaintProgressBar();
+
         //Empty the content-div and add the resulting view to the page
         $(".content").append(this.view);
         this.loadActivities(pamdata['daily']);
         this.fillMotivationalContent(pamdata['total'], pamdata['current']);
 
-        $("#pam-dailygoal-text").html(`<b>Om het PAM totaal te bereiken moet u voor vandaag ${pamdata['daily']} PAM punten behalen.</b>`);
         $('#today-text').html(`U bent al aardig onderweg! Voor vandaag heeft u een doel staan van  ${pamdata['daily']} PAM punten.
                 kijk of u een nieuwe wandelroute of doel kan aannemen om uwzelf uit te dagen!`);
         const dateExpired = (pamdata['date'] < new Date());
-        this.setAppointmentState(dateExpired)
+        this.setAppointmentState(dateExpired);
+
+        $('.pam-today-display').text(this.progressBar.getCalculatedDailyPamGoal());
     }
 
     setAppointmentState(state) {
-        $('#pam-dailygoal-text').toggle(!state);
-        $("#pam-dailygoal-text").hide();
         this.progressBar.htmlRoot.find(".goal-li").toggle(!state);
         $('#motivational-title').toggle(!state);
         $('#motivational-description').toggle(!state);
@@ -67,7 +66,6 @@ class GoalsController extends CategoryController {
     }
 
     generateActivityCard(cardData) {
-        console.log(cardData)
         const pamText = cardData['earnable_pam'] === null ? "" : `<p class="goal-card-subheader">${cardData['earnable_pam']} verwachten PAM punten</p>`;
         return `
         <div class="goal-card-container mx-auto">

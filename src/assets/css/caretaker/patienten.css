@@ -1,4 +1,4 @@
-.pad-caretaker-header-title{
+.pad-caretaker-header-title {
     background-color: var(--color-category-current);
     border: 4px solid var(--color-category-current);
     height: auto;
@@ -12,25 +12,31 @@
     color: #ffffff;
 }
 
-.pad-caretaker-header1{
+.pad-caretaker-header1 {
     background-color: var(--color-category-current);
     border: 4px solid var(--color-category-current);
     height: auto;
-    padding-bottom: 4px;
 
     /* text */
     font-family: 'Red Hat Display', sans-serif;
     font-weight: bold;
-    line-height: 40px;
+    line-height: 48px;
     font-size: 30px;
     color: #ffffff;
     text-align: center;
+    padding: 0.2rem 1rem !important;
+
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
+
 .pad-caretaker-header1 > h3 {
     margin: 5px;
 }
+
 .pad-caretaker-content {
     border: 4px solid var(--color-category-current);
+    border-radius: 0;
     border-top: none;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     padding: 16px;
@@ -38,46 +44,49 @@
     color: #666666;
 }
 
-.imgpatient1{
-     width: 324px;
-     height: 300px;
-     margin-left: -18px;
-     margin-top: -65px;
-     border: 4px solid var(--color-category-current);
- }
+.pad-caretaker-content .imgcaregiver {
+    border-radius: 0;
+}
 
-.imgpatient2{
+.imgpatient {
     width: 324px;
     height: 300px;
     margin-left: -18px;
     margin-top: -65px;
     border: 4px solid var(--color-category-current);
+    background-color: #ffffff;
 }
 
 /* Po fix */
-.ct-year{
-    margin-bottom: 0;
-}
-.ct-gender{
-    margin-bottom: 0;
-}
-.ct-bloodtype{
-    margin-bottom: 0;
-}
-.ct-status{
-    margin-bottom: 0;
-}
-.ct-contacttitle{
-    margin-bottom: 0;
-}
-.ct-phonenumber{
-    margin-bottom: 0;
-}
-.ct-mail{
+.ct-year {
     margin-bottom: 0;
 }
 
-.ct-name{
+.ct-gender {
+    margin-bottom: 0;
+}
+
+.ct-bloodtype {
+    margin-bottom: 0;
+}
+
+.ct-status {
+    margin-bottom: 0;
+}
+
+.ct-contacttitle {
+    margin-bottom: 0;
+}
+
+.ct-phonenumber {
+    margin-bottom: 0;
+}
+
+.ct-mail {
+    margin-bottom: 0;
+}
+
+.ct-header {
     font-weight: bold;
     margin-bottom: 0;
     color: #ffffff;
@@ -95,7 +104,16 @@
     border: 4px solid red;
 }
 
-.btn-edit{
+.buttongroup button {
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+#patient-holder {
+    padding-top: 32px;
+}
+
+.btn-edit {
     background-color: var(--color-category-current);
     border: 4px solid var(--color-category-current);
     font-family: 'Red Hat Display', sans-serif;
@@ -106,9 +124,13 @@
     border-radius: 0;
 }
 
-.btn-edit__green{
-    background-color: #709963;
-    border: 4px solid #709963;
+.caretaker-rehabilitator-text {
+    max-width: 100%;
+}
+
+.btn-edit-green {
+    background-color: var(--color-progress-yesterday);
+    border: 4px solid #8dd775;
     font-family: 'Red Hat Display', sans-serif;
     font-weight: bold;
     line-height: 40px;
@@ -117,30 +139,33 @@
     border-radius: 0;
 }
 
-@media (max-width: 1919px){
-    .pad-caretaker-header1{
-        text-align: center;
-        padding-right: 0;
-    }
-    .pad-caretaker-header2{
-        text-align: center;
-        padding-right: 0;
-    }
-    .imgpatient1{
-        margin-top: -16px;
-        margin-left: -16px;
-    }
-    .imgpatient2{
-        margin-top: -16px;
-        margin-left: -16px;
-    }
-    .btn-edit{
-        margin-bottom: 5%;
-    }
+.submit-btn--modal {
+    background-color: var(--color-progress-yesterday);
+    border: 4px solid #8dd775;
 }
 
-.pagination > li > a
-{
+@media (max-width: 1919px) {
+    .pad-caretaker-header1 {
+        text-align: center;
+        padding-right: 0;
+    }
+
+    .pad-caretaker-header2 {
+        text-align: center;
+        padding-right: 0;
+    }
+
+    .imgpatient {
+        margin-top: -16px;
+        margin-left: -16px;
+    }
+
+    /*.btn-edit{*/
+    /*    margin-bottom: 5%;*/
+    /*}*/
+}
+
+.pagination > li > a {
     background-color: white;
     color: #5A4181;
 }
@@ -148,21 +173,18 @@
 .pagination > li > a:focus,
 .pagination > li > a:hover,
 .pagination > li > span:focus,
-.pagination > li > span:hover
-{
+.pagination > li > span:hover {
     color: #5a5a5a;
     background-color: #eee;
     border-color: #ddd;
 }
 
-.pagination > .active > a
-{
+.pagination > .active > a {
     color: white;
     background-color: var(--color-category-current) !Important;
-    border: solid 1px  var(--color-category-current) !Important;
+    border: solid 1px var(--color-category-current) !Important;
 }
 
-.pagination > .active > a:hover
-{
+.pagination > .active > a:hover {
     background-color: var(--color-category-current);
 }

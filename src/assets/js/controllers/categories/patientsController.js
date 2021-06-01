@@ -14,12 +14,16 @@ let dataId;
 let caretakerId;
 let blocky;
 
+let progressbars = [];
+let modalProgressbar;
+
 class PatientsController extends CategoryController {
 
     constructor() {
         super();
         this.loadView("views/caretaker/patients.html");
         this.caretakerRepository = new CaretakerRepository();
+        this.rehabilitatorRepository = new RehabilitatorRepository()
         this.userRepository = new UserRepository();
     }
 
@@ -29,21 +33,10 @@ class PatientsController extends CategoryController {
         this.updateCurrentCategoryColor("--color-category-default");
         //Set the navigation to the correct state.
         nav.setNavigationState(navState.Caretaker)
-        //Load the login-content into memory.
-        this.patientsView = $(data);
-
-        //Empty the content-div and add the resulting view to the page.
-        $(".content").empty().append(this.patientsView);
 
         // Set the blocky content
         blocky = $(".block-primary");
-
-        // Get all patients
-        // this.caretakerRepository.getAllRehab(sessionManager.get("userID"), 1, 2).then(data => {
-        //     this.createPatients(data).then((e) => {
-        //         console.log(e)
-        //     })
-        // });
+        this.view = $(data);
 
         // Get the caretaker id
         this.caretakerRepository.getLoggedInCaretakerId(sessionManager.get("userID")).then(data => {
@@ -51,18 +44,18 @@ class PatientsController extends CategoryController {
         })
 
         // Open the profile editor
-        $(document).on("click", ".btn-edit--profile", (e) => {
-            dataId = e.target.attributes["data-id"].nodeValue
+        $(this.view).on("click", ".btn-edit--profile", (e) => {
+            dataId = e.target.parentNode.attributes["data-id"].nodeValue
             this.openProfileEditor(dataId)
         });
 
         //Open the delete
-        $(document).on("click", ".btn-delete--open", (e) => {
-            dataId = e.target.attributes["data-id"].nodeValue
+        $(this.view).on("click", ".btn-delete--open", (e) => {
+            dataId = e.target.parentNode.attributes["data-id"].nodeValue
         });
 
         // Confirm the delete
-        $(document).on("click", ".btn-delete--confirm", (e) => {
+        $(this.view).on("click", ".btn-delete--confirm", (e) => {
             userValues.forEach((user) => {
                 if (user.userID === parseInt(dataId)) {
                     this.deletePatient(dataId, user.userID);
@@ -71,27 +64,38 @@ class PatientsController extends CategoryController {
         })
 
         // When you want to open the profile editor
-        $(document).on("click", ".btn-add--profile", (e) => {
+        $(this.view).on("click", ".btn-add--profile", (e) => {
             this.openAddFields();
         })
 
         //
-        $(document).on("click", ".add-btn--submit", (e) => {
+        $(this.view).on("click", ".add-btn--submit", (e) => {
             this.addPatient(e).then((e) => {
                 console.log("pixels")
             });
         })
 
         // When the form gets sent
-        $(document).on("click", ".edit-btn--submit", (e) => {
+        $(this.view).on("click", ".edit-btn--submit", (e) => {
             this.editPatient(e, dataId);
         })
-        // this.patientsView.find(".edit-form").on("submit", (e) => );
-        this.view = $(data);
+
         //Empty the content-div and add the resulting view to the page.
         $(".content").empty().append(this.view);
         $(".block-primary").hide();
 
+		this.setupAppointmentModal()
+        //When an image is selected on the upload modal.
+        this.view.find("#fileUpload").on("change", function () {
+            changeImageUploadPreview(this, '#file_uploader_popup', userId)
+            $('#file_uploader_save').removeAttr("disabled");
+        });
+
+        //When save is clicked on the upload modal.
+        this.view.find('#file_uploader_save').on("click", function () {
+            uploadImage(userId, selectedImage);
+            $(`.imgpatient[data-id='${dataId}']` ).attr('src', selectedImage);
+        });
 
         this.setupPagination();
     }
@@ -119,16 +123,41 @@ class PatientsController extends CategoryController {
         this.paginatePatient(1);
     }
 
+    async setupAppointmentModal() {
+        // Open the appointment editor
+        $(this.view).on("click", ".btn-edit--appointment", (e) => {
+            const userId = e.target.parentNode.attributes["data-userid"].nodeValue
+            const revalidantId = e.target.parentNode.attributes["data-id"].nodeValue
+            dataId = e.target.parentNode.attributes["data-id"].nodeValue;
+            this.openAppointmentEditor(userId, revalidantId);
+        });
+        // When the form gets sent
+        $(this.view).on("click", ".submit-btn--appointment", (e) => {
+            this.editAppointment(e, dataId);
+        })
+
+        //Load progress bar.
+        modalProgressbar = await new ProgressComponent($('#modal-progress-anchor'));
+        $("#appointment-totalgoal").change(function () {
+            modalProgressbar.setTotalGoal($(this).val());
+            modalProgressbar.repaintProgressBar();
+        });
+        $("#appointment-date-edit").change(function () {
+            modalProgressbar.setAppointmentDate(new Date($(this).val()));
+            modalProgressbar.repaintProgressBar();
+        });
+    }
+
     paginatePatient(paginationPosition) {
         this.caretakerRepository.getRehabByPageID(sessionManager.get("userID"), paginationPosition, 2).then(data => {
-            this.createPatients(data)
+            this.createPatients(data);
         });
 
         $(".page-item").each(function () {
             $(this).removeClass('active');
-            if ($(this).data('page') == paginationPosition) {
+
+            if ($(this).data('page') == paginationPosition)
                 $(this).addClass('active');
-            }
         })
     }
 
@@ -144,12 +173,19 @@ class PatientsController extends CategoryController {
         for (let i = 0; i < patients.length; i++) {
             try {
                 this.caretakerRepository.getUserInfo(patients[i].user_id).then(data => {
-                    userValues.push({"username": data[0].username, "password": data[0].password, "id": data[0].id, "userID": patients[i].id});
+                    userValues.push({
+                        "username": data[0].username,
+                        "password": data[0].password,
+                        "id": data[0].id,
+                        "userID": patients[i].id
+                    });
                 });
             } catch (e) {
             }
             let clone = blocky.clone().insertAfter(blocky);
-            clone.attr('class', 'block-' + patients[i].id + ' row justify-content-md-center mt-5')
+            clone.attr('class', 'block-' + patients[i].id + ' category-container row justify-content-md-center')
+            $(".buttongroup", clone).attr("data-id", patients[i].id);
+            $(".buttongroup", clone).attr("data-userid", patients[i].user_id);
             //set the data in html
             $(".ct-name", clone).text(`${patients[i]['first_name']}`);
             $(".ct-lastname", clone).text(`${patients[i]['last_name']}`);
@@ -165,18 +201,38 @@ class PatientsController extends CategoryController {
             $(".ct-description", clone).text(patients[i].description);
             $(".btn-edit--profile", clone).attr("data-id", patients[i].id);
             $(".btn-delete--confirm", clone).attr("data-id", patients[i].id);
-            //img changing to men
-            if (patients[i].gender === "Vrouw"){
-                clone.find(".imgpatient").attr('src','assets/img/patient2.png')
-            } else {
-                clone.find(".imgpatient").attr('src','assets/img/patient1.png')
+            $(".file_uploader_open", clone).attr("data-id", patients[i].id);
+            $(".imgpatient", clone).attr("data-id", patients[i].id);
+            $(".file_uploader_open", clone).on("click", (e)=> {
+                dataId = e.target.attributes["data-id"].nodeValue
+                // Put the right user values there
+                userValues.forEach((user, index) => {
+                    if (user.userID === parseInt(dataId)) {
+                        $("#userNameAdd").val(user.username);
+                        userId = user.id;
+                        userIndexValue = index;
+                    }
+                });
+            });
+
+            const userImage = await this.userRepository.getUserImage(patients[i].user_id);
+            if (userImage[0].photo != null) {
+                $(".imgpatient", clone).attr("src", "./uploads/" + userImage[0].photo);
+            }
+            else {
+                $(".imgpatient", clone).attr("src", "/assets/img/default_image.png");
             }
 
-            //Load progress bar.
+            console.log(patients[i].user_id)
+
+            //Initialize a new progress bar.
             const progressBar = await new ProgressComponent(clone.find(".progress-anchor"));
-            const pamdata = await progressBar.retrieveProgressData(patients[i]['user_id']);
-            progressBar.setProgressBarData(pamdata['total'], pamdata['current'], pamdata['now'], pamdata['daily']);
-            progressBar.setAppointmentText(pamdata['date']);
+            progressbars.push(progressBar);
+
+            progressBar.setAssignedID(patients[i].id);
+            await progressBar.retrieveProgressData(patients[i]['user_id']);
+            //Show changed in DOM.
+            progressBar.repaintProgressBar();
 
             holder.append(clone);
             clone.show();
@@ -204,6 +260,8 @@ class PatientsController extends CategoryController {
      * @param id
      */
     openProfileEditor(id) {
+        //Remove alerts
+        $(".edit-succes").remove();
         // Give the submit button the right class
         if ($(".add-btn--submit")[0]) {
             $(".add-btn--submit").addClass("edit-btn--submit").removeClass("add-btn--submit");
@@ -269,6 +327,77 @@ class PatientsController extends CategoryController {
     }
 
     /**
+     * This function sets the appointment modal with info from the patients appointment.
+     * @param id
+     */
+    async openAppointmentEditor(userID, revalidantid) {
+        //Remove alerts
+        $(".edit-succes").remove();
+
+        $('#modal-progress-anchor').find('.appointment-text').hide();
+        await modalProgressbar.retrieveProgressData(userID);
+        modalProgressbar.repaintProgressBar();
+        try {
+            const rehabilitatorAppointment = await this.rehabilitatorRepository.getAppointmentData(revalidantid);
+            //Set date
+            let appointmentDate = rehabilitatorAppointment['appointment_date'];
+            appointmentDate = appointmentDate.split("T")[0];
+            appointmentDate = new moment(appointmentDate);
+
+            $("#appointment-date-edit").val(appointmentDate.format("YYYY-MM-DD"));
+            //Set total goal
+            $("#appointment-totalgoal").val(rehabilitatorAppointment['pam_goal_total']);
+        } catch (e) {
+            $("#appointment-date-edit").val('');
+            $("#appointment-totalgoal").val('1');
+        }
+    }
+
+    /**
+     * Edit patient function
+     * @param e, the event
+     * @param id, id of the patient
+     * @returns {Promise<boolean>}
+     */
+    async editAppointment(e, id) {
+        // Prevent form from sending
+        e.preventDefault();
+
+        //Remove alert
+        $(".edit-succes").remove();
+
+        //get the values set in the front-end.
+        const appointmentDate = $('#appointment-date-edit').val();
+        const totalgoal = $('#appointment-totalgoal').val();
+
+        //check if the values are set correct.
+        if (this.validateAppointmentForm(appointmentDate, totalgoal)) {
+            return false;
+        }
+
+        console.log("ID: " + id)
+        this.rehabilitatorRepository.updateAppointmentData(id, {
+            "appointment_date": appointmentDate,
+            "pam_goal_total": totalgoal,
+            "initial_daily_goal": modalProgressbar.getCalculatedDailyPamGoal()
+        });
+
+
+        //Find the correct progress bar and update.
+        for (let i = 0; i < progressbars.length; i++) {
+            if (progressbars[i].getAssignedID() == id) {
+                progressbars[i].setTotalGoal(totalgoal);
+                progressbars[i].setAppointmentDate(new Date(appointmentDate));
+                progressbars[i].repaintProgressBar();
+            }
+        }
+        
+        $("#edit-form-appointment").prepend(`
+            <div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">Afspraak is bewerkt!</div>`);
+
+    }
+
+    /**
      * Edit patient function
      * @param e, the event
      * @param id, id of the patient
@@ -287,7 +416,7 @@ class PatientsController extends CategoryController {
         userEditValues.push(userId);
 
         console.log(editValues[0].adres);
-        if (this.validateForm(editValues[0].firstname, editValues[0].lastname, editValues[0].birthdate, editValues[0].bloodtype, editValues[0].status,
+        if (this.validatePatientForm(editValues[0].firstname, editValues[0].lastname, editValues[0].birthdate, editValues[0].bloodtype, editValues[0].status,
             editValues[0].phone, editValues[0].email, userEditValues[0], userEditValues[1])) {
             return false;
         }
@@ -296,9 +425,9 @@ class PatientsController extends CategoryController {
         try {
             let edited = await this.userRepository.update(id, editValues, userEditValues);
             $(".edit-form").prepend("<div class=\"alert alert-success edit-succes mb-2\" role=\"alert\">\n" +
-                ""+ edited.values[0].firstname + " is bewerkt!\n" +
+                "" + edited.values[0].firstname + " is bewerkt!\n" +
                 "</div>")
-            $("html, .modal").animate({ scrollTop: 0 }, "slow");
+            $("html, .modal").animate({scrollTop: 0}, "slow");
 
             console.log(edited.values[0].id);
             // Set the values In the person self
@@ -336,18 +465,43 @@ class PatientsController extends CategoryController {
 
     /**
      * Checks for most values in the form if they're validated, otherwise return an error
-     * @param firstname
-     * @param lastname
-     * @param birthdate
-     * @param bloodtype
-     * @param status
-     * @param phone
-     * @param email
-     * @param username
-     * @param password
      * @returns {boolean}
      */
-    validateForm(firstname, lastname, birthdate, bloodtype, status, phone, email, username, password) {
+    validateAppointmentForm(appointment, totalGoal) {
+        let errorcount = 0;
+
+        if (appointment === "") {
+            errorcount++;
+            $("#appointment-date-error").text("Afspraak kan niet leeg zijn!")
+        } else if (!moment(appointment).isValid()) {
+            errorcount++;
+            $("#appointment-date-error").text("Datum is niet goed ingevuld!");
+        }
+
+
+        if (totalGoal === "") {
+            errorcount++;
+            $("#appointment-totalgoal-error").text("Mobiel kan niet leeg zijn!");
+        } else if (!/^\d+$/.test(totalGoal)) {
+            errorcount++;
+            $("#appointment-totalgoal-error").text("Totaaldoel moet alleen nummers zijn!");
+
+        } else if (totalGoal < 0) {
+            errorcount++;
+            $("#appointment-totalgoal-error").text("Totaaldoel kan geen mingetal zijn!");
+        }
+
+        if (errorcount > 0) {
+            return true;
+        } else {
+        }
+    }
+
+    /**
+     * Checks for most values in the form if they're validated, otherwise return an error
+     * @returns {boolean}
+     */
+    validatePatientForm(firstname, lastname, birthdate, bloodtype, status, phone, email, username, password) {
         let errorcount = 0;
 
         // Check if firstname is empty
@@ -478,8 +632,19 @@ class PatientsController extends CategoryController {
 
         // Set editvalues;
         editValues = [];
-        editValues.push({"firstname": firstname.val(), "lastname": lastname.val(), "birthdate": birthdate.val(), "gender": gender.val(), "bloodtype": bloodtype.val(),
-            "adres": adres.val(), "postcode": post.val(), "status": status.val(), "phone": phone.val(), "email": email.val(), "description": description.val()})
+        editValues.push({
+            "firstname": firstname.val(),
+            "lastname": lastname.val(),
+            "birthdate": birthdate.val(),
+            "gender": gender.val(),
+            "bloodtype": bloodtype.val(),
+            "adres": adres.val(),
+            "postcode": post.val(),
+            "status": status.val(),
+            "phone": phone.val(),
+            "email": email.val(),
+            "description": description.val()
+        })
 
         return editValues
     }

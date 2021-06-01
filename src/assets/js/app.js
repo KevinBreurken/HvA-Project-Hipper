@@ -12,6 +12,7 @@ const CONTROLLER_LOGIN = "login";
 const CONTROLLER_LOGOUT = "logout";
 const CONTROLLER_WELCOME = "welcome";
 const CONTROLLER_UPLOAD = "upload";
+const CONTROLLER_CARETAKER_PROFILE = "caretaker_profile";
 
 const CONTROLLER_HOME = "home";
 const CONTROLLER_GOALS = "goals";
@@ -102,6 +103,12 @@ class App {
             case CONTROLLER_PATIENTS:
                 this.setCurrentController(name);
                 currentController = this.isAdmin(() => new PatientsController(),
+                    () => this.isLoggedIn(() => new HomeController(), () => new LoginController()));
+                break;
+
+            case CONTROLLER_CARETAKER_PROFILE:
+                this.setCurrentController(name);
+                currentController = this.isAdmin(() => new CaretakerProfileController(),
                     () => this.isLoggedIn(() => new HomeController(), () => new LoginController()));
                 break;
 

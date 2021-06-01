@@ -125,7 +125,8 @@ hr.hr-element{
 }
 
 .legend li p {
-    margin-bottom: 0
+    margin-bottom: 0;
+    min-height: 32px;
 }
 
 .legend span {
@@ -148,6 +149,7 @@ hr.hr-element{
     padding-bottom: 4px;
     margin-bottom: 0;
     /* text */
+    text-transform: uppercase;
     font-family: 'Red Hat Display', sans-serif;
     font-weight: bold;
     text-align: center;
@@ -162,8 +164,8 @@ hr.hr-element{
     border-radius: 0 0 30px 30px;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     padding: 16px;
-    margin-bottom: 64px;
-    min-height: 300px;
+    margin-bottom: 32px;
+    min-height: 180px;
 }
 
 .goal-card-subheader {
@@ -175,4 +177,14 @@ hr.hr-element{
 .goal-card-container {
     max-width: 430px;
     padding: 8px;
+}
+
+.pam-today-display {
+    font-size: 90px;
+
+    font-weight: bold;
+    line-height: 0.4;
+    text-align: center;
+    padding-top: 40px;
+    color: var(--color-text);
 }
