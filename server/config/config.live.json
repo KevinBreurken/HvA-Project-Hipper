@@ -4,7 +4,7 @@
     "timeout": 30000,
     "username": "pad_hip_7",
     "password": "Hh38JqEn9QpIiu1I",
-    "database": "pad_hip_7_dev",
+    "database": "pad_hip_7_live",
     "connectionLimit": 1
   }
 }
