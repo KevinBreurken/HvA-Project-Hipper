@@ -24,7 +24,7 @@ class ProgressComponent {
     async repaintProgressBar() {
 
         this.dailyPamGoal = await this.calculateDailyPamGoal(this.totalPamGoal - this.currentlyEarnedPam, this.appointmentDate);
-        this.dailyPamGoal = this.dailyPamGoal.toFixed(1);
+        this.dailyPamGoal = Math.round(this.dailyPamGoal * 10) / 10
 
         //Hide if there's no total goal.
         this.htmlRoot.find(".pad-progress-container").toggle(this.totalPamGoal !== null);
@@ -35,6 +35,7 @@ class ProgressComponent {
         this.htmlRoot.find(".legend-current").html(`<b style="color:gray;">${this.pamNow} PAM</b> vandaag behaald`);
 
         let todayGoalAmount = this.getCalculatedDailyPamGoal()
+        todayGoalAmount = Math.round(todayGoalAmount * 10) / 10;
         this.htmlRoot.find(".legend-goal").html(`<b style="color:gray;">${todayGoalAmount} PAM</b> punten doel voor vandaag`);
 
         //Update bar

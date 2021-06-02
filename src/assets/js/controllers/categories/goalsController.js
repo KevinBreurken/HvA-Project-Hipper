@@ -41,7 +41,8 @@ class GoalsController extends CategoryController {
         const dateExpired = (pamdata['date'] < new Date());
         this.setAppointmentState(dateExpired);
 
-        $('.pam-today-display').text(this.progressBar.getCalculatedDailyPamGoal());
+        const val = Math.round(this.progressBar.getCalculatedDailyPamGoal() * 10) / 10
+        $('.pam-today-display').text(val);
     }
 
     setAppointmentState(state) {
