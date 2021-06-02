@@ -97,7 +97,11 @@ class StatisticsController extends CategoryController {
                 }
             });
         } else {
-            $(".content").load("views/statistics.html");
+            $(".content").load("views/statistics.html", () => {
+                if ($(".datepicker-stats--normal").val() === "") {
+                    $(".datepicker-stats--normal").val(moment().format("YYYY-MM-DD"));
+                }
+            });
         }
     }
 
@@ -124,6 +128,10 @@ class StatisticsController extends CategoryController {
         }
 
         if (dates.length < 1) {
+            this.applySimpleStats(null, null);
+        }
+
+        if ($(".compare-calorie .card-text").val() === "") {
             this.applySimpleStats(null, null);
         }
     }
@@ -214,10 +222,19 @@ class StatisticsController extends CategoryController {
     updateStats() {
         let chosenDate = moment($(".datepicker-stats--normal").val());
 
-        for (let i = 0; i < pamDates.length; i++) {
-            if (chosenDate.isSame(pamDates[i].date, 'date')) {
-                this.applySimpleStats(pamDates[i], pamDates[i - 1]);
-                return true;
+        let sorted = pamDates.sort((a,b) => {
+            return a.date.format('YYYYMMDD') - b.date.format('YYYYMMDD');
+        })
+        for (let i = 0; i < sorted.length; i++) {
+            if (chosenDate.isSame(sorted[i].date, 'date')) {
+                let yesterday = chosenDate.subtract('1', 'days');
+                if (yesterday.isSame(sorted[i - 1].date, 'date')) {
+                    this.applySimpleStats(sorted[i], sorted[i - 1]);
+                    return true;
+                } else {
+                    this.applySimpleStats(sorted[i], null);
+                    return true;
+                }
             } else {
                 this.applySimpleStats(null, null);
             }
