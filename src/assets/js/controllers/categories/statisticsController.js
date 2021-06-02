@@ -101,6 +101,7 @@ class StatisticsController extends CategoryController {
                 if ($(".datepicker-stats--normal").val() === "") {
                     $(".datepicker-stats--normal").val(moment().format("YYYY-MM-DD"));
                 }
+                this.updateStats();
             });
         }
     }
