@@ -86,15 +86,28 @@ app.post("/user/update", (req, res) => {
         "id": req.body.id
     });
 
-    db.handleQuery(connectionPool, {
-        query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ?, `adress` = ?, `postalcode` = ? WHERE `id` = ?;" +
-            "UPDATE `user` SET `username` = ?, `password` = ? WHERE `id` = ?",
-        values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.id, req.body.userValues[0],
-            cryptoHelper.getHashedPassword(req.body.userValues[1]), req.body.userValues[2]]
-    }, (data) => {
+    console.log(req.body.userValues);
+    if (req.body.userValues[1] != "") {
+        db.handleQuery(connectionPool, {
+            query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ?, `adress` = ?, `postalcode` = ? WHERE `id` = ?;" +
+                "UPDATE `user` SET `username` = ?, `password` = ? WHERE `id` = ?",
+            values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.id, req.body.userValues[0],
+                cryptoHelper.getHashedPassword(req.body.userValues[1]), req.body.userValues[2]]
+        }, (data) => {
 
-        res.status(httpOkCode).json({"values": values});
-    }, (err) => res.status(badRequestCode).json({"reason": err}));
+            res.status(httpOkCode).json({"values": values});
+        }, (err) => res.status(badRequestCode).json({"reason": err}));
+    } else {
+        db.handleQuery(connectionPool, {
+            query: "UPDATE `rehabilitator` SET `first_name` = ?, `last_name` = ?, `birthdate` = ?, `gender` = ?, `bloodtype` = ?, `status` = ?, `phonenumber` = ?, `email` = ?, `description` = ?, `adress` = ?, `postalcode` = ? WHERE `id` = ?;" +
+                "UPDATE `user` SET `username` = ? WHERE `id` = ?",
+            values: [firstname, lastname, birthdate, gender, bloodtype, status, phone, email, description, adres, postcode, req.body.id, req.body.userValues[0],
+                req.body.userValues[2]]
+        }, (data) => {
+
+            res.status(httpOkCode).json({"values": values});
+        }, (err) => res.status(badRequestCode).json({"reason": err}));
+    }
 })
 
 // Delete a patient

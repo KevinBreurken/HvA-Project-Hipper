@@ -415,9 +415,8 @@ class PatientsController extends CategoryController {
         userEditValues = this.setUserValues();
         userEditValues.push(userId);
 
-        console.log(editValues[0].adres);
         if (this.validatePatientForm(editValues[0].firstname, editValues[0].lastname, editValues[0].birthdate, editValues[0].bloodtype, editValues[0].status,
-            editValues[0].phone, editValues[0].email, userEditValues[0], userEditValues[1])) {
+            editValues[0].phone, editValues[0].email, userEditValues[0])) {
             return false;
         }
 
@@ -501,7 +500,7 @@ class PatientsController extends CategoryController {
      * Checks for most values in the form if they're validated, otherwise return an error
      * @returns {boolean}
      */
-    validatePatientForm(firstname, lastname, birthdate, bloodtype, status, phone, email, username, password) {
+    validatePatientForm(firstname, lastname, birthdate, bloodtype, status, phone, email, username) {
         let errorcount = 0;
 
         // Check if firstname is empty
@@ -549,11 +548,6 @@ class PatientsController extends CategoryController {
         if (username === "") {
             errorcount++;
             $("#usernameError").text("Username mag niet leeg zijn!");
-        }
-
-        if (password === "") {
-            errorcount++;
-            $("#passwordError").text("Wachtwoord kan niet leeg zijn!");
         }
 
         if (errorcount > 0) {
