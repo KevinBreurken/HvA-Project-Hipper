@@ -4,14 +4,16 @@ describe('Statistics', function () {
         cy.visit("http://localhost:8080")
 
         const session = {"username" : "rick"};
+        session['userID'] = 1;
         localStorage.setItem("session", JSON.stringify(session));
+
+        cy.server();
     })
 
-    it("Go to statistics", () => {
+    it("Check if the login works", () => {
         // Start faker
         cy.server();
 
-        //Find the field for the username and type the text "test".
         cy.get("#exampleInputUsername").type("test");
 
         //Find the field for the password and type the text "test".
@@ -19,21 +21,19 @@ describe('Statistics', function () {
 
         //Find the button to login and click it.
         cy.get(".login-form button").click();
+    });
 
-        // Cy post get data
-        // cy.route("POST", "/pam", {"id": "0"}).as("pam");
-        //
-        // cy.wait("@pam");
-        //
-        // cy.get("@pam").should((xhr) => {
-        //     alert(xhr);
-        // })
+    it("Check if you can go to statistics and go left", () => {
+        cy.visit("http://localhost:8080/#statistics");
 
-        // After getting data go to statistics
+        //Check if an progression bar exists.
         cy.get(".nav-link[data-controller='statistics']").click();
 
-        cy.get(".advanced-stats").click();
+        cy.get(".arrow-normal-date__left").click();
+    })
 
-        cy.get(".normal-stats").click();
+    it("Check if you can go to advanced statis", () => {
+        cy.visit("http://localhost:8080/#statistics");
+        cy.get(".advanced-stats").click();
     });
 });
